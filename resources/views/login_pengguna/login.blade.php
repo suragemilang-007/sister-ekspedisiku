@@ -226,40 +226,42 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-gradient">
     <div class="login-wrapper">
         <div class="login-container">
             <div class="login-header">
                 <div class="logo-icon">
-                    <i class="fas fa-shipping-fast"></i>
+                    <i class="fas fa-shipping-fast fa-3x mb-3 animate__animated animate__bounceIn"></i>
                 </div>
-                <h1 class="fw-bold">Sister Ekspedisi</h1>
-                <p>Silakan login untuk melanjutkan</p>
+                <h1 class="fw-bold mb-2">Sister Ekspedisi</h1>
+                <p class="text-white-50">Silakan login untuk melanjutkan</p>
             </div>
 
             <div class="login-body">
                 @if(session('success'))
-                    <div class="alert alert-success">
+                    <div class="alert alert-success d-flex align-items-center" role="alert">
                         <i class="fas fa-check-circle me-2"></i>
-                        {{ session('success') }}
+                        <div>{{ session('success') }}</div>
                     </div>
                 @endif
 
                 @if($errors->any())
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
                         <i class="fas fa-exclamation-circle me-2"></i>
-                        <ul class="mb-0 ps-3">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                        <div>
+                            <ul class="mb-0 ps-3">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 @endif
 
-                <form id="loginForm" action="{{ route('login.post') }}" method="POST">
+                <form id="loginForm" action="{{ route('login.post') }}" method="POST" class="needs-validation" novalidate>
                     @csrf
                     
-                    <div class="form-floating">
+                    <div class="form-floating mb-4">
                         <input type="email" 
                                class="form-control @error('email') is-invalid @enderror" 
                                id="email" 
@@ -279,7 +281,7 @@
                         @enderror
                     </div>
 
-                    <div class="form-floating">
+                    <div class="form-floating mb-4">
                         <input type="password" 
                                class="form-control @error('password') is-invalid @enderror" 
                                id="password" 
@@ -289,7 +291,7 @@
                         <label for="password">
                             <i class="fas fa-lock me-2"></i>Password
                         </label>
-                        <div class="input-icon password-toggle" onclick="togglePassword()">
+                        <div class="input-icon password-toggle" onclick="togglePassword()" data-bs-toggle="tooltip" title="Show/Hide Password">
                             <i class="fas fa-eye" id="passwordIcon"></i>
                         </div>
                         @error('password')
@@ -298,27 +300,30 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
+                            <label class="form-check-label user-select-none" for="rememberMe">
+                                Ingat saya
+                            </label>
+                        </div>
                         <a href="#" class="forgot-password" data-bs-toggle="tooltip" title="Hubungi administrator untuk reset password">
                             Lupa password?
                         </a>
                     </div>
-                    <div class="text-center mt-3">
-                                <small class="text-muted">Belum punya akun? <a href="#" class="text-primary">Daftar di sini</a></small>
-                            </div>
 
-
-                    <button type="submit" class="btn btn-login" id="loginButton">
-                        <span class="loading-spinner" id="loadingSpinner"></span>
-                        <span id="buttonText">
-                            <i class="fas fa-sign-in-alt me-2"></i>Masuk
-                        </span>
+                    <button type="submit" class="btn btn-login position-relative overflow-hidden" id="loginButton">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <span class="loading-spinner me-2" id="loadingSpinner"></span>
+                            <span id="buttonText">
+                                <i class="fas fa-sign-in-alt me-2"></i>Masuk
+                            </span>
+                        </div>
                     </button>
                 </form>
             </div>
 
             <div class="login-footer">
-                <p class="mb-0">
+                <p class="mb-0 text-muted">
                     <i class="fas fa-shield-alt me-1"></i>
                     Sistem Keamanan Terjamin | © 2024 Sister Ekspedisi
                 </p>
@@ -326,81 +331,80 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
     
     <script>
         // Initialize tooltips
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
 
-        // Toggle password visibility
+        // Toggle password visibility with animation
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const passwordIcon = document.getElementById('passwordIcon');
             
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.classList.remove('fa-eye');
-                passwordIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.classList.remove('fa-eye-slash');
-                passwordIcon.classList.add('fa-eye');
-            }
+            passwordIcon.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    passwordIcon.classList.remove('fa-eye');
+                    passwordIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    passwordIcon.classList.remove('fa-eye-slash');
+                    passwordIcon.classList.add('fa-eye');
+                }
+                passwordIcon.style.transform = 'scale(1)';
+            }, 100);
         }
 
-        // Form submission with loading state
+        // Enhanced form validation and submission
         document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!this.checkValidity()) {
+                e.stopPropagation();
+                this.classList.add('was-validated');
+                shakeButton();
+                return;
+            }
+
             const button = document.getElementById('loginButton');
             const spinner = document.getElementById('loadingSpinner');
             const buttonText = document.getElementById('buttonText');
             
-            // Show loading state
+            // Show loading state with animation
             button.disabled = true;
             spinner.style.display = 'inline-block';
+            buttonText.style.opacity = '0.8';
             buttonText.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
             
-            // Add slight delay to show loading animation
-            setTimeout(() => {
-                // Form will submit naturally
-            }, 500);
+            // Submit the form
+            this.submit();
         });
 
-        // Enhanced form validation
-        document.getElementById('email').addEventListener('blur', function() {
-            const email = this.value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Shake animation for invalid form
+        function shakeButton() {
+            const button = document.getElementById('loginButton');
+            button.style.animation = 'shake 0.5s';
+            setTimeout(() => button.style.animation = '', 500);
+        }
+
+        // Input focus effects
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.closest('.form-floating').classList.add('focused');
+            });
             
-            if (email && !emailRegex.test(email)) {
-                this.classList.add('is-invalid');
-                if (!this.nextElementSibling || !this.nextElementSibling.classList.contains('invalid-feedback')) {
-                    const feedback = document.createElement('div');
-                    feedback.className = 'invalid-feedback';
-                    feedback.textContent = 'Format email tidak valid';
-                    this.parentNode.appendChild(feedback);
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.closest('.form-floating').classList.remove('focused');
                 }
-            } else {
-                this.classList.remove('is-invalid');
-                const feedback = this.parentNode.querySelector('.invalid-feedback:not([data-server])');
-                if (feedback) {
-                    feedback.remove();
-                }
-            }
+            });
         });
 
-        // Auto-focus enhancement
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailInput = document.getElementById('email');
-            if (emailInput && !emailInput.value) {
-                emailInput.focus();
-            }
-        });
-
-        // SweetAlert for successful actions
+        // SweetAlert configurations
         @if(session('success'))
             Swal.fire({
                 icon: 'success',
@@ -412,11 +416,13 @@
                 toast: true,
                 position: 'top-end',
                 background: '#f0f9ff',
-                color: '#1e40af'
+                color: '#1e40af',
+                customClass: {
+                    popup: 'animated fadeInRight'
+                }
             });
         @endif
 
-        // SweetAlert for errors
         @if($errors->any())
             Swal.fire({
                 icon: 'error',
@@ -424,7 +430,10 @@
                 text: 'Terdapat kesalahan pada form yang Anda isi',
                 confirmButtonColor: '#ef4444',
                 background: '#fef2f2',
-                color: '#dc2626'
+                color: '#dc2626',
+                customClass: {
+                    popup: 'animated fadeIn'
+                }
             });
         @endif
 
@@ -433,23 +442,9 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             if (isSubmitting) {
                 e.preventDefault();
-                return false;
+                return;
             }
             isSubmitting = true;
-        });
-
-        // Add smooth animations on input focus
-        const inputs = document.querySelectorAll('.form-control');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.classList.add('focused');
-            });
-            
-            input.addEventListener('blur', function() {
-                if (!this.value) {
-                    this.parentElement.classList.remove('focused');
-                }
-            });
         });
     </script>
 </body>
