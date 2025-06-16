@@ -550,17 +550,28 @@
         </div>
 
         <!-- Sidebar Footer -->
-        <div class="sidebar-footer">
-            <div class="user-profile">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
+        <div class="sidebar-footer d-flex align-items-center justify-content-between px-3 py-2">
+            <div class="user-profile d-flex align-items-center">
+                <div class="user-avatar me-2">
+                    <i class="fas fa-user fa-lg"></i>
                 </div>
                 <div class="user-info">
-                    <div class="user-name">{{ Session::get('user_name') ?? 'User' }}</div>
-                    <div class="user-role">Pengirim</div>
+                    <div class="user-name fw-semibold">{{ Session::get('user_name') ?? 'User' }}</div>
+                    <div class="user-role" style="font-size: 0.85rem;">Pengirim</div>
                 </div>
+                <div>
+                <form action="{{ route('logout') }}" method="get">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </form>
             </div>
+                
+            </div>
+            
         </div>
+
     </nav>
 
     <!-- Main Content -->

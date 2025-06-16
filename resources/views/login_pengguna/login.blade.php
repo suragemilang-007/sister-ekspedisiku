@@ -300,12 +300,9 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
-                            <label class="form-check-label user-select-none" for="rememberMe">
-                                Ingat saya
-                            </label>
-                        </div>
+                        <a href="#" class="forgot-password" data-bs-toggle="tooltip" title="Hubungi administrator untuk reset password">
+                            Register?
+                        </a>
                         <a href="#" class="forgot-password" data-bs-toggle="tooltip" title="Hubungi administrator untuk reset password">
                             Lupa password?
                         </a>
