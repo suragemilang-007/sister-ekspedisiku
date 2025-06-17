@@ -194,18 +194,21 @@
                                     </td>
                                     <td>{{ $shipment->created_at->format('d M Y') }}</td>
                                     <td>
-                                        <a href="/dashboard/pengirim/lacak/{{ $shipment->nomor_resi }}" 
-                                           class="btn btn-sm btn-outline-primary me-2"
-                                           data-bs-toggle="tooltip"
-                                           title="Lacak Paket">
-                                            <i class="fas fa-search"></i>
-                                        </a>
-                                        <a href="/dashboard/pengirim/detail/{{ $shipment->id }}" 
-                                           class="btn btn-sm btn-outline-secondary"
-                                           data-bs-toggle="tooltip"
-                                           title="Detail Pengiriman">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <a href="/dashboard/pengirim/lacak/{{ $shipment->nomor_resi }}" 
+                                               class="btn btn-sm btn-outline-secondary"
+                                               data-bs-toggle="tooltip"
+                                               title="Lacak Paket">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                                                               
+                                            <button class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="showDetailModal({{ $shipment->id_pengiriman }})"
+                                                    data-bs-toggle="tooltip" 
+                                                    title="Detail Pengiriman">
+                                                <i class="fas fa-info-circle"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -255,9 +258,34 @@
         </div>
     </div>
 </div>
-
+@include('dashboard_pengirim.modal_detail')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @push('scripts')
+
 <script>
+function showDetailModal(id) {
+    $.get("/dashboard/pengirim/detail/" + id, function(response) {
+        if (response.status === "success") {
+            const data = response.data.pengiriman;
+            const datalayanan = response.data.layanan;
+            $("#resi").text(data.nomor_resi);
+            $("#nama_layanan").text(datalayanan.nama_layanan);
+            $("#deskripsi").text(datalayanan.deskripsi);
+            $("#status").text(data.status);
+            $("#catatan").text(data.catatan_opsional || '-');
+
+            $("#alamat").text(data.alamat_tujuan?.alamat_lengkap ?? '-');
+            $("#nama_penerima").text(data.alamat_tujuan?.nama_penerima ?? '-');
+            $("#nohp_penerima").text(data.alamat_tujuan?.no_hp ?? '-');
+
+            $("#layanan").text(data.layanan?.nama_layanan ?? '-');
+            $("#kurir").text(data.kurir?.nama ?? 'Belum ditugaskan');
+
+            $("#modalDetailPengiriman").modal('show');
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Auto-submit form when filters change
     const filterForm = document.getElementById('filterForm');
@@ -284,6 +312,8 @@ document.addEventListener('DOMContentLoaded', function() {
             filterForm.submit();
         }, 500); // 500ms delay
     });
+    
+
 });
 </script>
 @endpush

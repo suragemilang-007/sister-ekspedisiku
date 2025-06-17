@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('nama_penerima');
             $table->string('no_hp');
             $table->text('alamat_lengkap');
-            $table->string('kecematan');
+            $table->string('kecamatan');
             $table->string('kode_pos', 10);
             $table->string('telepon')->nullable();
             $table->timestamp('created_at');

@@ -64,11 +64,11 @@ class penggunaController extends Controller
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('nomor_resi', 'LIKE', "%{$search}%")
-                    ->orWhere('nama_penerima', 'LIKE', "%{$search}%")
                     ->orWhereHas('alamatTujuan', function ($subQ) use ($search) {
                         $subQ->where('alamat_lengkap', 'LIKE', "%{$search}%")
                             ->orWhere('kecamatan', 'LIKE', "%{$search}%")
-                            ->orWhere('kode_pos', 'LIKE', "%{$search}%");
+                            ->orWhere('kode_pos', 'LIKE', "%{$search}%")
+                            ->orWhere('nama_penerima', 'LIKE', "%{$search}%");
                     });
             });
         }
@@ -125,6 +125,28 @@ class penggunaController extends Controller
             'recent_shipments',
             'statusOptions'
         ));
+    }
+
+    public function showDetail($id)
+    {
+        try {
+            $pengiriman = Pengiriman::with([
+                'alamatTujuan',
+                'layananPaket',
+                'kurir',
+            ])->findOrFail($id);
+
+            $layanan = LayananPaket::find($pengiriman->id_layanan);
+            return response()->json([
+                'status' => 'success',
+                'data' => compact('pengiriman', 'layanan')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Record not found'
+            ], 404);
+        }
     }
 
     public function tracking()
