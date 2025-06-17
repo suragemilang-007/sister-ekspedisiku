@@ -26,7 +26,7 @@ class penggunaController extends Controller
             //['MENUNGGU_PEMBAYARAN', 'DIBAYAR', 'DIPROSES', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN'];
             'total_pengiriman' => Pengiriman::where('id_pengirim', $userId)->count(),
             'pengiriman_aktif' => Pengiriman::where('id_pengirim', $userId)
-                ->whereIn('status', ['MENUNGGU_PEMBAYARAN', 'DIBAYAR', 'DIPROSES', 'DIKIRIM'])
+                ->whereIn('status', ['DIBAYAR', 'DIPROSES', 'DIKIRIM'])
                 ->count(),
             'pengiriman_selesai' => Pengiriman::where('id_pengirim', $userId)
                 ->where('status', 'DITERIMA')
@@ -40,22 +40,91 @@ class penggunaController extends Controller
         // Recent shipments
         $recent_shipments = Pengiriman::with(['alamatTujuan', 'layananPaket'])
             ->where('id_pengirim', $userId)
+            ->whereIn('status', ['DIPROSES', 'DIBAYAR', 'DIKIRIM'])
+            ->orderByRaw("FIELD(status, 'DIPROSES', 'DIBAYAR', 'DIKIRIM')")
             ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Pending notifications
-        $notifications = Notifikasi::where('id_pengguna', $userId)
-            ->orderBy('id_pengguna', 'desc')
-            ->limit(5)
             ->get();
         $pengiriman = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan'])
-
             ->where('id_pengirim', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('dashboard_pengirim.index', compact('stats', 'recent_shipments', 'notifications'));
+        return view('dashboard_pengirim.index', compact('stats', 'recent_shipments'));
+    }
+    public function history(Request $request)
+    {
+        $userId = Session::get('user_id');
+
+        // Base query
+        $query = Pengiriman::with(['alamatTujuan', 'layananPaket'])
+            ->where('id_pengirim', $userId);
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('nomor_resi', 'LIKE', "%{$search}%")
+                    ->orWhere('nama_penerima', 'LIKE', "%{$search}%")
+                    ->orWhereHas('alamatTujuan', function ($subQ) use ($search) {
+                        $subQ->where('alamat_lengkap', 'LIKE', "%{$search}%")
+                            ->orWhere('kecamatan', 'LIKE', "%{$search}%")
+                            ->orWhere('kode_pos', 'LIKE', "%{$search}%");
+                    });
+            });
+        }
+
+        // Status filter
+        if ($request->filled('status') && $request->get('status') !== 'all') {
+            $query->where('status', $request->get('status'));
+        }
+
+        // Date range filter
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->get('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->get('date_to'));
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
+
+        // Pagination with query parameters
+        $recent_shipments = $query->paginate(10)->withQueryString();
+
+        // Statistics (unchanged)
+        $stats = [
+            'total_pengiriman' => Pengiriman::where('id_pengirim', $userId)->count(),
+            'pengiriman_aktif' => Pengiriman::where('id_pengirim', $userId)
+                ->whereIn('status', ['MENUNGGU_PEMBAYARAN', 'DIBAYAR', 'DIPROSES', 'DIKIRIM'])
+                ->count(),
+            'pengiriman_selesai' => Pengiriman::where('id_pengirim', $userId)
+                ->where('status', 'DITERIMA')
+                ->count(),
+            'total_biaya' => Pengiriman::where('id_pengirim', $userId)->sum('total_biaya'),
+            'rating_avg' => Feedback::whereHas('pengiriman', function ($query) use ($userId) {
+                $query->where('id_pengirim', $userId);
+            })->avg('rating') ?: 0,
+        ];
+
+        // Status options for filter dropdown
+        $statusOptions = [
+            'all' => 'Semua Status',
+            'DIPROSES' => 'Diproses',
+            'DIBAYAR' => 'Dibayar',
+            'DIKIRIM' => 'Dikirim',
+            'DITERIMA' => 'Diterima',
+            'DIBATALKAN' => 'Dibatalkan'
+        ];
+
+        return view('dashboard_pengirim.history', compact(
+            'stats',
+            'recent_shipments',
+            'statusOptions'
+        ));
     }
 
     public function tracking()
@@ -84,16 +153,7 @@ class penggunaController extends Controller
         return view('dashboard.tracking-detail', compact('pengiriman', 'tracking_history'));
     }
 
-    public function history()
-    {
-        $userId = Auth::id();
-        $pengiriman = Pengiriman::with(['alamatTujuan', 'layanan', 'pembayaran'])
-            ->where('id_pengirim', $userId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
 
-        return view('dashboard.history', compact('pengiriman'));
-    }
 
     public function createShipment()
     {

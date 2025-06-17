@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::create('pengiriman', function (Blueprint $table) {
@@ -14,7 +13,7 @@ return new class extends Migration
             $table->foreignId('id_alamat_tujuan')->constrained('alamat_tujuan', 'id_alamat_tujuan');
             $table->decimal('total_biaya', 12, 2);
             $table->foreignId('id_layanan')->constrained('layanan_paket', 'id_layanan');
-            $table->enum('status', ['MENUNGGU_PEMBAYARAN', 'DIBAYAR', 'DIPROSES', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
+            $table->enum('status', ['DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
             $table->string('nomor_resi')->unique();
             $table->text('catatan_opsional')->nullable();
             $table->text('keterangan_batal')->nullable();
