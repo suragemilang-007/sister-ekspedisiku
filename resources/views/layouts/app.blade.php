@@ -522,7 +522,6 @@
                 </li>
             </ul>
 
-            <div class="nav-section-title">Pengiriman</div>
             
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -531,21 +530,8 @@
                         <span class="nav-text">Pengiriman Baru</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/dashboard/pengirim/pembayaran" class="nav-link {{ Request::is('dashboard/pengirim/pembayaran*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Pembayaran">
-                        <i class="fas fa-wallet"></i>
-                        <span class="nav-text">Pembayaran</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/dashboard/pengirim/notifikasi" class="nav-link {{ Request::is('dashboard/pengirim/notifikasi*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Notifikasi">
-                        <i class="fas fa-bell"></i>
-                        <span class="nav-text">Notifikasi</span>
-                        @if(isset($unread_notifications) && $unread_notifications > 0)
-                            <span class="notification-badge">{{ $unread_notifications }}</span>
-                        @endif
-                    </a>
-                </li>
+                
+                
             </ul>
         </div>
 

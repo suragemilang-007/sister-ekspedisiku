@@ -143,46 +143,5 @@
         </div>
     </div>
 
-    <!-- Recent Notifications -->
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>Notifikasi Terbaru</h5>
-            <a href="/dashboard/pengirim/notifikasi" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
-        </div>
-        <div class="card-body">
-            @if(isset($recent_notifications) && count($recent_notifications) > 0)
-                <div class="list-group list-group-flush">
-                    @foreach($recent_notifications as $notification)
-                        <div class="list-group-item d-flex align-items-center py-3 px-0">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-circle {{ $notification->read_at ? 'text-muted' : 'text-primary' }} me-2" style="font-size: 8px;"></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <p class="mb-1 fw-medium">{{ $notification->title }}</p>
-                                <p class="mb-1 text-muted">{{ $notification->message }}</p>
-                                <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
-                            </div>
-                            @if(!$notification->read_at)
-                                <div class="ms-3">
-                                    <form action="/dashboard/pengirim/notifikasi/{{ $notification->id }}/read" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-light" data-bs-toggle="tooltip" title="Tandai Sudah Dibaca">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="empty-state">
-                    <i class="fas fa-bell-slash mb-3"></i>
-                    <h5 class="fw-medium">Tidak Ada Notifikasi</h5>
-                    <p class="text-muted">Anda akan menerima notifikasi ketika ada update status pengiriman.</p>
-                </div>
-            @endif
-        </div>
-    </div>
 </div>
 @endsection
