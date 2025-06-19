@@ -34,4 +34,14 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
     // Hitung biaya pengiriman (AJAX)
     Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
 
+    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
+});
+
+
+
+Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
+    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
+    Route::post('/pengguna/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('pengaturan.update.info');
+    Route::post('/pengguna/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('pengaturan.update.password');
+    Route::get('/detail/{id}', [penggunaController::class, 'showDetail'])->name('pengiriman.detail');
 });
