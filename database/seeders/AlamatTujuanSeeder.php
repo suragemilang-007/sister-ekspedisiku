@@ -13,6 +13,7 @@ class AlamatTujuanSeeder extends Seeder
         DB::table('alamat_tujuan')->insert([
             [
                 'nama_penerima' => 'Budi Santoso',
+                'id_pengirim' => 8,
                 'no_hp' => '081234567891',
                 'alamat_lengkap' => 'Jl. Jenderal Sudirman No. 45, Purwokerto',
                 'kecematan' => 'Purwokerto Selatan',
@@ -22,6 +23,7 @@ class AlamatTujuanSeeder extends Seeder
             ],
             [
                 'nama_penerima' => 'Siti Aminah',
+                'id_pengirim' => 8,
                 'no_hp' => '082233445566',
                 'alamat_lengkap' => 'Perumahan Griya Indah Blok C3, Purbalingga',
                 'kecematan' => 'Kalimanah',
@@ -31,6 +33,7 @@ class AlamatTujuanSeeder extends Seeder
             ],
             [
                 'nama_penerima' => 'Agus Supriyadi',
+                'id_pengirim' => 8,
                 'no_hp' => '081345678901',
                 'alamat_lengkap' => 'Jl. HR Bunyamin, Kampus Unsoed, Purwokerto',
                 'kecematan' => 'Purwokerto Utara',
@@ -40,6 +43,7 @@ class AlamatTujuanSeeder extends Seeder
             ],
             [
                 'nama_penerima' => 'Lestari Widya',
+                'id_pengirim' => 8,
                 'no_hp' => '085677889900',
                 'alamat_lengkap' => 'Jl. Raya Bobotsari No. 123, Purbalingga',
                 'kecematan' => 'Bobotsari',
@@ -49,6 +53,7 @@ class AlamatTujuanSeeder extends Seeder
             ],
             [
                 'nama_penerima' => 'Andi Saputra',
+                'id_pengirim' => 8,
                 'no_hp' => '089912345678',
                 'alamat_lengkap' => 'Komplek Taman Hijau, Purwokerto Timur',
                 'kecematan' => 'Purwokerto Timur',

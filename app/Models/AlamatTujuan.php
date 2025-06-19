@@ -18,7 +18,7 @@ class AlamatTujuan extends Model
         'nama_penerima',
         'no_hp',
         'alamat_lengkap',
-        'kecematan',
+        'kecamatan',
         'kode_pos',
         'telepon',
         'created_at'

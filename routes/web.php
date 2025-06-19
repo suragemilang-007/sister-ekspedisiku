@@ -17,9 +17,9 @@ Route::get('/logout', [loginController::class, 'logout'])->name('logout');
 
 
 // Route untuk pengirim
-Route::prefix('dashboard')->middleware(['role:pelanggan', 'auth.session'])->group(function () {
+Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session'])->group(function () {
     // Dashboard utama untuk pengirim
-    Route::get('/pengirim', [penggunaController::class, 'index'])->name('dashboard.pengirim');
+    Route::get('/', [penggunaController::class, 'index'])->name('dashboard.pengirim');
     // Tracking
     Route::get('/tracking', [penggunaController::class, 'tracking'])->name('dashboard.tracking');
     Route::get('/tracking/{id}', [penggunaController::class, 'trackingDetail'])->name('dashboard.tracking.detail');
@@ -33,11 +33,5 @@ Route::prefix('dashboard')->middleware(['role:pelanggan', 'auth.session'])->grou
     Route::post('/feedback/{id}', [penggunaController::class, 'submitFeedback'])->name('dashboard.submit.feedback');
     // Hitung biaya pengiriman (AJAX)
     Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
-    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
-});
 
-Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
-    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
-    Route::post('/pengguna/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('pengaturan.update.info');
-    Route::post('/pengguna/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('pengaturan.update.password');
 });

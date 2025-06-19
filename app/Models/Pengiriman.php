@@ -68,4 +68,15 @@ class Pengiriman extends Model
     {
         return $this->hasOne(Pembayaran::class, 'id_pengiriman');
     }
+    public function kurir()
+    {
+        return $this->hasOneThrough(
+            Kurir::class,
+            PenugasanKurir::class,
+            'id_pengiriman',  // Foreign key di penugasan_kurir
+            'id_kurir',       // Foreign key di kurir
+            'id_pengiriman',  // Local key di pengiriman
+            'id_kurir'        // Local key di penugasan_kurir
+        );
+    }
 }

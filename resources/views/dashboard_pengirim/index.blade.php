@@ -93,6 +93,7 @@
                             <tr>
                                 <th>No. Resi</th>
                                 <th>Tujuan</th>
+                                <th>Penerima</th>
                                 <th>Status</th>
                                 <th>Tanggal Kirim</th>
                                 <th>Actions</th>
@@ -103,8 +104,12 @@
                                 <tr class="text-dark">
                                     <td class="fw-medium">{{ $shipment->nomor_resi }}</td>
                                     <td class="text-dark">{{ $shipment->alamatTujuan->alamat_lengkap ?? '-' }},
-{{ $shipment->alamatTujuan->kecamatan ?? '' }},
-{{ $shipment->alamatTujuan->kode_pos ?? '' }}</td>
+                                        {{ $shipment->alamatTujuan->kecamatan ?? '' }},
+                                        {{ $shipment->alamatTujuan->kode_pos ?? '' }}
+                                    </td>
+                                    <td class="text-dark">
+                                        {{ $shipment->alamatTujuan->nama_penerima ?? '-' }},
+                                    </td>
                                     <td>
                                         <span class="badge bg-{{ $shipment->status_color }} text-dark rounded-pill">
                                             {{ $shipment->status }}
@@ -123,6 +128,12 @@
                                            data-bs-toggle="tooltip"
                                            title="Detail Pengiriman">
                                             <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ $shipment->status === 'DIPROSES' ? url('/dashboard/pengirim/batal/'.$shipment->id) : '#' }}" 
+                                        class="btn btn-sm btn-outline-secondary {{ $shipment->status !== 'DIPROSES' ? 'disabled' : '' }}"
+                                        data-bs-toggle="tooltip"
+                                        title="Batal">
+                                            <i class="fas fa-cancel"></i>
                                         </a>
                                     </td>
                                 </tr>
