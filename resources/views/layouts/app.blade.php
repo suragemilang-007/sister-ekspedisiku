@@ -533,6 +533,14 @@
                 
                 
             </ul>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="/pengguna/edit" class="nav-link {{ Request::is('pengguna/edit*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Pengaturan Akun">
+                        <i class="fas fa-user-cog"></i>
+                        <span class="nav-text">Pengaturan Akun</span>
+                    </a>
+                </li>
+            </ul>
         </div>
 
         <!-- Sidebar Footer -->
