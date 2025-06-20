@@ -196,14 +196,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="d-flex gap-2">
-                                                <button type="button" class="btn btn-outline-primary flex-grow-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Detail">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-success flex-grow-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Feedback">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                            </div>
+                                           
                                         </div>
                                     </div>
                                 </div>
