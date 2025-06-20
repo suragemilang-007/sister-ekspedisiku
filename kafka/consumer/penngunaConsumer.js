@@ -1,18 +1,10 @@
 import { Kafka } from "kafkajs";
 import mysql from "mysql2/promise";
 import bcrypt from "bcrypt";
+import { createKafka } from "../config/kafka.js";
+import db from "../config/db.js";
 
-const db = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "sister-ekspedisiku",
-});
-
-const kafka = new Kafka({
-    clientId: "pengguna-consumer",
-    brokers: ["localhost:9092"],
-});
+const kafka = createKafka("producer-kirim-paket");
 
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
 await consumer.connect();

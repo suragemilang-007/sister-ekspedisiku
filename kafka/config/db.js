@@ -12,7 +12,7 @@ try {
         host: "localhost",
         user: "root",
         password: "",
-        database: "kampus",
+        database: "sister-ekspedisiku",
     });
     console.log(" Database connected");
 } catch (error) {

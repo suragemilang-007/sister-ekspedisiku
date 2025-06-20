@@ -1,15 +1,11 @@
 import express from "express";
 import { Kafka } from "kafkajs";
 import cors from "cors";
-
+import { createKafka } from "../config/kafka.js";
 const app = express();
 app.use(express.json());
 app.use(cors());
-
-const kafka = new Kafka({
-    clientId: "pengguna-producer",
-    brokers: ["localhost:9092"],
-});
+const kafka = createKafka("producer-kirim-paket");
 
 const producer = kafka.producer();
 await producer.connect();
