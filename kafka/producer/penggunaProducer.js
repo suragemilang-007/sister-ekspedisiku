@@ -25,5 +25,12 @@ app.post("/pengguna/update-password", async (req, res) => {
     });
     res.json({ status: "ok" });
 });
+app.post("/feedback", async (req, res) => {
+    await producer.send({
+        topic: "feedback-topic",
+        messages: [{ value: JSON.stringify(req.body) }],
+    });
+    res.json({ status: "ok" });
+});
 
 app.listen(3001, () => console.log("Kafka producer running on port 3001"));
