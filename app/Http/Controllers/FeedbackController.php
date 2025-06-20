@@ -45,9 +45,13 @@ class FeedbackController extends Controller
      */
     public function create($id_pengiriman)
     {
-
-
-        return view('pengguna.createFeedback', compact('id_pengiriman'));
+        $userId = Session::get('user_id');
+        // Cek apakah pengiriman ini milik user dan sudah selesai
+        $pengiriman = Pengiriman::where('id_pengirim', $userId)
+            ->where('id_pengiriman', $id_pengiriman)
+            ->where('status', 'DITERIMA')
+            ->first();
+        return view('pengguna.createFeedback', compact('id_pengiriman', 'pengiriman'));
     }
 
     /**

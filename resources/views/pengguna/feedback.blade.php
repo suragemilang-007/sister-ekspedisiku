@@ -2,193 +2,255 @@
 
 @section('title', 'Feedback Pengiriman')
 
+@section('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    .nav-tabs .nav-link {
+        transition: all 0.3s ease;
+        border: none;
+        color: var(--bs-gray-600);
+        padding: 1rem 1.5rem;
+    }
+    .nav-tabs .nav-link:hover {
+        color: var(--bs-primary);
+        background: rgba(13, 110, 253, 0.1);
+        border: none;
+    }
+    .nav-tabs .nav-link.active {
+        color: var(--bs-primary);
+        background: rgba(13, 110, 253, 0.1);
+        border: none;
+        position: relative;
+    }
+    .nav-tabs .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--bs-primary);
+        animation: slideIn 0.3s ease-out forwards;
+    }
+    @keyframes slideIn {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .rating-stars .fa-star {
+    color: #ffc107; /* bintang aktif */
+}
+
+.rating-stars .fa-star.empty {
+    color: #e4e4e4; /* bintang kosong */
+}
+    
+</style>
+@endsection
+
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Feedback Pengiriman</h1>
-                <p class="text-gray-600 mt-1">Berikan penilaian untuk pengiriman yang telah selesai</p>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ $pengirimanTanpaFeedback->count() }}</div>
-                    <div class="text-sm text-gray-500">Belum Dinilai</div>
+<div class="container py-4">
+    <div class="card shadow-sm border-0 rounded-3 animate-fade-in">
+        <div class="card-header bg-white border-bottom-0 py-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="mb-0">Feedback Pengiriman</h4>
+                    <p class="text-muted mb-0 mt-1">Berikan penilaian untuk pengiriman yang telah selesai</p>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-green-600">{{ $pengirimanDenganFeedback->count() }}</div>
-                    <div class="text-sm text-gray-500">Sudah Dinilai</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Alert Messages -->
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
-        @endif
-
-        <!-- Tab Navigation -->
-        <div class="border-b border-gray-200 mb-6">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                <button id="tab-pending" class="tab-button active py-2 px-1 border-b-2 font-medium text-sm" data-tab="pending">
-                    Belum Dinilai
-                    @if($pengirimanTanpaFeedback->count() > 0)
-                        <span class="ml-2 bg-red-100 text-red-600 py-1 px-2 rounded-full text-xs">{{ $pengirimanTanpaFeedback->count() }}</span>
-                    @endif
-                </button>
-                <button id="tab-completed" class="tab-button py-2 px-1 border-b-2 font-medium text-sm" data-tab="completed">
-                    Sudah Dinilai
-                    @if($pengirimanDenganFeedback->count() > 0)
-                        <span class="ml-2 bg-green-100 text-green-600 py-1 px-2 rounded-full text-xs">{{ $pengirimanDenganFeedback->count() }}</span>
-                    @endif
-                </button>
-            </nav>
-        </div>
-
-        <!-- Tab Content: Pengiriman Belum Dinilai -->
-        <div id="content-pending" class="tab-content">
-            @if($pengirimanTanpaFeedback->count() > 0)
-                <div class="space-y-4">
-                    @foreach($pengirimanTanpaFeedback as $pengiriman)
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                            <div class="flex items-center justify-between">
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h3 class="font-semibold text-gray-800">Resi: {{ $pengiriman->nomor_resi }}</h3>
-                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                            {{ $pengiriman->status }}
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
-                                        <div>
-                                            <p><strong>Tujuan:</strong> {{ $pengiriman->alamatTujuan->alamat_lengkap ?? 'N/A' }}</p>
-                                            <p><strong>Layanan:</strong> {{ $pengiriman->layananPaket->nama_layanan ?? 'N/A' }}</p>
-                                        </div>
-                                        <div>
-                                            <p><strong>Kurir:</strong> {{ $pengiriman->kurir->nama ?? 'N/A' }}</p>
-                                            <p><strong>Tanggal Kirim:</strong> {{ $pengiriman->created_at->format('d/m/Y H:i') }}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    @if($pengiriman->catatan_opsional)
-                                        <p class="text-sm text-gray-500 mt-2">
-                                            <strong>Catatan:</strong> {{ $pengiriman->catatan_opsional }}
-                                        </p>
-                                    @endif
-                                </div>
-                                
-                                <div class="ml-4">
-                                    <form action="{{ route('feedback.create', $pengiriman->id_pengiriman) }}" method="get">
-                                        <button type="submit" 
-                                            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center">
-                                            <i class="fas fa-star mr-2"></i>Beri Penilaian
-                                        </button>
-                                    </form>
-                                </div>
+                <div class="col-md-6">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-primary bg-opacity-10">
+                                <h3 class="text-primary mb-0">{{ $pengirimanTanpaFeedback->count() }}</h3>
+                                <small class="text-muted">Belum Dinilai</small>
                             </div>
                         </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="text-center py-12">
-                    <div class="text-gray-400 text-6xl mb-4">
-                        <i class="fas fa-clipboard-check"></i>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-success bg-opacity-10">
+                                <h3 class="text-success mb-0">{{ $pengirimanDenganFeedback->count() }}</h3>
+                                <small class="text-muted">Sudah Dinilai</small>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Tidak Ada Pengiriman yang Perlu Dinilai</h3>
-                    <p class="text-gray-500">Semua pengiriman yang selesai sudah diberi penilaian.</p>
                 </div>
-            @endif
+            </div>
         </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="feedbackTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="unrated-tab" data-bs-toggle="tab" data-bs-target="#unrated" type="button" role="tab" aria-controls="unrated" aria-selected="true">
+                        <i class="fas fa-clock me-2"></i>Belum Dinilai
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rated-tab" data-bs-toggle="tab" data-bs-target="#rated" type="button" role="tab" aria-controls="rated" aria-selected="false">
+                        <i class="fas fa-check-circle me-2"></i>Sudah Dinilai
+                    </button>
+                </li>
+            </ul>
 
-        <!-- Tab Content: Pengiriman Sudah Dinilai -->
-        <div id="content-completed" class="tab-content hidden">
-            @if($pengirimanDenganFeedback->count() > 0)
-                <div class="space-y-4">
-                    @foreach($pengirimanDenganFeedback as $pengiriman)
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                            <div class="flex items-center justify-between">
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h3 class="font-semibold text-gray-800">Resi: {{ $pengiriman->nomor_resi }}</h3>
-                                        <div class="flex items-center space-x-2">
-                                            <!-- Rating Display -->
-                                            <div class="flex items-center">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    @if($i <= $pengiriman->feedback->rating)
-                                                        <i class="fas fa-star text-yellow-400"></i>
-                                                    @else
-                                                        <i class="far fa-star text-gray-300"></i>
-                                                    @endif
-                                                @endfor
-                                                <span class="ml-2 text-sm font-medium text-gray-600">
-                                                    ({{ $pengiriman->feedback->rating }}/5)
+            <div class="tab-content pt-4" id="feedbackTabsContent">
+                <div class="tab-pane fade show active animate-fade-in" id="unrated" role="tabpanel" aria-labelledby="unrated-tab">
+                    @if($pengirimanTanpaFeedback->isEmpty())
+                        <div class="text-center py-5">
+                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Tidak ada pengiriman yang perlu dinilai</h5>
+                        </div>
+                    @else
+                        <div class="row g-4">
+                            @foreach($pengirimanTanpaFeedback as $pengiriman)
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h6 class="card-title mb-0">
+                                                    <span class="badge bg-primary me-2">{{  $pengiriman->nomor_resi }}</span>
+                                                </h6>
+                                                <span class="badge bg-info">
+                                                    <i class="fas fa-truck me-1"></i>{{ $pengiriman->status }}
                                                 </span>
                                             </div>
-                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                                {{ $pengiriman->status }}
-                                            </span>
+                                            <div class="mb-3">
+                                                <small class="text-muted d-block mb-1">
+                                                    <i class="fas fa-map-marker-alt me-2"></i>{{ $pengiriman->alamatTujuan->alamat_lengkap ?? 'N/A' }}
+                                                </small>
+                                                <small class="text-muted d-block mb-1">
+                                                    <i class="fas fa-box me-2"></i>{{ $pengiriman->layananPaket->nama_layanan ?? 'N/A' }}
+                                                </small>
+                                                <small class="text-muted d-block mb-1">
+                                                    <i class="fas fa-shipping-fast me-2"></i>{{ $pengiriman->kurir->nama ?? 'N/A' }}
+                                                </small>
+                                                <small class="text-muted d-block">
+                                                    <i class="fas fa-calendar-alt me-2"></i>{{ $pengiriman->created_at->format('d/m/Y H:i')}}
+                                                </small>
+                                            </div>
+                                            <div class="d-grid gap-2">
+                                                <a href="{{ route('pengguna.createFeedback', $pengiriman->id_pengiriman) }}" class="btn btn-primary">
+                                                    <i class="fas fa-star me-2"></i>Beri Penilaian
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
-                                        <div>
-                                            <p><strong>Tujuan:</strong> {{ $pengiriman->alamatTujuan->alamat_lengkap ?? 'N/A' }}</p>
-                                            <p><strong>Layanan:</strong> {{ $pengiriman->layananPaket->nama_layanan ?? 'N/A' }}</p>
-                                        </div>
-                                        <div>
-                                            <p><strong>Kurir:</strong> {{ $pengiriman->kurir->nama ?? 'N/A' }}</p>
-                                            <p><strong>Tanggal Kirim:</strong> {{ $pengiriman->created_at->format('d/m/Y H:i') }}</p>
-                                        </div>
-                                    </div>
-
-                                    @if($pengiriman->feedback->komentar)
-                                        <div class="bg-gray-50 rounded-lg p-3 mt-3">
-                                            <p class="text-sm text-gray-700">
-                                                <strong>Komentar Anda:</strong> {{ $pengiriman->feedback->komentar }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 mt-1">
-                                                Diberikan pada: {{ $pengiriman->feedback->created_at->format('d/m/Y H:i') }}
-                                            </p>
-                                        </div>
-                                    @endif
                                 </div>
-                                
-                                <div class="ml-4 flex flex-col space-y-2">
-                                    <a href="{{ route('feedback.show', $pengiriman->id_pengiriman) }}" 
-                                       class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-center">
-                                        <i class="fas fa-eye mr-2"></i>Detail
-                                    </a>
-                                    <a href="{{ route('feedback.edit', $pengiriman->id_pengiriman) }}" 
-                                       class="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-center">
-                                        <i class="fas fa-edit mr-2"></i>Edit
-                                    </a>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
+                    @endif
                 </div>
-            @else
-                <div class="text-center py-12">
-                    <div class="text-gray-400 text-6xl mb-4">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Penilaian</h3>
-                    <p class="text-gray-500">Anda belum memberikan penilaian untuk pengiriman manapun.</p>
+                <div class="tab-pane fade animate-fade-in" id="rated" role="tabpanel" aria-labelledby="rated-tab">
+                    @if($pengirimanDenganFeedback->isEmpty())
+                        <div class="text-center py-5">
+                            <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Belum ada pengiriman yang dinilai</h5>
+                        </div>
+                    @else
+                        <div class="row g-4">
+                            @foreach($pengirimanDenganFeedback as $pengiriman)
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h6 class="card-title mb-0">
+                                                    <span class="badge bg-primary me-2">{{ $pengiriman->nomor_resi }}</span>
+                                                </h6>
+                                                <div class="rating-stars">
+                                                    @php
+                                                         $rating = optional($pengiriman->feedback)->rating ?? 0;
+                                                    @endphp
+                                                    @for($i = 1; $i <= $rating; $i++)
+                                                        <i class="fas fa-star {{ $i <= $rating ? '' : 'empty' }}"></i>
+                                                        
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <small class="text-muted d-block mb-1">
+                                                    <i class="fas fa-map-marker-alt me-2"></i>{{ $pengiriman->alamatTujuan->alamat_lengkap ?? 'N/A' }}
+                                                </small>
+                                                <small class="text-muted d-block mb-1">
+                                                    <i class="fas fa-box me-2"></i>{{ $pengiriman->layananPaket->nama_layanan ?? 'N/A' }}
+                                                </small>
+                                                <small class="text-muted d-block mb-1">
+                                                    <i class="fas fa-shipping-fast me-2"></i>{{ $pengiriman->kurir->nama ?? 'N/A' }}
+                                                </small>
+                                                <small class="text-muted d-block">
+                                                    <i class="fas fa-calendar-alt me-2"></i>{{ $pengiriman->created_at->format('d/m/Y H:i')}}
+                                                </small>
+                                                @if($pengiriman->feedback->komentar)
+                                                    <div class="mt-3">
+                                                        <small class="text-muted d-block">
+                                                            <i class="fas fa-comment me-2"></i>{{ $pengiriman->feedback->komentar }}
+                                                        </small>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-outline-primary flex-grow-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat Detail">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-success flex-grow-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Feedback">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 </div>
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Add animation when switching tabs
+        var tabEl = document.querySelector('button[data-bs-toggle="tab"]');
+        tabEl.addEventListener('shown.bs.tab', function (event) {
+            var targetPane = document.querySelector(event.target.getAttribute('data-bs-target'));
+            targetPane.classList.add('animate-fade-in');
+        });
+    });
+</script>
+@endsection
+
+<!-- Alert Messages -->
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show position-fixed bottom-0 end-0 m-3" role="alert" style="z-index: 1050;">
+        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show position-fixed bottom-0 end-0 m-3" role="alert" style="z-index: 1050;">
+        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+       
 
 @push('styles')
 <style>

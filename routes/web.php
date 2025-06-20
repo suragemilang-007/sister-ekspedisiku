@@ -54,7 +54,7 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::get('dashboard/pengirim/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
 
     // Form untuk memberikan feedback
-    Route::get('/feedback/create/{id_pengiriman}', [FeedbackController::class, 'create'])->name('feedback.create');
+    Route::get('/feedback/create/{id_pengiriman}', [FeedbackController::class, 'create'])->name('pengguna.createFeedback');
 
     // Simpan feedback baru
     Route::post('/feedback/store', [FeedbackController::class, 'store']);
