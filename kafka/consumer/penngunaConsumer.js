@@ -75,6 +75,55 @@ await consumer.run({
                         data.id_pengiriman
                     );
                     break;
+                case "alamat-tujuan-topic":
+                    const now = new Date();
+                    await db.execute(
+                        `
+        INSERT INTO alamat_tujuan (
+            id_pengirim, nama_penerima, no_hp, alamat_lengkap, kecamatan, kode_pos, keterangan_alamat, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [
+                            data.id_pengirim,
+                            data.nama_penerima,
+                            data.no_hp,
+                            data.alamat_lengkap,
+                            data.kecamatan,
+                            data.kode_pos,
+                            data.keterangan_alamat || null,
+                            now,
+                        ]
+                    );
+                    console.log(
+                        "📦 Alamat tujuan ditambahkan:",
+                        data.nama_penerima
+                    );
+                    break;
+
+                case "alamat-tujuan-edit":
+                    await db.execute(
+                        `
+        UPDATE alamat_tujuan SET nama_penerima=?, no_hp=?, alamat_lengkap=?, kecamatan=?, kode_pos=?, keterangan_alamat=?
+        WHERE id_alamat_tujuan=?`,
+                        [
+                            data.nama_penerima,
+                            data.no_hp,
+                            data.alamat_lengkap,
+                            data.kecamatan,
+                            data.kode_pos,
+                            data.keterangan_alamat,
+                            data.id_alamat_tujuan,
+                        ]
+                    );
+                    console.log("✏️ Alamat diperbarui:", data.id_alamat_tujuan);
+                    break;
+
+                case "alamat-tujuan-delete":
+                    await db.execute(
+                        `DELETE FROM alamat_tujuan WHERE id_alamat_tujuan=?`,
+                        [data.id_alamat_tujuan]
+                    );
+                    console.log("🗑️ Alamat dihapus:", data.id_alamat_tujuan);
+                    break;
 
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

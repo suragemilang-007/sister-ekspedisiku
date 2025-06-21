@@ -18,7 +18,6 @@ class AlamatTujuanSeeder extends Seeder
                 'alamat_lengkap' => 'Jl. Jenderal Sudirman No. 45, Purwokerto',
                 'kecamatan' => 'Purwokerto Selatan',
                 'kode_pos' => '53145',
-                'telepon' => '0281-556677',
                 'created_at' => Carbon::now(),
             ],
             [
@@ -28,7 +27,6 @@ class AlamatTujuanSeeder extends Seeder
                 'alamat_lengkap' => 'Perumahan Griya Indah Blok C3, Purbalingga',
                 'kecamatan' => 'Kalimanah',
                 'kode_pos' => '53371',
-                'telepon' => null,
                 'created_at' => Carbon::now(),
             ],
             [
@@ -38,7 +36,6 @@ class AlamatTujuanSeeder extends Seeder
                 'alamat_lengkap' => 'Jl. HR Bunyamin, Kampus Unsoed, Purwokerto',
                 'kecamatan' => 'Purwokerto Utara',
                 'kode_pos' => '53122',
-                'telepon' => '0281-112233',
                 'created_at' => Carbon::now(),
             ],
             [
@@ -48,7 +45,6 @@ class AlamatTujuanSeeder extends Seeder
                 'alamat_lengkap' => 'Jl. Raya Bobotsari No. 123, Purbalingga',
                 'kecamatan' => 'Bobotsari',
                 'kode_pos' => '53353',
-                'telepon' => null,
                 'created_at' => Carbon::now(),
             ],
             [
@@ -58,7 +54,6 @@ class AlamatTujuanSeeder extends Seeder
                 'alamat_lengkap' => 'Komplek Taman Hijau, Purwokerto Timur',
                 'kecamatan' => 'Purwokerto Timur',
                 'kode_pos' => '53141',
-                'telepon' => '0281-778899',
                 'created_at' => Carbon::now(),
             ],
         ]);
