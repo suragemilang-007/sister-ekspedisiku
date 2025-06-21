@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             LayananPaketSeeder::class,
             PengirimanSeeder::class,
             ZonaPengirimanSeeder::class,
+            PenugasanKurirSeeder::class,
         ]);
     }
 }
