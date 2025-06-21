@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->text('alamat_lengkap');
             $table->string('kecamatan');
             $table->string('kode_pos', 10);
-            $table->string('telepon')->nullable();
+            $table->string('keterangan_alamat')->nullable(); // Status aktif atau tidak
             $table->timestamp('created_at');
         });
     }

@@ -22,7 +22,7 @@ class AlamatTujuan extends Model
         'alamat_lengkap',
         'kecamatan',
         'kode_pos',
-        'telepon',
+        'keterangan_alamat',
         'created_at'
     ];
 

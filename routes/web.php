@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AlamatTujuanController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\pengaturanPenggunaController;
+use App\Models\AlamatTujuan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\penggunaController;
 
@@ -36,6 +38,7 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
     Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
     Route::get("/dashboard/pengirim/detail/{id}", [penggunaController::class, 'showDetail'])->name('dashboard.pengirim.detail');
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
+    Route::get('/alamat-tujuan', [AlamatTujuanController::class, 'index'])->name('alamattujuan.index');
 });
 
 
@@ -49,28 +52,26 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
 
 // Group routes untuk feedback (memerlukan autentikasi)
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
-
     // Halaman utama feedback
     Route::get('dashboard/pengirim/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
-
     // Form untuk memberikan feedback
     Route::get('/feedback/create/{id_pengiriman}', [FeedbackController::class, 'create'])->name('pengguna.createFeedback');
-
     // Simpan feedback baru
     Route::post('/feedback/store', [FeedbackController::class, 'store']);
-
     // Tampilkan detail feedback
     Route::get('/feedback/{id_pengiriman}', [FeedbackController::class, 'show'])->name('feedback.show');
-
     // Form edit feedback (opsional)
     Route::get('/feedback/{id_pengiriman}/edit', [FeedbackController::class, 'edit'])->name('feedback.edit');
-
     // Update feedback (opsional)
     Route::put('/feedback/{id_pengiriman}', [FeedbackController::class, 'update'])->name('feedback.update');
-
     // Hapus feedback (opsional)
     Route::delete('/feedback/{id_pengiriman}', [FeedbackController::class, 'destroy'])->name('feedback.destroy');
-
     // API statistik feedback (opsional)
     Route::get('/feedback/api/statistics', [FeedbackController::class, 'statistics'])->name('feedback.statistics');
+});
+
+Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
+    Route::resource('alamat-tujuan', AlamatTujuanController::class);
+    Route::get('api/alamat-tujuan', [AlamatTujuanController::class, 'getAlamatTujuan']);
+    Route::get('api/alamat-tujuan/{id}', [AlamatTujuanController::class, 'getAlamatTujuanDetail']);
 });
