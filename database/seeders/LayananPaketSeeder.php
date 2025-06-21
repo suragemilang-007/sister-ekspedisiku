@@ -11,39 +11,39 @@ class LayananPaketSeeder extends Seeder
     {
         DB::table('layanan_paket')->insert([
             [
-                'nama_layanan' => 'Reguler',
-                'deskripsi' => 'Pengiriman standar 2-3 hari kerja.',
-                'min_berat' => 0.00,
-                'max_berat' => 10.00,
-                'harga_dasar' => 15000.00,
-            ],
-            [
-                'nama_layanan' => 'Ekspres',
-                'deskripsi' => 'Pengiriman cepat 1 hari sampai.',
-                'min_berat' => 0.00,
-                'max_berat' => 5.00,
-                'harga_dasar' => 25000.00,
-            ],
-            [
-                'nama_layanan' => 'Same Day',
-                'deskripsi' => 'Pengiriman tiba di hari yang sama.',
+                'nama_layanan' => 'Dokumen',
+                'deskripsi' => 'Layanan khusus untuk surat dan dokumen penting.',
                 'min_berat' => 0.00,
                 'max_berat' => 2.00,
-                'harga_dasar' => 40000.00,
-            ],
-            [
-                'nama_layanan' => 'Hemat',
-                'deskripsi' => 'Pengiriman dengan biaya murah, estimasi 4-6 hari.',
-                'min_berat' => 0.00,
-                'max_berat' => 20.00,
                 'harga_dasar' => 10000.00,
             ],
             [
-                'nama_layanan' => 'Kargo',
-                'deskripsi' => 'Layanan untuk pengiriman barang berat dan besar.',
-                'min_berat' => 10.01,
+                'nama_layanan' => 'Makanan / Minuman',
+                'deskripsi' => 'Cocok untuk pengiriman makanan, snack, atau minuman dalam kota (Same Day).',
+                'min_berat' => 0.00,
+                'max_berat' => 5.00,
+                'harga_dasar' => 15000.00,
+            ],
+            [
+                'nama_layanan' => 'Elektronik Ringan',
+                'deskripsi' => 'Pengiriman barang elektronik kecil seperti gadget, aksesoris.',
+                'min_berat' => 0.00,
+                'max_berat' => 10.00,
+                'harga_dasar' => 25000.00,
+            ],
+            [
+                'nama_layanan' => 'Pakaian / Tekstil',
+                'deskripsi' => 'Layanan untuk kirim baju, kain, perlengkapan fashion.',
+                'min_berat' => 0.00,
+                'max_berat' => 15.00,
+                'harga_dasar' => 20000.00,
+            ],
+            [
+                'nama_layanan' => 'Barang Berat / Kargo',
+                'deskripsi' => 'Untuk pengiriman barang besar seperti mesin, furnitur, dll.',
+                'min_berat' => 15.01,
                 'max_berat' => 100.00,
-                'harga_dasar' => 60000.00,
+                'harga_dasar' => 50000.00,
             ],
         ]);
     }

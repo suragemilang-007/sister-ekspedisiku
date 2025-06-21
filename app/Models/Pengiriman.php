@@ -25,11 +25,15 @@ class Pengiriman extends Model
         'nomor_resi',
         'catatan_opsional',
         'keterangan_batal',
+        'foto_barang',
+        'foto_bukti_sampai',
+        'tanggal_sampai',
         'created_at'
     ];
 
     protected $casts = [
         'total_biaya' => 'float',
+        'tanggal_sampai' => 'datetime',
         'created_at' => 'datetime',
         'status' => 'string'
     ];

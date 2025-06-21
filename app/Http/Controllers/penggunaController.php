@@ -23,10 +23,10 @@ class penggunaController extends Controller
 
         // Dashboard statistics
         $stats = [
-            //['MENUNGGU_PEMBAYARAN', 'DIBAYAR', 'DIPROSES', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN'];
+            //['MENUNGGU KONFIRMASI','MENUNGGU_PEMBAYARAN', 'DIBAYAR', 'DIPROSES', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN'];
             'total_pengiriman' => Pengiriman::where('id_pengirim', $userId)->count(),
             'pengiriman_aktif' => Pengiriman::where('id_pengirim', $userId)
-                ->whereIn('status', ['DIBAYAR', 'DIPROSES', 'DIKIRIM'])
+                ->whereIn('status', ['MENUNGGU KONFIRMASI', 'DIBAYAR', 'DIPROSES', 'DIKIRIM'])
                 ->count(),
             'pengiriman_selesai' => Pengiriman::where('id_pengirim', $userId)
                 ->where('status', 'DITERIMA')
@@ -40,8 +40,8 @@ class penggunaController extends Controller
         // Recent shipments
         $recent_shipments = Pengiriman::with(['alamatTujuan', 'layananPaket'])
             ->where('id_pengirim', $userId)
-            ->whereIn('status', ['DIPROSES', 'DIBAYAR', 'DIKIRIM'])
-            ->orderByRaw("FIELD(status, 'DIPROSES', 'DIBAYAR', 'DIKIRIM')")
+            ->whereIn('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM'])
+            ->orderByRaw("FIELD(status, 'MENUNGGU KONFIRMASI','DIPROSES', 'DIBAYAR', 'DIKIRIM')")
             ->orderBy('created_at', 'desc')
             ->get();
         $pengiriman = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan'])

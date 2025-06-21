@@ -13,10 +13,13 @@ return new class extends Migration {
             $table->foreignId('id_alamat_tujuan')->constrained('alamat_tujuan', 'id_alamat_tujuan');
             $table->decimal('total_biaya', 12, 2);
             $table->foreignId('id_layanan')->constrained('layanan_paket', 'id_layanan');
-            $table->enum('status', ['DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
+            $table->enum('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
             $table->string('nomor_resi')->unique();
             $table->text('catatan_opsional')->nullable();
             $table->text('keterangan_batal')->nullable();
+            $table->string('foto_barang')->nullable();
+            $table->string('foto_bukti_sampai')->nullable();
+            $table->timestamp('tanggal_sampai')->nullable();
             $table->timestamp('created_at');
         });
     }
