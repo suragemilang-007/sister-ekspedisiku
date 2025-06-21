@@ -32,5 +32,28 @@ app.post("/feedback", async (req, res) => {
     });
     res.json({ status: "ok" });
 });
+app.post("/alamat-tujuan", async (req, res) => {
+    await producer.send({
+        topic: "alamat-tujuan-topic",
+        messages: [{ value: JSON.stringify(req.body) }],
+    });
+    res.json({ status: "ok" });
+});
+
+app.post("/alamat-tujuan-edit", async (req, res) => {
+    await producer.send({
+        topic: "alamat-tujuan-edit",
+        messages: [{ value: JSON.stringify(req.body) }],
+    });
+    res.json({ status: "ok" });
+});
+
+app.post("/alamat-tujuan-delete", async (req, res) => {
+    await producer.send({
+        topic: "alamat-tujuan-delete",
+        messages: [{ value: JSON.stringify(req.body) }],
+    });
+    res.json({ status: "ok" });
+});
 
 app.listen(3001, () => console.log("Kafka producer running on port 3001"));

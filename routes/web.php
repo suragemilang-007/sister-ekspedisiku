@@ -74,4 +74,10 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::resource('alamat-tujuan', AlamatTujuanController::class);
     Route::get('api/alamat-tujuan', [AlamatTujuanController::class, 'getAlamatTujuan']);
     Route::get('api/alamat-tujuan/{id}', [AlamatTujuanController::class, 'getAlamatTujuanDetail']);
+    Route::post('/alamat-tujuan/store', [AlamatTujuanController::class, 'store'])->name('alamat-tujuan.store');
+    Route::get('/alamat-tujuan', [AlamatTujuanController::class, 'index'])->name('alamat-tujuan.index');
+    Route::get('/alamat-tujuan/edit/{id}', [AlamatTujuanController::class, 'edit'])->name('alamat-tujuan.edit');
+    Route::post('/alamat-tujuan/update/{id}', [AlamatTujuanController::class, 'update'])->name('alamat-tujuan.update');
+    Route::delete('/alamat-tujuan/delete/{id}', [AlamatTujuanController::class, 'destroy'])->name('alamat-tujuan.destroy');
+
 });

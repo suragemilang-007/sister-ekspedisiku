@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AlamatTujuan;
 use App\Models\Pengguna;
+use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -47,7 +48,26 @@ class AlamatTujuanController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nama_penerima' => 'required|string|max:100',
+            'no_hp' => 'required|string|max:15',
+            'alamat_lengkap' => 'required|string',
+            'kecamatan' => 'required|string',
+            'kode_pos' => 'required|string|max:10',
+            'keterangan_alamat' => 'nullable|string|max:255'
+        ]);
 
+        Http::post('http://localhost:3001/alamat-tujuan', [
+            'id_pengirim' => Session::get('user_id'),
+            'nama_penerima' => $request->nama_penerima,
+            'no_hp' => $request->no_hp,
+            'alamat_lengkap' => $request->alamat_lengkap,
+            'kecamatan' => $request->kecamatan,
+            'kode_pos' => $request->kode_pos,
+            'keterangan_alamat' => $request->keterangan_alamat,
+        ]);
+
+        return response()->json(['status' => 'ok']);
     }
 
     /**
@@ -101,7 +121,26 @@ class AlamatTujuanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'nama_penerima' => 'required|string|max:100',
+            'no_hp' => 'required|string|max:15',
+            'alamat_lengkap' => 'required|string',
+            'kecamatan' => 'required|string',
+            'kode_pos' => 'required|string|max:10',
+            'keterangan_alamat' => 'nullable|string|max:255'
+        ]);
 
+        Http::post('http://localhost:3001/alamat-tujuan-edit', [
+            'id_alamat_tujuan' => $id,
+            'nama_penerima' => $request->nama_penerima,
+            'no_hp' => $request->no_hp,
+            'alamat_lengkap' => $request->alamat_lengkap,
+            'kecamatan' => $request->kecamatan,
+            'kode_pos' => $request->kode_pos,
+            'keterangan_alamat' => $request->keterangan_alamat,
+        ]);
+
+        return back()->with('success', 'Alamat berhasil diperbarui.');
     }
 
     /**
@@ -109,7 +148,11 @@ class AlamatTujuanController extends Controller
      */
     public function destroy($id)
     {
+        Http::post('http://localhost:3001/alamat-tujuan-delete', [
+            'id_alamat_tujuan' => $id
+        ]);
 
+        return response()->json(['status' => 'ok']);
     }
 
     /**
