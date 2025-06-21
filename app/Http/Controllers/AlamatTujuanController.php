@@ -104,16 +104,16 @@ class AlamatTujuanController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $alamatTujuan = AlamatTujuan::where('id_alamat_tujuan', $id)
+        $data = AlamatTujuan::where('id_alamat_tujuan', $id)
             ->where('id_pengirim', $userId)
             ->first();
 
-        if (!$alamatTujuan) {
+        if (!$data) {
             return redirect()->route('alamat-tujuan.index')
                 ->with('error', 'Alamat tujuan tidak ditemukan');
         }
 
-        return view('alamat-tujuan.edit', compact('alamatTujuan'));
+        return view('alamat-tujuan.edit', compact('data'));
     }
 
     /**
