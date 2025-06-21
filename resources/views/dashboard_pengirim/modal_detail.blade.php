@@ -17,7 +17,6 @@
             <tr><th>Alamat Tujuan</th><td id="alamat"></td></tr>
             <tr><th>Nama Penerima</th><td id="nama_penerima"></td></tr>
             <tr><th>No HP Penerima</th><td id="nohp_penerima"></td></tr>
-            <tr><th>Layanan</th><td id="layanan"></td></tr>
             <tr><th>Nama Kurir</th><td id="kurir"></td></tr>
           </tbody>
         </table>

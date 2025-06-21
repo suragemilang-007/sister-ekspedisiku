@@ -264,7 +264,7 @@
 
 <script>
 function showDetailModal(id) {
-    $.get("/dashboard/pengirim/detail/" + id, function(response) {
+    $.get("{{ route('dashboard.pengirim.detail', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id), function(response) {
         if (response.status === "success") {
             const data = response.data.pengiriman;
             const datalayanan = response.data.layanan;
@@ -278,7 +278,7 @@ function showDetailModal(id) {
             $("#nama_penerima").text(data.alamat_tujuan?.nama_penerima ?? '-');
             $("#nohp_penerima").text(data.alamat_tujuan?.no_hp ?? '-');
 
-            $("#layanan").text(data.layanan?.nama_layanan ?? '-');
+            
             $("#kurir").text(data.kurir?.nama ?? 'Belum ditugaskan');
 
             $("#modalDetailPengiriman").modal('show');

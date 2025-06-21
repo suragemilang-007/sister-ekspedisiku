@@ -34,7 +34,7 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
     Route::post('/feedback/{id}', [penggunaController::class, 'submitFeedback'])->name('dashboard.submit.feedback');
     // Hitung biaya pengiriman (AJAX)
     Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
-
+    Route::get("/dashboard/pengirim/detail/{id}", [penggunaController::class, 'showDetail'])->name('dashboard.pengirim.detail');
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
 });
 
