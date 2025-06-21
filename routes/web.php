@@ -5,6 +5,7 @@ use App\Http\Controllers\loginController;
 use App\Http\Controllers\pengaturanPenggunaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\penggunaController;
+use App\Http\Controllers\adminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,7 +16,26 @@ Route::get('/login', [loginController::class, 'showLogin'])->name('login');
 Route::post('/login', [loginController::class, 'login'])->name('login.post');
 Route::get('/logout', [loginController::class, 'logout'])->name('logout');
 
+// Route untuk admin
+Route::prefix('dashboard/admin')->middleware(['role:admin', 'auth.session'])->group(function () {
+    // Dashboard utama untuk pengirim
+    Route::get('/', [adminController::class, 'index'])->name('dashboard.admin');
+    // Tracking
+    Route::get('/tracking', [penggunaController::class, 'tracking'])->name('dashboard.tracking');
+    Route::get('/tracking/{id}', [penggunaController::class, 'trackingDetail'])->name('dashboard.tracking.detail');
+    // Riwayat pengiriman
+    Route::get('/history', [adminController::class, 'history'])->name('dashboard.history');
+    // Form pengiriman baru
+    Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
+    Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
+    // Feedback
+    Route::get('/feedback', [penggunaController::class, 'feedback'])->name('dashboard.feedback');
+    Route::post('/feedback/{id}', [penggunaController::class, 'submitFeedback'])->name('dashboard.submit.feedback');
+    // Hitung biaya pengiriman (AJAX)
+    Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
 
+    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
+});
 
 // Route untuk pengirim
 Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session'])->group(function () {
