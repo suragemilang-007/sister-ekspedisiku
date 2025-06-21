@@ -129,7 +129,7 @@
                                            title="Detail Pengiriman">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ $shipment->status === 'DIPROSES' ? url('/dashboard/pengirim/batal/'.$shipment->id) : '#' }}" 
+                                        <a href="{{ in_array($shipment->status, ['DIPROSES', 'MENUNGGU KONFIRMASI']) ? url('/dashboard/pengirim/batal/'.$shipment->id) : '#' }}" 
                                         class="btn btn-sm btn-outline-secondary {{ $shipment->status !== 'DIPROSES' ? 'disabled' : '' }}"
                                         data-bs-toggle="tooltip"
                                         title="Batal">
