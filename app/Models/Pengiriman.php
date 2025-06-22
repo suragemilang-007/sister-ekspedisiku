@@ -19,8 +19,9 @@ class Pengiriman extends Model
     protected $fillable = [
         'id_pengirim',
         'id_alamat_tujuan',
+        'id_alamat_penjemputan',
         'total_biaya',
-        'id_layanan',
+        'id_zona',
         'status',
         'nomor_resi',
         'catatan_opsional',
@@ -48,10 +49,23 @@ class Pengiriman extends Model
         return $this->belongsTo(AlamatTujuan::class, 'id_alamat_tujuan');
     }
 
-    public function layananPaket(): BelongsTo
+    public function zonaPengiriman(): BelongsTo
     {
-        return $this->belongsTo(LayananPaket::class, 'id_layanan');
+        return $this->belongsTo(ZonaPengiriman::class, 'id_zona');
     }
+
+    public function layananPaket()
+    {
+        return $this->belongsToMany(
+            LayananPaket::class,
+            ZonaPengiriman::class,
+            'id_zona',
+            'id_layanan',
+            'id_zona',
+            'id_layanan'
+        )->withPivot('id_zona');
+    }
+
 
     public function pelacakan(): HasMany
     {
@@ -82,10 +96,10 @@ class Pengiriman extends Model
         return $this->hasOneThrough(
             Kurir::class,
             PenugasanKurir::class,
-            'id_pengiriman',  // Foreign key di penugasan_kurir
-            'id_kurir',       // Foreign key di kurir
-            'id_pengiriman',  // Local key di pengiriman
-            'id_kurir'        // Local key di penugasan_kurir
+            'id_pengiriman',
+            'id_kurir',
+            'id_pengiriman',
+            'id_kurir'
         );
     }
 
@@ -101,7 +115,7 @@ class Pengiriman extends Model
             case 'DIKIRIM':
                 return 'success';
             case 'DITERIMA':
-                return 'dark';
+                return 'primary';
             case 'DIBATALKAN':
                 return 'danger';
             default:

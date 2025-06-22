@@ -11,8 +11,9 @@ return new class extends Migration {
             $table->id('id_pengiriman');
             $table->foreignId('id_pengirim')->constrained('pengguna', 'id_pengguna');
             $table->foreignId('id_alamat_tujuan')->constrained('alamat_tujuan', 'id_alamat_tujuan');
+            $table->foreignId('id_alamat_penjemputan')->constrained('alamat_penjemputan', 'id_alamat_penjemputan');
             $table->decimal('total_biaya', 12, 2);
-            $table->foreignId('id_layanan')->constrained('layanan_paket', 'id_layanan');
+            $table->foreignId('id_zona')->constrained('zona_pengiriman', 'id_zona');
             $table->enum('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
             $table->string('nomor_resi')->unique();
             $table->text('catatan_opsional')->nullable();
