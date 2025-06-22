@@ -17,9 +17,9 @@ Route::post('/login', [loginController::class, 'login'])->name('login.post');
 Route::get('/logout', [loginController::class, 'logout'])->name('logout');
 
 // Route untuk admin
-Route::prefix('dashboard/admin')->middleware(['role:admin', 'auth.session'])->group(function () {
+Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(function () {
     // Dashboard utama untuk pengirim
-    Route::get('/', [adminController::class, 'index'])->name('dashboard.admin');
+    Route::get('/dashboard', [adminController::class, 'index'])->name('dashboard.admin');
     // Tracking
     Route::get('/tracking', [penggunaController::class, 'tracking'])->name('dashboard.tracking');
     Route::get('/tracking/{id}', [penggunaController::class, 'trackingDetail'])->name('dashboard.tracking.detail');

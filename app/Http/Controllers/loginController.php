@@ -48,7 +48,7 @@ class loginController extends Controller
             // Redirect sesuai peran
             switch ($pengguna->peran) {
                 case 'admin':
-                    return redirect()->intended('/dashboard/admin')
+                    return redirect()->intended('/admin/dashboard')
                         ->with('success', 'Selamat datang Admin ' . $pengguna->nama);
                 case 'pelanggan':
                     return redirect()->intended('/dashboard/pengirim')

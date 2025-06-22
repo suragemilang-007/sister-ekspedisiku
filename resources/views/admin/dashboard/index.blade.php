@@ -9,12 +9,7 @@
         <div>
             <h1 class="fw-bold mb-1">Dashboard Admin</h1>
             <p class="text-muted">Selamat datang kembali, {{ Session::get('user_name') }}!</p>
-        </div>
-<!--
-        <a href="/dashboard/pengirim/kirim" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i> Kirim Paket Baru
-        </a>
--->        
+        </div>      
     </div>
 
     <!-- Statistics Cards -->
@@ -85,7 +80,7 @@
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5>Pengiriman Terbaru</h5>
-            <a href="/dashboard/admin/history" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+            <a href="{{ url()->current() }}" class="btn btn-sm btn-outline-primary">Refresh</a>
         </div>
         <div class="card-body">
             @if(isset($recent_shipments) && count($recent_shipments) > 0)
@@ -99,7 +94,6 @@
                                 <th>Penerima</th>
                                 <th>Kurir</th>
                                 <th>Status</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,6 +114,7 @@
                                             {{ $shipment->status }}
                                         </span>
                                     </td>
+<!--                                    
                                     <td>
                                         <a href="/dashboard/admin/lacak/{{ $shipment->no_resi }}" 
                                            class="btn btn-sm btn-outline-primary me-2"
@@ -140,6 +135,7 @@
                                             <i class="fas fa-cancel"></i>
                                         </a>
                                     </td>
+-->                                    
                                 </tr>
                             @endforeach
                         </tbody>
