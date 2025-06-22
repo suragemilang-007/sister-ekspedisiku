@@ -36,7 +36,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     // Hitung biaya pengiriman (AJAX)
     Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
 
-    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
+    Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
 });
 
 // Route untuk pengirim

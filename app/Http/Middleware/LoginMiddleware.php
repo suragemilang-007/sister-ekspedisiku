@@ -16,7 +16,7 @@ class LoginMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!Session::has('user_id')) {
-            return redirect()->route('login'); // sesuaikan nama rute login kamu
+            return redirect()->route('login');
         }
 
         return $next($request);
