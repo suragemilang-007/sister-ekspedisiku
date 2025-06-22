@@ -533,7 +533,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/dashboard/admin/add-admin" class="nav-link {{ Request::is('dashboard/admin/add-admin*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Tambah Admin">
+                    <a href="/admin/pengguna" class="nav-link {{ Request::is('admin/pengguna*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Tambah Admin">
                         <i class="fas fa-user-plus"></i>
                         <span class="nav-text">Tambah Admin</span>
                     </a>

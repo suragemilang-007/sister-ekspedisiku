@@ -53,4 +53,16 @@ class adminController extends Controller
         return view('admin.edit', compact('pengguna'));
     }
 
+    public function list()
+    {
+        $admins = Pengguna::where('peran', 'admin')->paginate(10);
+        return view('admin.pengguna.index', compact('admins'));
+    }
+
+    public function showDetail($id)
+    {
+        $pengguna = Pengguna::findOrFail($id);
+        return view('admin.pengguna.detail', compact('pengguna'));
+    }
+
 }

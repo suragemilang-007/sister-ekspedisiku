@@ -45,6 +45,10 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
 
     Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
 
+    Route::get('/pengguna', [adminController::class, 'list'])->name('pengguna.list');
+    Route::get('/pengguna/detail/{id}', [adminController::class, 'showDetail'])->name('admin.pengguna.detail');
+
+
     Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
     Route::get('/zona/create', [ZonaPengirimanController::class, 'create'])->name('admin.zona.create');
     Route::post('/zona/store', [ZonaPengirimanController::class, 'store'])->name('admin.zona.store');
@@ -52,6 +56,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/zona/{zonaPengiriman}/edit', [ZonaPengirimanController ::class, 'edit'])->name('admin.zona.edit');
     Route::put('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
     Route::delete('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'destroy'])->name('admin.zona.destroy');
+
 });
 
 // Route untuk pengirim
