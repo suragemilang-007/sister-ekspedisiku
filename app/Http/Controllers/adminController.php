@@ -44,7 +44,7 @@ class adminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('dashboard_admin.index', compact('stats', 'recent_shipments'));
+        return view('admin/dashboard.index', compact('stats', 'recent_shipments'));
     }
     
 }

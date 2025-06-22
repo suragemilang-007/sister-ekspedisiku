@@ -88,4 +88,24 @@ class Pengiriman extends Model
             'id_kurir'        // Local key di penugasan_kurir
         );
     }
+
+    public function getStatusColorAttribute()
+    {
+        switch ($this->status) {
+            case 'MENUNGGU KONFIRMASI':
+                return 'warning';
+            case 'DIPROSES':
+                return 'primary';
+            case 'DIBAYAR':
+                return 'info';
+            case 'DIKIRIM':
+                return 'success';
+            case 'DITERIMA':
+                return 'dark';
+            case 'DIBATALKAN':
+                return 'danger';
+            default:
+                return 'secondary';
+        }
+    }
 }

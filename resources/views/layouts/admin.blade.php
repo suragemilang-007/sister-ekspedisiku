@@ -486,7 +486,7 @@
                     <i class="fas fa-shipping-fast"></i>
                 </div>
                 <div class="brand-text">
-                    <a href="{{ url('/dashboard/admin') }}" class="text-decoration-none text-white fw-bold">
+                    <a href="{{ url('/admin/dashboard') }}" class="text-decoration-none text-white fw-bold">
                 Ekspedisiku
             </a>
                     
@@ -503,7 +503,7 @@
             
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="/dashboard/admin" class="nav-link {{ Request::is('dashboard/admin') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+                    <a href="/admin/dashboard" class="nav-link {{ Request::is('admin/dashboard') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
                         <i class="fas fa-house"></i>
                         <span class="nav-text">Dashboard</span>
                     </a>
