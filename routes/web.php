@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\penggunaController;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\pengaturanAkunController;
+use App\Http\Controllers\ZonaPengirimanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,6 +44,14 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
     Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
+
+    Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
+    Route::get('/zona/create', [ZonaPengirimanController::class, 'create'])->name('admin.zona.create');
+    Route::post('/zona/store', [ZonaPengirimanController::class, 'store'])->name('admin.zona.store');
+    Route::get('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'show'])->name('admin.zona.show');
+    Route::get('/zona/{zonaPengiriman}/edit', [ZonaPengirimanController ::class, 'edit'])->name('admin.zona.edit');
+    Route::put('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
+    Route::delete('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'destroy'])->name('admin.zona.destroy');
 });
 
 // Route untuk pengirim
