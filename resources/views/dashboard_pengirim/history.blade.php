@@ -164,15 +164,15 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
+                    <table class="table table-hover ">
+                        <thead class="table-light">
                             <tr>
                                 <th>No. Resi</th>
                                 <th>Tujuan</th>
                                 <th>Penerima</th>
                                 <th>Status</th>
                                 <th>Tanggal Kirim</th>
-                                <th>Actions</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -195,18 +195,12 @@
                                     <td>{{ $shipment->created_at->format('d M Y') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="/dashboard/pengirim/lacak/{{ $shipment->nomor_resi }}" 
-                                               class="btn btn-sm btn-outline-secondary"
-                                               data-bs-toggle="tooltip"
-                                               title="Lacak Paket">
-                                                <i class="fas fa-search"></i>
-                                            </a>
                                                                                
                                             <button class="btn btn-sm btn-outline-secondary" 
                                                     onclick="showDetailModal({{ $shipment->id_pengiriman }})"
                                                     data-bs-toggle="tooltip" 
                                                     title="Detail Pengiriman">
-                                                <i class="fas fa-info-circle"></i>
+                                                <i class="fas fa-eye"></i>
                                             </button>
                                         </div>
                                     </td>

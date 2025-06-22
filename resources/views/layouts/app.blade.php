@@ -508,12 +508,7 @@
                         <span class="nav-text">Feedback Rating</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/dashboard/pengirim/lacak" class="nav-link {{ Request::is('dashboard/pengirim/lacak*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Lacak Paket">
-                        <i class="fas fa-search-location"></i>
-                        <span class="nav-text">Lacak Paket</span>
-                    </a>
-                </li>
+                
                 <li class="nav-item">
                     <a href="/dashboard/pengirim/history" class="nav-link {{ Request::is('dashboard/pengirim/history*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="History Pengiriman">
                         <i class="fas fa-history"></i>

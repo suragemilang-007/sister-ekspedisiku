@@ -216,34 +216,6 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Konfirmasi Hapus</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center">
-                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                    <h6>Apakah Anda yakin ingin menghapus alamat tujuan ini?</h6>
-                    <p class="text-muted mb-0">Tindakan ini tidak dapat dibatalkan.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form id="deleteForm" method="POST" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>Hapus
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('styles')
@@ -303,13 +275,29 @@
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function confirmDelete(id) {
-        const form = document.getElementById('deleteForm');
-        form.action = `{{ route('alamat-tujuan.index') }}/${id}`;
-        
-        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        modal.show();
+        Swal.fire({
+        title: 'Hapus alamat?',
+        text: 'Data yang dihapus tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.delete(`/alamat-tujuan/delete/${id}`)
+                .then(() => {
+                    Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success')
+                        .then(() => location.reload());
+                })
+                .catch(() => {
+                    Swal.fire('Gagal', 'Gagal menghapus data.', 'error');
+                });
+        }
+    });
     }
     
     // Auto hide alerts after 5 seconds
