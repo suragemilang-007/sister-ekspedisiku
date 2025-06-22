@@ -1,0 +1,8 @@
+export const TOPICS = {
+    UPDATE_INFO: "pengguna-update-info",
+    UPDATE_PASSWORD: "pengguna-update-password",
+    FEEDBACK: "feedback-topic",
+    ALAMAT_TAMBAH: "alamat-tujuan-topic",
+    ALAMAT_EDIT: "alamat-tujuan-edit",
+    ALAMAT_DELETE: "alamat-tujuan-delete",
+};

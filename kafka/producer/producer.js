@@ -1,0 +1,48 @@
+import express from "express";
+import cors from "cors";
+import { createKafka } from "../config/kafka.js";
+import { TOPICS } from "../config/topics.js";
+import { sendToKafka } from "../config/sendToKafka.js";
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const kafka = createKafka("producer-kirim-paket");
+const producer = kafka.producer();
+
+await producer.connect();
+
+app.post("/pengguna/update-info", (req, res) =>
+    sendToKafka(producer, TOPICS.UPDATE_INFO, req.body, res)
+);
+
+app.post("/pengguna/update-password", (req, res) =>
+    sendToKafka(producer, TOPICS.UPDATE_PASSWORD, req.body, res)
+);
+
+app.post("/feedback", (req, res) =>
+    sendToKafka(producer, TOPICS.FEEDBACK, req.body, res)
+);
+
+app.post("/alamat-tujuan", (req, res) =>
+    sendToKafka(producer, TOPICS.ALAMAT_TAMBAH, req.body, res)
+);
+
+app.post("/alamat-tujuan-edit", (req, res) =>
+    sendToKafka(producer, TOPICS.ALAMAT_EDIT, req.body, res)
+);
+
+app.post("/alamat-tujuan-delete", (req, res) =>
+    sendToKafka(producer, TOPICS.ALAMAT_DELETE, req.body, res)
+);
+
+process.on("SIGINT", async () => {
+    console.log("⛔ Menutup koneksi Kafka...");
+    await producer.disconnect();
+    process.exit(0);
+});
+
+app.listen(3001, () => {
+    console.log("✅ Kafka producer running on port 3001");
+});
