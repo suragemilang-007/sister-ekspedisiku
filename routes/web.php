@@ -8,6 +8,7 @@ use App\Models\AlamatTujuan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\penggunaController;
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\pengaturanAkunController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +36,11 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/feedback/{id}', [penggunaController::class, 'submitFeedback'])->name('dashboard.submit.feedback');
     // Hitung biaya pengiriman (AJAX)
     Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
+
+
+    Route::get('/edit', [pengaturanAkunController::class, 'edit'])->name('pengaturan.edit');
+    Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
+    Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
     Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
 });
