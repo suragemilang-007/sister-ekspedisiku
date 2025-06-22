@@ -63,11 +63,19 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
 
 
 
+// Untuk pelanggan (pelanggan)
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
     Route::post('/pengguna/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/pengguna/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('pengaturan.update.password');
     Route::get('/detail/{id}', [penggunaController::class, 'showDetail'])->name('pengiriman.detail');
+});
+
+// Untuk admin
+Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
+    Route::post('/admin/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('admin.pengaturan.update.info');
+    Route::post('/admin/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('admin.pengaturan.update.password');
+    Route::get('/admin/detail/{id}', [penggunaController::class, 'showDetail'])->name('admin.pengiriman.detail');
 });
 
 // Group routes untuk feedback (memerlukan autentikasi)
