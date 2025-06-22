@@ -43,6 +43,8 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
     Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
+    Route::get('/pengguna', [adminController::class, 'list'])->name('pengguna.list');
+    Route::get('/pengguna/detail/{id}', [adminController::class, 'showDetail'])->name('admin.pengguna.detail');
 });
 
 // Route untuk pengirim
