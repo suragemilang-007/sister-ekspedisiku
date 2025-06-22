@@ -5,12 +5,15 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        Schema::create('alamat_tujuan', function (Blueprint $table) {
-            $table->id('id_alamat_tujuan');
+        Schema::create('alamat_penjemputan', function (Blueprint $table) {
+            $table->id('id_alamat_penjemputan');
             $table->foreignId('id_pengirim')->constrained('pengguna', 'id_pengguna');
-            $table->string('nama_penerima');
+            $table->string('nama_pengirim');
             $table->string('no_hp');
             $table->text('alamat_lengkap');
             $table->string('kecamatan');
@@ -20,8 +23,11 @@ return new class extends Migration {
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::dropIfExists('alamat_tujuan');
+        Schema::dropIfExists('alamat_penjemputan');
     }
 };

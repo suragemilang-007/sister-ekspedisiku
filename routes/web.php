@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\penggunaController;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\pengaturanAkunController;
+use App\Http\Controllers\ZonaPengirimanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,8 +44,19 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
     Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
+
     Route::get('/pengguna', [adminController::class, 'list'])->name('pengguna.list');
     Route::get('/pengguna/detail/{id}', [adminController::class, 'showDetail'])->name('admin.pengguna.detail');
+
+
+    Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
+    Route::get('/zona/create', [ZonaPengirimanController::class, 'create'])->name('admin.zona.create');
+    Route::post('/zona/store', [ZonaPengirimanController::class, 'store'])->name('admin.zona.store');
+    Route::get('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'show'])->name('admin.zona.show');
+    Route::get('/zona/{zonaPengiriman}/edit', [ZonaPengirimanController ::class, 'edit'])->name('admin.zona.edit');
+    Route::put('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
+    Route::delete('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'destroy'])->name('admin.zona.destroy');
+
 });
 
 // Route untuk pengirim
@@ -71,11 +83,19 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
 
 
 
+// Untuk pelanggan (pelanggan)
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
     Route::post('/pengguna/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/pengguna/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('pengaturan.update.password');
     Route::get('/detail/{id}', [penggunaController::class, 'showDetail'])->name('pengiriman.detail');
+});
+
+// Untuk admin
+Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
+    Route::post('/admin/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('admin.pengaturan.update.info');
+    Route::post('/admin/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('admin.pengaturan.update.password');
+    Route::get('/admin/detail/{id}', [penggunaController::class, 'showDetail'])->name('admin.pengiriman.detail');
 });
 
 // Group routes untuk feedback (memerlukan autentikasi)

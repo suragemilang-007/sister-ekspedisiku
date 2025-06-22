@@ -244,7 +244,7 @@ document.getElementById('form-update').addEventListener('submit', function (e) {
             btn.disabled = true;
             spinner.classList.remove('d-none');
 
-            axios.post('/pengguna/update-info', new FormData(e.target))
+            axios.post('/admin/update-info', new FormData(e.target))
                 .then(res => {
                     Swal.fire({
                         icon: 'success',
@@ -305,7 +305,7 @@ document.getElementById('form-password').addEventListener('submit', function (e)
             btn.disabled = true;
             spinner.classList.remove('d-none');
 
-            axios.post('/pengguna/update-password', new FormData(e.target))
+            axios.post('/admin/update-password', new FormData(e.target))
                 .then(res => {
                     Swal.fire({
                         icon: 'success',

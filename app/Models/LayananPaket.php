@@ -28,10 +28,7 @@ class LayananPaket extends Model
         'harga_dasar' => 'float'
     ];
 
-    public function pengiriman(): HasMany
-    {
-        return $this->hasMany(Pengiriman::class, 'id_layanan');
-    }
+
 
     public function zonaPengiriman(): HasMany
     {

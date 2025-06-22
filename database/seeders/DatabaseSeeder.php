@@ -21,8 +21,10 @@ class DatabaseSeeder extends Seeder
             KurirSeeder::class,
             AlamatTujuanSeeder::class,
             LayananPaketSeeder::class,
-            PengirimanSeeder::class,
             ZonaPengirimanSeeder::class,
+            AlamatPenjemputanSeeder::class,
+            PengirimanSeeder::class,
+
             PenugasanKurirSeeder::class,
         ]);
     }
