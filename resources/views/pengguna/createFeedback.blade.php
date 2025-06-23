@@ -192,7 +192,7 @@
                         </div>
                         <div class="col-md-6">
                             <p class="mb-1"><strong>Layanan:</strong></p>
-                            <p class="text-muted">{{ $pengiriman->layananPaket->nama_layanan ?? 'N/A' }}</p>
+                            <p class="text-muted">{{ $pengiriman->zonaPengiriman->layananPaket->nama_layanan ?? 'N/A' }}</p>
                         </div>
                         <div class="col-md-6">
                             <p class="mb-1"><strong>Kurir:</strong></p>
