@@ -53,10 +53,35 @@ class adminController extends Controller
         return view('admin.edit', compact('pengguna'));
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $admins = Pengguna::where('peran', 'admin')->paginate(10);
+        $query = Pengguna::query();
+
+        // Filter by search term
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                    ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Sort by selected criteria
+        if ($request->has('sort_by') && $request->sort_by != '') {
+            $sortOrder = $request->get('sort_order', 'asc');
+            $query->orderBy($request->sort_by, $sortOrder);
+        } else {
+            $query->orderBy('created_at', 'desc'); // Default sort
+        }
+
+        // Paginate results
+        $admins = $query->where('peran', 'admin')->paginate(10);
+
         return view('admin.pengguna.index', compact('admins'));
+    }
+
+    public function create()
+    {
+        return view('admin.pengguna.create');
     }
 
     public function showDetail($id)
