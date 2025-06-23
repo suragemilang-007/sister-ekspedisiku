@@ -159,7 +159,7 @@
 
 <script>
 function showDetailModal(id) {
-    $.get("{{ route('dashboard.pengirim.detail', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id), function(response) {
+    $.get("{{ route('admin.zona.edit', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id), function(response) {
         if (response.status === "success") {
             const data = response.data.pengiriman;
             const datalayanan = response.data.layanan;

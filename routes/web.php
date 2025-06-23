@@ -53,7 +53,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/zona/create', [ZonaPengirimanController::class, 'create'])->name('admin.zona.create');
     Route::post('/zona/store', [ZonaPengirimanController::class, 'store'])->name('admin.zona.store');
     Route::get('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'show'])->name('admin.zona.show');
-    Route::get('/zona/{zonaPengiriman}/edit', [ZonaPengirimanController ::class, 'edit'])->name('admin.zona.edit');
+    Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
     Route::put('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
     Route::delete('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'destroy'])->name('admin.zona.destroy');
 
