@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AlamatPenjemputanController;
 use App\Http\Controllers\AlamatTujuanController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\pengaturanPenggunaController;
+use App\Http\Controllers\PengirimanController;
 use App\Models\AlamatTujuan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\penggunaController;
@@ -43,7 +45,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
-//    Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
+    //    Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
 
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
     Route::get('/pengguna/edit/{id}', [adminController::class, 'edit'])->name('admin.pengguna.edit');
@@ -128,4 +130,25 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::post('/alamat-tujuan/update/{id}', [AlamatTujuanController::class, 'update'])->name('alamat-tujuan.update');
     Route::delete('/alamat-tujuan/delete/{id}', [AlamatTujuanController::class, 'destroy'])->name('alamat-tujuan.destroy');
 
+});
+
+Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
+    // Pengiriman routes
+    Route::get('/dashboard/pengirim/kirim', [PengirimanController::class, 'create'])->name('pengiriman.create');
+    Route::post('/pengiriman', [PengirimanController::class, 'store'])->name('pengiriman.store');
+    Route::get('/pengiriman/{id}', [PengirimanController::class, 'show'])->name('pengiriman.show');
+    Route::post('/pengiriman/{id}/cancel', [PengirimanController::class, 'cancel'])->name('pengiriman.cancel');
+
+    // AJAX routes
+    Route::get('/api/zona-pengiriman', [PengirimanController::class, 'getZonaPengiriman']);
+    Route::get('/api/kecamatan-tujuan', [PengirimanController::class, 'getKecamatanTujuan']);
+    Route::get('/api/layanan-paket/{id}', [PengirimanController::class, 'getLayananPaket']);
+
+    // Tracking
+    Route::get('/track/{resi}', [PengirimanController::class, 'track'])->name('pengiriman.track');
+
+    // Alamat Penjemputan routes
+    Route::resource('alamat-penjemputan', AlamatPenjemputanController::class);
+    Route::get('/api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatPenjemputan']);
+    Route::get('/api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getAlamatPenjemputanDetail']);
 });

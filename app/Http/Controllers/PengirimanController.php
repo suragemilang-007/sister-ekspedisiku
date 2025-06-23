@@ -41,8 +41,8 @@ class PengirimanController extends Controller
         $layananPaket = LayananPaket::all();
 
         // Get unique kecamatan for zona pengiriman
-        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('asal');
-        $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('tujuan');
+        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
+        $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('kecamatan_tujuan');
 
         return view('pengiriman.create', compact(
             'alamatPenjemputan',
@@ -101,9 +101,10 @@ class PengirimanController extends Controller
         }
 
         // Get zona pengiriman berdasarkan kecamatan dan layanan
-        $zonaPengiriman = ZonaPengiriman::where('asal', $request->kecamatan_asal)
-            ->where('tujuan', $request->kecamatan_tujuan)
+        $zonaPengiriman = ZonaPengiriman::where('kecamatan_asal', $request->kecamatan_asal)
+            ->where('kecamatan_tujuan', $request->kecamatan_tujuan)
             ->where('id_layanan', $request->id_layanan)
+            ->with('layananPaket')
             ->first();
 
         if (!$zonaPengiriman) {
@@ -116,7 +117,7 @@ class PengirimanController extends Controller
         $nomorResi = 'EXP' . date('Ymd') . strtoupper(Str::random(6));
 
         // Calculate total biaya
-        $totalBiaya = $zonaPengiriman->biaya_zona;
+        $totalBiaya = $zonaPengiriman->biaya_tambahan + $zonaPengiriman->layananPaket->harga_Dasar;
 
         // Send to Kafka producer
         $response = Http::post('http://localhost:3001/pengiriman', [
@@ -189,8 +190,8 @@ class PengirimanController extends Controller
             'id_layanan' => 'required|exists:layanan_paket,id_layanan'
         ]);
 
-        $zonaPengiriman = ZonaPengiriman::where('asal', $request->kecamatan_asal)
-            ->where('tujuan', $request->kecamatan_tujuan)
+        $zonaPengiriman = ZonaPengiriman::where('kecamatan_asal', $request->kecamatan_asal)
+            ->where('kecamatan_tujuan', $request->kecamatan_tujuan)
             ->where('id_layanan', $request->id_layanan)
             ->with('layananPaket')
             ->first();
@@ -204,8 +205,8 @@ class PengirimanController extends Controller
         return response()->json([
             'id_zona' => $zonaPengiriman->id_zona,
             'biaya_zona' => $zonaPengiriman->biaya_zona,
-            'asal' => $zonaPengiriman->asal,
-            'tujuan' => $zonaPengiriman->tujuan,
+            'asal' => $zonaPengiriman->kecamatan_asal,
+            'tujuan' => $zonaPengiriman->kecamatan_tujuan,
             'layanan' => $zonaPengiriman->layananPaket->nama_layanan,
             'deskripsi_layanan' => $zonaPengiriman->layananPaket->deskripsi
         ]);
@@ -323,10 +324,10 @@ class PengirimanController extends Controller
             'id_layanan' => 'required|exists:layanan_paket,id_layanan'
         ]);
 
-        $kecamatanTujuan = ZonaPengiriman::where('asal', $request->kecamatan_asal)
+        $kecamatanTujuan = ZonaPengiriman::where('kecamatan_asal', $request->kecamatan_asal)
             ->where('id_layanan', $request->id_layanan)
             ->distinct()
-            ->pluck('tujuan');
+            ->pluck('kecamatan_tujuan');
 
         return response()->json($kecamatanTujuan);
     }
