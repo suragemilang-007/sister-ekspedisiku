@@ -16,6 +16,23 @@ class ZonaPengirimanController extends Controller
         return view('admin/zona.index', compact('zonaPengirimans'));
     }
 
+    public function search(Request $request)
+    {
+        $query = ZonaPengiriman::with('layananPaket');
+
+        if ($request->has('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('nama_zona', 'like', "%{$searchTerm}%")
+                  ->orWhere('kecamatan_asal', 'like', "%{$searchTerm}%")
+                  ->orWhere('kecamatan_tujuan', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        $zonaPengirimans = $query->paginate(10);
+        return view('admin/zona.index', compact('zonaPengirimans'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
