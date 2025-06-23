@@ -59,11 +59,11 @@
                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="fas fa-sort me-1"></i> Urutkan
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu"> 
                             <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'kecamatan_asal', 'sort_order' => 'asc']) }}">Kecamatan Asal</a></li>
                             <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'kecamatan_tujuan', 'sort_order' => 'asc']) }}">Kecamatan Tujuan</a></li>
-                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'nomor_resi', 'sort_order' => 'asc']) }}">No. Resi A-Z</a></li>
-                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'status', 'sort_order' => 'asc']) }}">Status</a></li>
+                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'biaya_tambahan', 'sort_order' => 'asc']) }}">Biaya Tambahan</a></li>
+                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_zona', 'sort_order' => 'asc']) }}">Nama Zona</a></li>
                         </ul>
                     </div>
                 </div>
