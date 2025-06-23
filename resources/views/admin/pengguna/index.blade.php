@@ -27,11 +27,18 @@
                             <input type="text" 
                                    class="form-control" 
                                    name="search" 
-                                   placeholder="Cari no. resi, nama penerima, alamat..."
+                                   placeholder="Cari nama, email, alamat..."
                                    value="{{ request('search') }}">
                         </div>
                     </div>
-
+                    <!-- Action Buttons -->
+                    <div class="col-md-4">
+                        <div class="d-flex gap-4">
+                            <a href="{{ route('admin.pengguna.list') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-undo"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -52,10 +59,8 @@
                             <i class="fas fa-sort me-1"></i> Urutkan
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at', 'sort_order' => 'desc']) }}">Terbaru</a></li>
-                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at', 'sort_order' => 'asc']) }}">Terlama</a></li>
-                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'nomor_resi', 'sort_order' => 'asc']) }}">No. Resi A-Z</a></li>
-                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'status', 'sort_order' => 'asc']) }}">Status</a></li>
+                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama', 'sort_order' => 'asc']) }}">Nama</a></li>
+                            <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort_by' => 'email', 'sort_order' => 'asc']) }}">Email</a></li>
                         </ul>
                     </div>
                 </div>
@@ -145,7 +150,7 @@
 
 <script>
 function showDetailModal(id) {
-    $.get("{{ route('admin.pengguna.detail', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id_pengguna), function(response) {
+    $.get("{{ route('admin.pengguna.edit', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id), function(response) {
         if (response.status === "success") {
             const data = response.data.pengiriman;
             const datalayanan = response.data.layanan;
