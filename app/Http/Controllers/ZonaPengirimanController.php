@@ -10,27 +10,51 @@ class ZonaPengirimanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $zonaPengirimans = ZonaPengiriman::with('layananPaket')->paginate(10);
-        return view('admin/zona.index', compact('zonaPengirimans'));
-    }
+        // Mengambil parameter pencarian dari request
+        $search = $request->input('search');
 
-    public function search(Request $request)
-    {
-        $query = ZonaPengiriman::with('layananPaket');
+        // Mengambil parameter pengurutan dari request dengan nilai default
+        $sortBy = $request->query('sort_by', 'nama_zona'); // Default sort by nama_zona
+        $sortOrder = $request->query('sort_order', 'asc'); // Default sort order ascending
 
-        if ($request->has('search')) {
-            $searchTerm = $request->input('search');
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('nama_zona', 'like', "%{$searchTerm}%")
-                  ->orWhere('kecamatan_asal', 'like', "%{$searchTerm}%")
-                  ->orWhere('kecamatan_tujuan', 'like', "%{$searchTerm}%");
-            });
+        // Validasi kolom yang boleh diurutkan untuk mencegah SQL Injection
+        $allowedSortColumns = ['nama_zona', 'kecamatan_asal', 'kecamatan_tujuan', 'biaya_tambahan'];
+        if (!in_array($sortBy, $allowedSortColumns)) {
+            // Jika kolom tidak valid, kembalikan ke default
+            $sortBy = 'nama_zona';
+        }
+        // Pastikan sortOrder hanya 'asc' atau 'desc'
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'asc';
         }
 
+        // Memulai query untuk mendapatkan data ZonaPengiriman dengan relasi layananPaket
+        $query = ZonaPengiriman::with('layananPaket');
+
+        // Menerapkan kondisi pencarian jika ada input 'search'
+        $query->when($search, function ($q) use ($search) {
+            $q->where('nama_zona', 'like', "%{$search}%")
+              ->orWhere('kecamatan_asal', 'like', "%{$search}%")
+              ->orWhere('kecamatan_tujuan', 'like', "%{$search}%")
+              ->orWhereHas('layananPaket', function ($sq) use ($search) {
+                  $sq->where('nama_layanan', 'like', "%{$search}%");
+              });
+        });
+
+        // Menerapkan pengurutan setelah kondisi pencarian
+        // Pengurutan ini akan selalu diterapkan, baik ada pencarian atau tidak.
+        $query->orderBy($sortBy, $sortOrder);
+
+
+        // Mengambil data dengan paginasi
         $zonaPengirimans = $query->paginate(10);
-        return view('admin/zona.index', compact('zonaPengirimans'));
+
+        // Menggunakan withQueryString untuk mempertahankan semua parameter (pencarian, pengurutan) di URL
+        $zonaPengirimans->withQueryString();
+
+        return view('admin.zona.index', compact('zonaPengirimans'));
     }
 
     /**
