@@ -132,7 +132,7 @@ class penggunaController extends Controller
         try {
             $pengiriman = Pengiriman::with([
                 'alamatTujuan',
-                'zonaPengiriman.layananPaket', // relasi berantai: zona → layanan
+                'zonaPengiriman.layananPaket',
                 'kurir',
             ])->findOrFail($id);
 

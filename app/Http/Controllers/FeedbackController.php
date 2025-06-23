@@ -22,20 +22,40 @@ class FeedbackController extends Controller
         $userId = Session::get('user_id');
 
         // Pengiriman yang sudah selesai (DITERIMA) tapi belum ada feedback
-        $pengirimanTanpaFeedback = Pengiriman::where('id_pengirim', $userId)
+        // $pengirimanTanpaFeedback = Pengiriman::where('id_pengirim', $userId)
+        //     ->where('status', 'DITERIMA')
+        //     ->whereDoesntHave('feedback')
+        //     ->with(['alamatTujuan', 'layananPaket', 'kurir'])
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
+        $pengirimanTanpaFeedback = Pengiriman::with(
+            'alamatTujuan',
+            'zonaPengiriman.layananPaket',
+            'kurir'
+        )
+            ->where('id_pengirim', $userId)
             ->where('status', 'DITERIMA')
             ->whereDoesntHave('feedback')
-            ->with(['alamatTujuan', 'layananPaket', 'kurir'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $pengirimanDenganFeedback = Pengiriman::with(
+            'alamatTujuan',
+            'zonaPengiriman.layananPaket',
+            'kurir'
+        )
+            ->where('id_pengirim', $userId)
+            ->where('status', 'DITERIMA')
+            ->whereHas('feedback')
             ->orderBy('created_at', 'desc')
             ->get();
 
         // Pengiriman yang sudah diberi feedback
-        $pengirimanDenganFeedback = Pengiriman::where('id_pengirim', $userId)
-            ->where('status', 'DITERIMA')
-            ->whereHas('feedback')
-            ->with(['alamatTujuan', 'layananPaket', 'kurir', 'feedback'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // $pengirimanDenganFeedback = Pengiriman::where('id_pengirim', $userId)
+        //     ->where('status', 'DITERIMA')
+        //     ->whereHas('feedback')
+        //     ->with(['alamatTujuan', 'layananPaket', 'kurir', 'feedback'])
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
 
         return view('pengguna.feedback', compact('pengirimanTanpaFeedback', 'pengirimanDenganFeedback'));
     }
