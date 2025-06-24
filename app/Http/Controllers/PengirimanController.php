@@ -71,7 +71,7 @@ class PengirimanController extends Controller
             'kecamatan_asal' => 'required|string',
             'kecamatan_tujuan' => 'required|string',
             'catatan_opsional' => 'nullable|string',
-            'foto_barang' => 'nullable|string', // base64 atau path
+            'foto_barang' => 'nullable|string',
         ]);
 
         // Validasi alamat penjemputan
@@ -117,10 +117,11 @@ class PengirimanController extends Controller
         $nomorResi = 'EXP' . date('Ymd') . strtoupper(Str::random(6));
 
         // Calculate total biaya
-        $totalBiaya = $zonaPengiriman->biaya_tambahan + $zonaPengiriman->layananPaket->harga_Dasar;
+        $totalBiaya = $zonaPengiriman->biaya_tambahan + $zonaPengiriman->layananPaket->harga_dasar;
 
+        $base64 = base64_encode(file_get_contents($request->foto_barang));
         // Send to Kafka producer
-        $response = Http::post('http://localhost:3001/pengiriman', [
+        $response = Http::post('http://localhost:3001/pengiriman_add', [
             'id_pengirim' => $userId,
             'id_alamat_tujuan' => $idAlamatTujuan,
             'id_alamat_penjemputan' => $idAlamatPenjemputan,
@@ -129,7 +130,8 @@ class PengirimanController extends Controller
             'status' => 'MENUNGGU KONFIRMASI',
             'nomor_resi' => $nomorResi,
             'catatan_opsional' => $request->catatan_opsional,
-            'foto_barang' => $request->foto_barang,
+            'foto_barang' => $base64,
+            'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
 
         if ($response->successful()) {

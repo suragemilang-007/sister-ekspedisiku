@@ -7,4 +7,5 @@ export const TOPICS = {
     ALAMAT_DELETE: "alamat-tujuan-delete",
     DELETE_USER: "pengguna-delete",
     ADD_USER: "pengguna-add",
+    ADD_PENGIRIMAN: "pengiriman-add",
 };

@@ -21,7 +21,7 @@ app.post("/pengguna/update-password", (req, res) =>
     sendToKafka(producer, TOPICS.UPDATE_PASSWORD, req.body, res)
 );
 
-app.post ("/pengguna/delete", (req, res) =>
+app.post("/pengguna/delete", (req, res) =>
     sendToKafka(producer, TOPICS.DELETE_USER, req.body, res)
 );
 
@@ -45,7 +45,9 @@ app.post("/alamat-tujuan-delete", (req, res) =>
     sendToKafka(producer, TOPICS.ALAMAT_DELETE, req.body, res)
 );
 
-
+app.post("/pengiriman_add", (req, res) =>
+    sendToKafka(producer, TOPICS.ADD_PENGIRIMAN, req.body, res)
+);
 
 process.on("SIGINT", async () => {
     console.log("⛔ Menutup koneksi Kafka...");
