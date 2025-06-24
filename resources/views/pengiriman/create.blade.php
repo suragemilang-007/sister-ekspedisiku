@@ -427,7 +427,7 @@ $(document).ready(function() {
         const kecamatanAsal = $('#kecamatan_asal').val();
         const kecamatanTujuan = $('#kecamatan_tujuan').val();
         const idLayanan = $('#id_layanan').val();
-        
+
         if (kecamatanAsal && kecamatanTujuan && idLayanan) {
             axios.get('/api/zona-pengiriman', {
                 params: {
@@ -438,22 +438,35 @@ $(document).ready(function() {
             })
             .then(response => {
                 const zona = response.data;
-                
-                $('#summary_layanan').text(zona.layanan);
-                $('#summary_rute').text(`${zona.asal} → ${zona.tujuan}`);
-                $('#summary_total').text(`Rp ${number_format(zona.biaya_tambahan + zona.layanan.harga_dasar)}`);
 
-                $('#biaya_placeholder').hide();
-                $('#biaya_summary').show();
+                if (zona && zona.layanan && zona.asal && zona.tujuan) {
+                    $('#summary_layanan').text(zona.layanan);
+                    $('#summary_rute').text(`${zona.asal} → ${zona.tujuan}`);
+                    const biayaTambahan = Number(zona.biaya_zona) || 0;
+                    const hargaDasar = Number(zona.harga_dasar) || 0;
+                    const total = biayaTambahan + hargaDasar;
+                    $('#summary_total').text(`Rp ${total.toLocaleString('id-ID')}`);
+                    $('#biaya_placeholder').hide();
+                    $('#biaya_summary').show();
+                } else {
+                    $('#biaya_summary').hide();
+                    $('#biaya_placeholder').show().html(
+                        `<span class="text-danger"><i class="fas fa-exclamation-circle me-1"></i>Lokasi tidak tersedia</span>`
+                    );
+                }
             })
             .catch(error => {
                 $('#biaya_summary').hide();
-                $('#biaya_placeholder').show();
+                $('#biaya_placeholder').show().html(
+                    `<span class="text-danger"><i class="fas fa-exclamation-circle me-1"></i>Lokasi tidak tersedia</span>`
+                );
                 console.error('Error calculating biaya:', error);
             });
         } else {
             $('#biaya_summary').hide();
-            $('#biaya_placeholder').show();
+            $('#biaya_placeholder').show().html(
+                `<i class="fas fa-info-circle me-1"></i>Lengkapi form untuk melihat estimasi biaya`
+            );
         }
     }
 

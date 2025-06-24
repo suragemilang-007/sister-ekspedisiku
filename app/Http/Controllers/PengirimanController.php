@@ -192,6 +192,7 @@ class PengirimanController extends Controller
             'id_layanan' => 'required|exists:layanan_paket,id_layanan'
         ]);
 
+
         $zonaPengiriman = ZonaPengiriman::where('kecamatan_asal', $request->kecamatan_asal)
             ->where('kecamatan_tujuan', $request->kecamatan_tujuan)
             ->where('id_layanan', $request->id_layanan)
@@ -206,10 +207,11 @@ class PengirimanController extends Controller
 
         return response()->json([
             'id_zona' => $zonaPengiriman->id_zona,
-            'biaya_zona' => $zonaPengiriman->biaya_zona,
+            'biaya_zona' => $zonaPengiriman->biaya_tambahan,
             'asal' => $zonaPengiriman->kecamatan_asal,
             'tujuan' => $zonaPengiriman->kecamatan_tujuan,
             'layanan' => $zonaPengiriman->layananPaket->nama_layanan,
+            'harga_dasar' => $zonaPengiriman->layananPaket->harga_dasar,
             'deskripsi_layanan' => $zonaPengiriman->layananPaket->deskripsi
         ]);
     }
