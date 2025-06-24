@@ -71,7 +71,7 @@
 <div class="container py-4">
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-header bg-white border-bottom-0 py-3">
-            <h3 class="mb-0">Pengaturan Akun</h3>
+            <h3 class="mb-0">Manajemen Admin</h3>
         </div>
         <div class="card-body">
             <!-- Nav tabs -->

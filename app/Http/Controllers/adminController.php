@@ -46,6 +46,12 @@ class adminController extends Controller
 
         return view('admin/dashboard.index', compact('stats', 'recent_shipments'));
     }
+    public function editAdmin($id)
+    {
+        $pengguna = \DB::table('pengguna')->where('id_pengguna', $id)->first();
+        return view('admin.pengguna.edit', compact('pengguna'));
+    }
+
     public function edit()
     {
         $userId = Session::get('user_id');
