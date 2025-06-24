@@ -12,6 +12,7 @@ use App\Http\Controllers\penggunaController;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\pengaturanAkunController;
 use App\Http\Controllers\ZonaPengirimanController;
+use App\Http\Controllers\KurirController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,7 +37,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
-//    Route::get('admin/edit', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
+    //    Route::get('admin/edit', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
 
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
     Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
@@ -52,7 +53,6 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
     Route::put('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
     Route::delete('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'destroy'])->name('admin.zona.destroy');
-
 });
 
 // Route untuk pengirim
@@ -94,6 +94,18 @@ Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
     Route::get('/admin/detail/{id}', [penggunaController::class, 'showDetail'])->name('admin.pengiriman.detail');
 });
 
+// Route untuk kurir
+Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(function () {
+    // Dashboard kurir
+    Route::get('/dashboard', [KurirController::class, 'dashboard'])->name('kurir.dashboard');
+    // Detail tugas kurir
+    Route::get('/detail/{id_penugasan}', [KurirController::class, 'detail'])->name('kurir.detail');
+    // Update status pengiriman
+    Route::post('/update-status', [KurirController::class, 'updateStatus'])->name('kurir.update.status');
+    // API untuk data dashboard (opsional untuk refresh data)
+    Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
+});
+
 // Group routes untuk feedback (memerlukan autentikasi)
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     // Halaman utama feedback
@@ -123,7 +135,6 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::get('/alamat-tujuan/edit/{id}', [AlamatTujuanController::class, 'edit'])->name('alamat-tujuan.edit');
     Route::post('/alamat-tujuan/update/{id}', [AlamatTujuanController::class, 'update'])->name('alamat-tujuan.update');
     Route::delete('/alamat-tujuan/delete/{id}', [AlamatTujuanController::class, 'destroy'])->name('alamat-tujuan.destroy');
-
 });
 
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
