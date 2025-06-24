@@ -16,6 +16,9 @@ use App\Models\ZonaPengiriman;
 use App\Models\Kurir;
 use App\Models\Pengguna;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class adminController extends Controller
 {
@@ -90,10 +93,166 @@ class adminController extends Controller
         return view('admin.pengguna.create');
     }
 
-    public function showDetail($id)
+    public function storeAdmin(Request $request)
     {
-        $pengguna = Pengguna::findOrFail($id);
-        return view('admin.pengguna.detail', compact('pengguna'));
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:pengguna,email|max:255', // Email harus unik
+            'password' => 'required|string|min:8|confirmed',
+            'tgl_lahir' => 'nullable|date',
+            'nohp' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string',
+            'kelamin' => 'required|in:L,P',
+        ]);
+
+        try {
+            // Hash password di sisi Laravel sebelum dikirim ke Kafka
+            // Ini untuk memastikan password yang sampai ke consumer sudah ter-hash
+            $hashedPassword = Hash::make($request->password);
+
+            $dataToProducer = [
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'sandi_hash' => $hashedPassword, // Menggunakan sandi_hash
+                'tgl_lahir' => $request->tgl_lahir,
+                'nohp' => $request->nohp,
+                'alamat' => $request->alamat,
+                'kelamin' => $request->kelamin,
+                'peran' => 'admin', // Pastikan ini adalah peran 'admin'
+                'action_type' => 'add_user', // Indikator untuk consumer
+                'timestamp' => now()->timestamp,
+            ];
+
+            // Kirim data ke JS Producer endpoint /pengguna/add
+            $response = Http::timeout(5)->post('http://localhost:3001/pengguna/add', $dataToProducer);
+
+            if ($response->successful()) {
+                Log::info("Permintaan penambahan admin dikirim ke JS Producer untuk email: {$request->email}");
+                return response()->json(['message' => 'Permintaan penambahan admin berhasil dikirim. Admin akan segera terdaftar.'], 200);
+            } else {
+                Log::error("Gagal mengirim permintaan penambahan admin ke JS Producer: " . $response->body() . " Status: " . $response->status());
+                return response()->json(['message' => 'Gagal memproses permintaan penambahan admin. Silakan coba lagi nanti.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error("Pengecualian di storeAdmin: " . $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
+        }
     }
+
+    public function updateUserInfo(Request $request)
+    {
+        $userId = Session::get('user_id');
+        if (!$userId) {
+            return response()->json(['message' => 'Pengguna tidak terautentikasi.'], 401);
+        }
+
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'tgl_lahir' => 'nullable|date',
+            'nohp' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string',
+            'kelamin' => 'required|in:L,P',
+        ]);
+
+        try {
+            $dataToProducer = [
+                'id_pengguna' => (int)$userId, // Pastikan tipe data sesuai di JS
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'tgl_lahir' => $request->tgl_lahir,
+                'nohp' => $request->nohp,
+                'alamat' => $request->alamat,
+                'kelamin' => $request->kelamin,
+                'action_type' => 'update_info', // Indikator untuk consumer
+                'timestamp' => now()->timestamp,
+            ];
+
+            // Kirim data ke JS Producer endpoint /pengguna/update-info
+            // Producer Anda berjalan di port 3001
+            $response = Http::timeout(5)->post('http://localhost:3001/pengguna/update-info', $dataToProducer);
+
+            if ($response->successful()) {
+                Log::info("Permintaan pembaruan info pengguna dikirim ke JS Producer untuk ID: {$userId}");
+                return response()->json(['message' => 'Permintaan pembaruan berhasil dikirim.']);
+            } else {
+                Log::error("Gagal mengirim permintaan pembaruan info pengguna ke JS Producer: " . $response->body() . " Status: " . $response->status());
+                return response()->json(['message' => 'Gagal memproses permintaan pembaruan. Silakan coba lagi nanti.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error("Pengecualian di updateUserInfo: " . $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
+        }
+    }
+
+    public function updateUserPassword(Request $request)
+    {
+        $userId = Session::get('user_id');
+        if (!$userId) {
+            return response()->json(['message' => 'Pengguna tidak terautentikasi.'], 401);
+        }
+
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        try {
+            $dataToProducer = [
+                'id_pengguna' => (int)$userId, // Pastikan tipe data sesuai di JS
+                'password' => $request->password,
+                'action_type' => 'update_password', // Indikator untuk consumer
+                'timestamp' => now()->timestamp,
+            ];
+
+            // Kirim data ke JS Producer endpoint /pengguna/update-password
+            // Producer Anda berjalan di port 3001
+            $response = Http::timeout(5)->post('http://localhost:3001/pengguna/update-password', $dataToProducer);
+
+            if ($response->successful()) {
+                Log::info("Permintaan pembaruan password pengguna dikirim ke JS Producer untuk ID: {$userId}");
+                return response()->json(['message' => 'Permintaan pembaruan password berhasil dikirim.']);
+            } else {
+                Log::error("Gagal mengirim permintaan pembaruan password pengguna ke JS Producer: " . $response->body() . " Status: " . $response->status());
+                return response()->json(['message' => 'Gagal memproses permintaan pembaruan password. Silakan coba lagi nanti.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error("Pengecualian di updateUserPassword: " . $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
+        }
+    }
+
+    public function deleteUser($id)
+    {
+        // Validasi jika pengguna tidak bisa menghapus dirinya sendiri
+        $currentUserId = Session::get('user_id');
+        if ($id == $currentUserId) {
+            return response()->json(['message' => 'Anda tidak bisa menghapus akun sendiri.'], 403);
+        }
+
+        try {
+            $dataToProducer = [
+                'id_pengguna' => (int)$id, // ID pengguna yang akan dihapus
+                'action_type' => 'delete_user', // Indikator untuk consumer bahwa ini adalah operasi delete user
+                'timestamp' => now()->timestamp,
+                'deleted_by_id' => (int)$currentUserId, // Siapa yang melakukan penghapusan
+            ];
+
+            // Kirim data ke JS Producer endpoint /pengguna/delete
+            // Producer Anda berjalan di port 3001
+            $response = Http::timeout(5)->post('http://localhost:3001/pengguna/delete', $dataToProducer);
+
+            if ($response->successful()) {
+                Log::info("Permintaan penghapusan pengguna dikirim ke JS Producer untuk ID: {$id}");
+                return response()->json(['message' => 'Permintaan penghapusan berhasil dikirim.']);
+            } else {
+                Log::error("Gagal mengirim permintaan penghapusan pengguna ke JS Producer: " . $response->body() . " Status: " . $response->status());
+                return response()->json(['message' => 'Gagal memproses permintaan penghapusan. Silakan coba lagi nanti.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error("Pengecualian di deleteUser: " . $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
+        }
+    }
+
 
 }

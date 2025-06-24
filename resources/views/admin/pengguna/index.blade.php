@@ -89,14 +89,27 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-
-                                                <button class="btn btn-sm btn-outline-secondary"
-                                                    onclick="window.location='{{ route('admin.pengguna.edit', $admin->id_pengguna) }}'"
-                                                    data-bs-toggle="tooltip" title="Detail Admin">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                
-                                        
+                                                {{-- Tombol Edit/Detail --}}
+                                                <a href="{{ route('admin.pengguna.edit', $admin->id_pengguna) }}"
+                                                    class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip"
+                                                    title="Edit Admin">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                {{-- Tombol Delete --}}
+                                                {{-- Penting: Pastikan admin tidak bisa menghapus dirinya sendiri --}}
+                                                @if ($admin->id_pengguna != Session::get('user_id'))
+                                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        onclick="deleteUser({{ $admin->id_pengguna }})"
+                                                        data-bs-toggle="tooltip" title="Hapus Admin">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                @else
+                                                    {{-- Opsi: Tampilkan tombol nonaktif atau pesan --}}
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" disabled
+                                                        data-bs-toggle="tooltip" title="Tidak bisa menghapus akun sendiri">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -147,11 +160,11 @@
             </div>
         </div>
     </div>
-    @include('admin.pengguna.modal_detail')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form when filters change
                 const filterForm = document.getElementById('filterForm');
@@ -181,6 +194,51 @@
 
 
             });
+
+            function deleteUser(userId) {
+                Swal.fire({
+                    title: 'Hapus Pengguna Ini?',
+                    text: "Anda tidak akan dapat mengembalikan ini! Permintaan akan dikirim dan diproses secara asinkron.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Panggil route DELETE di Laravel
+                        axios.delete('{{ route('admin.pengguna.delete', 'userId') }}'.replace('userId', userId))
+                            .then(res => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Permintaan Dikirim!',
+                                    text: res.data.message ||
+                                        'Permintaan penghapusan pengguna telah dikirim. Pengguna akan segera dihapus.',
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    // Setelah request berhasil dikirim, reload halaman untuk melihat perubahan
+                                    // (setelah consumer selesai memproses dan menghapus dari DB)
+                                    location.reload();
+                                });
+                            })
+                            .catch(err => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: err.response?.data?.message ||
+                                        'Gagal mengirim permintaan penghapusan.',
+                                });
+                            });
+                    }
+                });
+            }
         </script>
     @endpush
 @endsection

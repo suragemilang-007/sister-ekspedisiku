@@ -26,27 +26,23 @@ Route::get('/logout', [loginController::class, 'logout'])->name('logout');
 Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(function () {
     // Dashboard utama untuk pengirim
     Route::get('/dashboard', [adminController::class, 'index'])->name('dashboard.admin');
-    // Tracking
-    Route::get('/tracking', [penggunaController::class, 'tracking'])->name('dashboard.tracking');
-    Route::get('/tracking/{id}', [penggunaController::class, 'trackingDetail'])->name('dashboard.tracking.detail');
     // Riwayat pengiriman
     Route::get('/history', [adminController::class, 'history'])->name('dashboard.history');
     // Form pengiriman baru
     Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
     Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
-    // Feedback
-    Route::get('/feedback', [penggunaController::class, 'feedback'])->name('dashboard.feedback');
-    Route::post('/feedback/{id}', [penggunaController::class, 'submitFeedback'])->name('dashboard.submit.feedback');
-    // Hitung biaya pengiriman (AJAX)
-    Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
-
 
     Route::get('/edit', [pengaturanAkunController::class, 'edit'])->name('pengaturan.edit');
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
+//    Route::get('admin/edit', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
+
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
+    Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
+    Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
     Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
+    Route::delete('pengguna/{id}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
 
 
     Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
