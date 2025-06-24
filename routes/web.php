@@ -45,10 +45,8 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
-    //    Route::get('/edit', [adminController::class, 'edit'])->name('pengaturan.edit');
-
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
-    Route::get('/pengguna/edit/{id}', [adminController::class, 'edit'])->name('admin.pengguna.edit');
+    Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
 
 
     Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
