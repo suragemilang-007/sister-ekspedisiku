@@ -128,7 +128,7 @@
                                                     <i class="fas fa-map-marker-alt me-2"></i>{{ $pengiriman->alamatTujuan->alamat_lengkap ?? 'N/A' }}
                                                 </small>
                                                 <small class="text-muted d-block mb-1">
-                                                    <i class="fas fa-box me-2"></i>{{ $pengiriman->layananPaket->nama_layanan ?? 'N/A' }}
+                                                    <i class="fas fa-box me-2"></i>{{ $pengiriman->zonaPengiriman->layananPaket->nama_layanan ?? 'N/A' }}
                                                 </small>
                                                 <small class="text-muted d-block mb-1">
                                                     <i class="fas fa-shipping-fast me-2"></i>{{ $pengiriman->kurir->nama ?? 'N/A' }}
@@ -180,7 +180,7 @@
                                                     <i class="fas fa-map-marker-alt me-2"></i>{{ $pengiriman->alamatTujuan->alamat_lengkap ?? 'N/A' }}
                                                 </small>
                                                 <small class="text-muted d-block mb-1">
-                                                    <i class="fas fa-box me-2"></i>{{ $pengiriman->layananPaket->nama_layanan ?? 'N/A' }}
+                                                    <i class="fas fa-box me-2"></i>{{ $pengiriman->zonaPengiriman->layananPaket->nama_layanan ?? 'N/A' }}
                                                 </small>
                                                 <small class="text-muted d-block mb-1">
                                                     <i class="fas fa-shipping-fast me-2"></i>{{ $pengiriman->kurir->nama ?? 'N/A' }}
