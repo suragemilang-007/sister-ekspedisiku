@@ -12,6 +12,7 @@ import { penggunaTambahHandler } from "../handlers/penggunaAdd.js";
 import { addPengirimanHandler } from "../handlers/addPengiriman.js";
 import { zonaCreateHandler } from "../handlers/zonaAdd.js";
 import { updateZonaHandler } from "../handlers/updateZona.js";
+import { zonaDeleteHandler } from "../handlers/zonaDelete.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -71,6 +72,9 @@ await consumer.run({
                     break;
                 case TOPICS.UPDATE_ZONA:
                     await updateZonaHandler(data);
+                    break;
+                case TOPICS.DELETE_ZONA:
+                    await zonaDeleteHandler(data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

@@ -199,12 +199,12 @@ class ZonaPengirimanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ZonaPengiriman $zonaPengiriman)
+    public function destroy($id)
     {
         try {
             // Siapkan data untuk dikirim ke Kafka Producer
             $dataToProducer = [
-                'id_zona' => $zonaPengiriman->id_zona,
+                'id_zona' => $id,
                 'action_type' => 'delete_zona',
             ];
 
