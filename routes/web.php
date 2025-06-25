@@ -12,6 +12,7 @@ use App\Http\Controllers\penggunaController;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\pengaturanAkunController;
 use App\Http\Controllers\ZonaPengirimanController;
+use App\Http\Controllers\KurirController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -93,6 +94,18 @@ Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
     Route::post('/admin/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('admin.pengaturan.update.info');
     Route::post('/admin/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('admin.pengaturan.update.password');
     Route::get('/admin/detail/{id}', [penggunaController::class, 'showDetail'])->name('admin.pengiriman.detail');
+});
+
+// Route untuk kurir
+Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(function () {
+    // Dashboard kurir
+    Route::get('/dashboard', [KurirController::class, 'dashboard'])->name('kurir.dashboard');
+    // Detail tugas kurir
+    Route::get('/detail/{id_penugasan}', [KurirController::class, 'detail'])->name('kurir.detail');
+    // Update status pengiriman
+    Route::post('/update-status', [KurirController::class, 'updateStatus'])->name('kurir.update.status');
+    // API untuk data dashboard (opsional untuk refresh data)
+    Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
 });
 
 // Group routes untuk feedback (memerlukan autentikasi)

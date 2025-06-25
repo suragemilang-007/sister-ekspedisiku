@@ -12,7 +12,7 @@ class PenugasanKurir extends Model
 
     protected $table = 'penugasan_kurir';
     protected $primaryKey = 'id_penugasan';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'id_pengiriman',
@@ -21,7 +21,8 @@ class PenugasanKurir extends Model
     ];
 
     protected $casts = [
-        'assigned_at' => 'datetime'
+        'assigned_at' => 'datetime',
+        'created_at' => 'datetime'
     ];
 
     public function pengiriman(): BelongsTo
