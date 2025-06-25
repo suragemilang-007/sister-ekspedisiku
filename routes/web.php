@@ -104,6 +104,18 @@ Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(functi
     Route::post('/update-status', [KurirController::class, 'updateStatus'])->name('kurir.update.status');
     // API untuk data dashboard (opsional untuk refresh data)
     Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
+    // Tugas kurir
+    Route::get('/tugas', [KurirController::class, 'tugas'])->name('kurir.tugas');
+    // Riwayat pengiriman
+    Route::get('/riwayat', [KurirController::class, 'riwayat'])->name('kurir.riwayat');
+    // Feedback
+    Route::get('/feedback', [KurirController::class, 'feedback'])->name('kurir.feedback');
+    // Pengaturan akun
+    Route::get('/pengaturan', [KurirController::class, 'pengaturan'])->name('kurir.pengaturan');
+    // Update informasi kurir
+    Route::post('/update-info', [KurirController::class, 'updateInfo'])->name('kurir.update.info');
+    // Update password kurir
+    Route::post('/update-password', [KurirController::class, 'updatePassword'])->name('kurir.update.password');
 });
 
 // Group routes untuk feedback (memerlukan autentikasi)
