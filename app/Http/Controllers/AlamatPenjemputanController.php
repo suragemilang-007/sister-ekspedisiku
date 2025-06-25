@@ -137,6 +137,7 @@ class AlamatPenjemputanController extends Controller
             'kecamatan' => $request->kecamatan,
             'kode_pos' => $request->kode_pos,
             'keterangan_alamat' => $request->keterangan_alamat,
+            'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
 
         return back()->with('success', 'Alamat penjemputan berhasil diperbarui.');
