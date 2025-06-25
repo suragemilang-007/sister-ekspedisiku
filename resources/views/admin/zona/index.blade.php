@@ -111,7 +111,7 @@
                                                 </a>
                                                 {{-- Tombol Delete --}}
                                                 <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    onclick="deleteZona({{ $zona->id_zona }})" data-bs-toggle="tooltip"
+                                                    onclick="Delete({{ $zona->id_zona }})" data-bs-toggle="tooltip"
                                                     title="Hapus Zona Pengiriman">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
@@ -168,6 +168,8 @@
     @include('dashboard_pengirim.modal_detail')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form when filters change
@@ -199,7 +201,7 @@
 
             });
 
-            function deleteZona(id) {
+            function Delete(id) {
                 Swal.fire({
                     title: 'Hapus Zona Pengiriman',
                     text: "Apakah Anda yakin ingin menghapus zona pengiriman ini?",
@@ -209,7 +211,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.delete(`{{ route('admin.zona.delete', 'id') }}'.replace('id', id_zona)`)
+                        axios.delete(`/admin/zona/${id}`)
                             .then(response => {
                                 Swal.fire(
                                     'Berhasil!',
