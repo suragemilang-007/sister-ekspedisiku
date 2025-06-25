@@ -152,12 +152,7 @@
                                         <div class="invalid-feedback">No HP tidak valid</div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating mb-3">
-                                        <input type="hidden" name="id_pengguna" class="form-control" id="id_pengguna"
-                                            placeholder="Username" value="{{ $pengguna->id_pengguna }}" required>
-                                    </div>
-                                </div>
+
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
                                         <textarea name="alamat" class="form-control" id="alamat" placeholder="Alamat" style="height: 100px" required>{{ $pengguna->alamat }}</textarea>
@@ -174,6 +169,12 @@
                                                 Perempuan</option>
                                         </select>
                                         <label for="kelamin">Jenis Kelamin</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="hidden" name="id_pengguna" class="form-control" id="id_pengguna"
+                                            placeholder="Username" value="{{ $pengguna->id_pengguna }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -205,6 +206,12 @@
                                             id="password_confirmation" placeholder="Konfirmasi Password" required>
                                         <label for="password_confirmation">Konfirmasi Password</label>
                                         <div class="invalid-feedback">Password tidak cocok</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="hidden" name="id_pengguna" class="form-control" id="id_pengguna"
+                                            placeholder="Username" value="{{ $pengguna->id_pengguna }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -295,6 +302,8 @@
                                 customClass: {
                                     popup: 'animate__animated animate__fadeInDown'
                                 }
+                            }).then(() => {
+                                window.location.href = '/admin/pengguna';
                             });
                         })
                         .catch(err => {
@@ -346,7 +355,8 @@
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post('/admin/update-password', new FormData(e.target))
+                    axios.post('{{ route('admin.pengguna.update.password', $pengguna->id_pengguna) }}',
+                            new FormData(e.target))
                         .then(res => {
                             Swal.fire({
                                 icon: 'success',
@@ -357,6 +367,8 @@
                                 customClass: {
                                     popup: 'animate__animated animate__fadeInDown'
                                 }
+                            }).then(() => {
+                                window.location.href = '/admin/pengguna';
                             });
                             this.reset();
                             this.classList.remove('was-validated');

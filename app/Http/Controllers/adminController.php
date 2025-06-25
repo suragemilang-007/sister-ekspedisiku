@@ -150,39 +150,13 @@ class adminController extends Controller
 
     public function updateUserPassword(Request $request)
     {
-        $userId = Session::get('user_id');
+        $data = [
+            'id_pengguna' => $request->id_pengguna,
+            'password' => $request->password
+        ];
 
-        if (!$userId) {
-            return response()->json(['message' => 'Pengguna tidak terautentikasi.'], 401);
-        }
-
-        $request->validate([
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        try {
-            $dataToProducer = [
-                'id_pengguna' => $id_pengguna, // Pastikan tipe data sesuai di JS
-                'password' => $request->password,
-                'action_type' => 'update_password', // Indikator untuk consumer
-                'timestamp' => now()->timestamp,
-            ];
-
-            // Kirim data ke JS Producer endpoint /pengguna/update-password
-            // Producer Anda berjalan di port 3001
-            $response = Http::timeout(5)->post('http://localhost:3001/pengguna/update-password', $dataToProducer);
-
-            if ($response->successful()) {
-                Log::info("Permintaan pembaruan password pengguna dikirim ke JS Producer untuk ID: {$userId}");
-                return response()->json(['message' => 'Permintaan pembaruan password berhasil dikirim.']);
-            } else {
-                Log::error("Gagal mengirim permintaan pembaruan password pengguna ke JS Producer: " . $response->body() . " Status: " . $response->status());
-                return response()->json(['message' => 'Gagal memproses permintaan pembaruan password. Silakan coba lagi nanti.'], 500);
-            }
-        } catch (\Exception $e) {
-            Log::error("Pengecualian di updateUserPassword: " . $e->getMessage());
-            return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
-        }
+        Http::post('http://localhost:3001/pengguna/update-password', $data);
+        return response()->json(['status' => 'ok']);
     }
 
     public function deleteUser($id)
