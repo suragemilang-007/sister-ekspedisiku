@@ -9,6 +9,7 @@ import { alamatEditHandler } from "../handlers/alamatEdit.js";
 import { alamatDeleteHandler } from "../handlers/alamatDelete.js";
 import { penggunaTambahHandler } from "../handlers/penggunaAdd.js";
 import { addPengirimanHandler } from "../handlers/addPengiriman.js";
+import { zonaCreateHandler } from "../handlers/zonaAdd.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -25,6 +26,9 @@ await Promise.all([
     consumer.subscribe({ topic: TOPICS.DELETE_USER, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ADD_USER, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ADD_PENGIRIMAN, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.ADD_ZONA, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.UPDATE_ZONA, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.DELETE_ZONA, fromBeginning: false }),
 ]);
 
 await consumer.run({
@@ -56,6 +60,9 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
+                    break;
+                case TOPICS.ADD_ZONA:
+                    await zonaCreateHandler(data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);
