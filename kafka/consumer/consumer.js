@@ -3,6 +3,7 @@ import { TOPICS } from "../config/topics.js";
 
 import { updateInfoHandler } from "../handlers/updateInfo.js";
 import { updatePasswordHandler } from "../handlers/updatePassword.js";
+import { penggunaDeleteHandler } from "../handlers/penggunaDelete.js";
 import { feedbackHandler } from "../handlers/feedback.js";
 import { alamatTambahHandler } from "../handlers/alamatTambah.js";
 import { alamatEditHandler } from "../handlers/alamatEdit.js";
@@ -53,6 +54,9 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_USER:
                     await penggunaTambahHandler(data);
+                    break;
+                case TOPICS.DELETE_USER:
+                    await penggunaDeleteHandler(data);
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
