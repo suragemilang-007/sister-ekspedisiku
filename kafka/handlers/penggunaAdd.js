@@ -22,13 +22,13 @@ export async function penggunaTambahHandler(data) {
     // Jika Anda ingin melakukan hashing di sisi consumer (tidak direkomendasikan jika sudah di-hash di Laravel),
     // maka gunakan: const hashedPassword = await bcrypt.hash(data.password, 10);
     // Tetapi karena sudah di-hash di Laravel, kita pakai nama sandi_hash
-    
+
     try {
         await db.execute(
             `
             INSERT INTO pengguna (
-                nama, email, sandi_hash, tgl_lahir, nohp, alamat, kelamin, peran, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                nama, email, sandi_hash, tgl_lahir, nohp, alamat, kelamin, peran, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             `,
             [
                 data.nama,
@@ -39,7 +39,6 @@ export async function penggunaTambahHandler(data) {
                 data.alamat || null,     // Alamat bisa null
                 data.kelamin,
                 data.peran, // Harusnya 'admin' dari Laravel
-                now,
                 now,
             ]
         );
