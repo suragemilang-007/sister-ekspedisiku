@@ -139,55 +139,19 @@ class adminController extends Controller
         }
     }
 
+
     public function updateUserInfo(Request $request)
     {
-        $userId = Session::get('user_id');
-        if (!$userId) {
-            return response()->json(['message' => 'Pengguna tidak terautentikasi.'], 401);
-        }
+        $data = $request->only(['id_pengguna', 'nama', 'email', 'tgl_lahir', 'nohp', 'alamat', 'kelamin']);
 
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'tgl_lahir' => 'nullable|date',
-            'nohp' => 'nullable|string|max:255',
-            'alamat' => 'nullable|string',
-            'kelamin' => 'required|in:L,P',
-        ]);
-
-        try {
-            $dataToProducer = [
-                'id_pengguna' => (int)$userId, // Pastikan tipe data sesuai di JS
-                'nama' => $request->nama,
-                'email' => $request->email,
-                'tgl_lahir' => $request->tgl_lahir,
-                'nohp' => $request->nohp,
-                'alamat' => $request->alamat,
-                'kelamin' => $request->kelamin,
-                'action_type' => 'update_info', // Indikator untuk consumer
-                'timestamp' => now()->timestamp,
-            ];
-
-            // Kirim data ke JS Producer endpoint /pengguna/update-info
-            // Producer Anda berjalan di port 3001
-            $response = Http::timeout(5)->post('http://localhost:3001/pengguna/update-info', $dataToProducer);
-
-            if ($response->successful()) {
-                Log::info("Permintaan pembaruan info pengguna dikirim ke JS Producer untuk ID: {$userId}");
-                return response()->json(['message' => 'Permintaan pembaruan berhasil dikirim.']);
-            } else {
-                Log::error("Gagal mengirim permintaan pembaruan info pengguna ke JS Producer: " . $response->body() . " Status: " . $response->status());
-                return response()->json(['message' => 'Gagal memproses permintaan pembaruan. Silakan coba lagi nanti.'], 500);
-            }
-        } catch (\Exception $e) {
-            Log::error("Pengecualian di updateUserInfo: " . $e->getMessage());
-            return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
-        }
+        Http::post('http://localhost:3001/pengguna/update-info', $data);
+        return response()->json(['status' => 'ok']);
     }
 
     public function updateUserPassword(Request $request)
     {
         $userId = Session::get('user_id');
+
         if (!$userId) {
             return response()->json(['message' => 'Pengguna tidak terautentikasi.'], 401);
         }
@@ -198,7 +162,7 @@ class adminController extends Controller
 
         try {
             $dataToProducer = [
-                'id_pengguna' => (int)$userId, // Pastikan tipe data sesuai di JS
+                'id_pengguna' => $id_pengguna, // Pastikan tipe data sesuai di JS
                 'password' => $request->password,
                 'action_type' => 'update_password', // Indikator untuk consumer
                 'timestamp' => now()->timestamp,
@@ -253,6 +217,4 @@ class adminController extends Controller
             return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
         }
     }
-
-
 }

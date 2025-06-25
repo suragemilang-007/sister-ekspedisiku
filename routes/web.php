@@ -36,13 +36,14 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
-//    Route::get('admin/edit', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
+    //    Route::get('admin/edit', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
 
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
     Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
     Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
     Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
     Route::delete('pengguna/{id}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
+    Route::post('/pengguna/update/{id}', [adminController::class, 'updateUserInfo'])->name('admin.pengguna.update');
 
 
     Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
@@ -52,7 +53,6 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
     Route::put('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
     Route::delete('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'destroy'])->name('admin.zona.destroy');
-
 });
 
 // Route untuk pengirim
@@ -123,7 +123,6 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::get('/alamat-tujuan/edit/{id}', [AlamatTujuanController::class, 'edit'])->name('alamat-tujuan.edit');
     Route::post('/alamat-tujuan/update/{id}', [AlamatTujuanController::class, 'update'])->name('alamat-tujuan.update');
     Route::delete('/alamat-tujuan/delete/{id}', [AlamatTujuanController::class, 'destroy'])->name('alamat-tujuan.destroy');
-
 });
 
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
