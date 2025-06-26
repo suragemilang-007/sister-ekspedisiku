@@ -114,7 +114,7 @@ Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(functi
     Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
 });
 
-// Group routes untuk feedback (memerlukan autentikasi)
+// Group routes untuk feedback 
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     // Halaman utama feedback
     Route::get('dashboard/pengirim/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
@@ -164,4 +164,15 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::resource('alamat-penjemputan', AlamatPenjemputanController::class);
     Route::get('/api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatPenjemputan']);
     Route::get('/api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getAlamatPenjemputanDetail']);
+});
+
+Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
+    Route::resource('alamat-penjemputan', AlamatPenjemputanController::class);
+    Route::get('api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatTujuan']);
+    Route::get('api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getPenjemputanDetail']);
+    Route::post('/alamat-penjemputan/store', [AlamatPenjemputanController::class, 'store'])->name('alamat-penjemputan.store');
+    Route::get('/alamat-penjemputan', [AlamatPenjemputanController::class, 'index'])->name('alamat-penjemputan.index');
+    Route::get('/alamat-penjemputan/edit/{id}', [AlamatPenjemputanController::class, 'edit'])->name('alamat-penjemputan.edit');
+    Route::post('/alamat-penjemputan/update/{id}', [AlamatPenjemputanController::class, 'update'])->name('alamat-penjemputan.update');
+    Route::delete('/alamat-penjemputan/delete/{id}', [AlamatPenjemputanController::class, 'destroy'])->name('alamat-penjemputan.destroy');
 });
