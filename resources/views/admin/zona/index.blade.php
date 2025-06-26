@@ -201,7 +201,7 @@
 
             });
 
-            function Delete(id) {
+            function Delete(idZona) {
                 Swal.fire({
                     title: 'Hapus Zona Pengiriman',
                     text: "Apakah Anda yakin ingin menghapus zona pengiriman ini?",
@@ -211,22 +211,28 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.delete(`/admin/zona/${id}`)
-                            .then(response => {
-                                Swal.fire(
-                                    'Berhasil!',
-                                    'Zona pengiriman telah dihapus.',
-                                    'success'
-                                ).then(() => {
+                        axios.delete('{{ route('admin.zona.delete', 'idZona') }}'.replace('idZona', idZona))
+                            .then(res => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Permintaan Dikirim!',
+                                    text: res.data.message ||
+                                        'Permintaan penghapusan zona pengiriman telah dikirim. Zona Pengiriman akan segera dihapus.',
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    // Setelah request berhasil dikirim, reload halaman untuk melihat perubahan
+                                    // (setelah consumer selesai memproses dan menghapus dari DB)
                                     location.reload();
                                 });
                             })
-                            .catch(error => {
-                                Swal.fire(
-                                    'Gagal!',
-                                    'Terjadi kesalahan saat menghapus zona pengiriman.',
-                                    'error'
-                                );
+                            .catch(err => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: err.response?.data?.message ||
+                                        'Gagal mengirim permintaan penghapusan.',
+                                });
                             });
                     }
                 });
