@@ -130,7 +130,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-filter"></i>
                             </button>
-                            <a href="{{ route('dashboard.history') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('dashboard.history.pengiriman') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-undo"></i>
                             </a>
                         </div>
@@ -239,7 +239,7 @@
                     </p>
                     <div class="d-flex gap-2 justify-content-center">
                         @if(request('search') || request('status') != 'all' || request('date_from') || request('date_to'))
-                            <a href="{{ route('dashboard.pengirim.history') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('dashboard.history.pengiriman') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-undo me-2"></i> Reset Filter
                             </a>
                         @endif

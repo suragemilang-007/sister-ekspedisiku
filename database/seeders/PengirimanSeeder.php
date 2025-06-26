@@ -12,7 +12,7 @@ class PengirimanSeeder extends Seeder
     {
         $data = [
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 20000,
@@ -24,7 +24,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 6,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000006',
                 'id_alamat_tujuan' => 2,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 25000,
@@ -36,7 +36,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 6,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000006',
                 'id_alamat_tujuan' => 3,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 22000,
@@ -48,7 +48,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 7,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000007',
                 'id_alamat_tujuan' => 4,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 21000,
@@ -60,7 +60,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 7,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000007',
                 'id_alamat_tujuan' => 5,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 23000,
@@ -72,7 +72,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 2,
                 'total_biaya' => 24000,
@@ -84,7 +84,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 26000,
@@ -96,7 +96,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 2,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 28000,
@@ -108,7 +108,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 4,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 29000,
@@ -120,7 +120,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 6,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000006',
                 'id_alamat_tujuan' => 4,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 30000,
@@ -132,7 +132,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 6,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000006',
                 'id_alamat_tujuan' => 3,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 22000,
@@ -144,7 +144,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 2,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 24500,
@@ -156,7 +156,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 26000,
@@ -168,7 +168,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 2,
                 'id_alamat_penjemputan' => 3,
                 'total_biaya' => 23000,
@@ -180,7 +180,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 7,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000007',
                 'id_alamat_tujuan' => 3,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 25500,
@@ -192,7 +192,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 7,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000007',
                 'id_alamat_tujuan' => 4,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 27000,
@@ -204,7 +204,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 2,
                 'id_alamat_penjemputan' => 3,
                 'total_biaya' => 25000,
@@ -216,7 +216,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 2,
                 'id_alamat_penjemputan' => 3,
                 'total_biaya' => 27500,
@@ -228,7 +228,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 3,
                 'total_biaya' => 29000,
@@ -240,7 +240,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 3,
                 'total_biaya' => 31000,
@@ -252,7 +252,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 3,
                 'total_biaya' => 29000,
@@ -265,7 +265,7 @@ class PengirimanSeeder extends Seeder
             ],
 
             [
-                'id_pengirim' => 6,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000006',
                 'id_alamat_tujuan' => 1,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 29000,
@@ -277,7 +277,7 @@ class PengirimanSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'id_pengirim' => 7,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000007',
                 'id_alamat_tujuan' => 2,
                 'id_alamat_penjemputan' => 1,
                 'total_biaya' => 29000,

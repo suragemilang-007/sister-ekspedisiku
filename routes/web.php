@@ -67,19 +67,9 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
 Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session'])->group(function () {
     // Dashboard utama untuk pengirim
     Route::get('/', [penggunaController::class, 'index'])->name('dashboard.pengirim');
-    // Tracking
-    Route::get('/tracking', [penggunaController::class, 'tracking'])->name('dashboard.tracking');
-    Route::get('/tracking/{id}', [penggunaController::class, 'trackingDetail'])->name('dashboard.tracking.detail');
     // Riwayat pengiriman
-    Route::get('/history', [penggunaController::class, 'history'])->name('dashboard.history');
-    // Form pengiriman baru
-    Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
-    Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
-    // Feedback
-    Route::get('/feedback', [penggunaController::class, 'feedback'])->name('dashboard.feedback');
-    Route::post('/feedback/{id}', [penggunaController::class, 'submitFeedback'])->name('dashboard.submit.feedback');
-    // Hitung biaya pengiriman (AJAX)
-    Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
+    Route::get('/history', [penggunaController::class, 'history'])->name('dashboard.history.pengiriman');
+
     Route::get("/dashboard/pengirim/detail/{id}", [penggunaController::class, 'showDetail'])->name('dashboard.pengirim.detail');
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
     Route::get('/alamat-tujuan', [AlamatTujuanController::class, 'index'])->name('alamattujuan.index');

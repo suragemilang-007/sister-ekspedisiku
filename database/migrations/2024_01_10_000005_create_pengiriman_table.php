@@ -9,7 +9,8 @@ return new class extends Migration {
     {
         Schema::create('pengiriman', function (Blueprint $table) {
             $table->id('id_pengiriman');
-            $table->foreignId('id_pengirim')->constrained('pengguna', 'id_pengguna');
+            $table->uuid('id_pengirim');
+            $table->foreign('id_pengirim')->references('uid')->on('pengguna')->onDelete('cascade');
             $table->foreignId('id_alamat_tujuan')->constrained('alamat_tujuan', 'id_alamat_tujuan');
             $table->foreignId('id_alamat_penjemputan')->constrained('alamat_penjemputan', 'id_alamat_penjemputan');
             $table->decimal('total_biaya', 12, 2);
