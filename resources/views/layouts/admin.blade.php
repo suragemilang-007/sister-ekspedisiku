@@ -515,27 +515,27 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/dashboard/admin/kurir" class="nav-link {{ Request::is('dashboard/admin/kurir*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Tambah Kurir">
+                    <a href="/dashboard/admin/kurir" class="nav-link {{ Request::is('dashboard/admin/kurir*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Kurir">
                         <i class="fas fa-id-card"></i>
-                        <span class="nav-text">Tambah Kurir</span>
+                        <span class="nav-text">Manajemen Kurir</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/dashboard/admin/assign-kurir" class="nav-link {{ Request::is('dashboard/admin/assign-kurir*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Assign Kurir">
+                    <a href="/admin/layanan" class="nav-link {{ Request::is('admin/layanan*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Layanan/Paket">
                         <i class="fas fa-truck-fast"></i>
-                        <span class="nav-text">Assign Kurir</span>
+                        <span class="nav-text">Manajemen Layanan</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="/admin/zona" class="nav-link {{ Request::is('admin/zona*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Zona Pengiriman">
                         <i class="fas fa-map"></i>
-                        <span class="nav-text">Edit Zona Pengiriman</span>
+                        <span class="nav-text">Manajemen Zona Pengiriman</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/pengguna" class="nav-link {{ Request::is('admin/pengguna*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Tambah Admin">
+                    <a href="/admin/pengguna" class="nav-link {{ Request::is('admin/pengguna*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Admin">
                         <i class="fas fa-user-plus"></i>
-                        <span class="nav-text">Tambah Admin</span>
+                        <span class="nav-text">Manajemen Admin</span>
                     </a>
                 </li>
                 
