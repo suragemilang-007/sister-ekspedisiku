@@ -81,6 +81,7 @@ class AlamatPenjemputanController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
+
         $alamatPenjemputan = AlamatPenjemputan::where('id_alamat_penjemputan', $id)
             ->where('id_pengirim', $userId)
             ->first();
@@ -90,7 +91,7 @@ class AlamatPenjemputanController extends Controller
                 ->with('error', 'Alamat penjemputan tidak ditemukan');
         }
 
-        return view('alamat-penjemputan.show', compact('alamatPenjemputan'));
+        return view('pengguna.alamat-penjemputan.show', compact('alamatPenjemputan'));
     }
 
     /**
@@ -113,7 +114,7 @@ class AlamatPenjemputanController extends Controller
                 ->with('error', 'Alamat penjemputan tidak ditemukan');
         }
 
-        return view('alamat-penjemputan.edit', compact('data'));
+        return view('pengguna.alamat-penjemputan.edit', compact('data'));
     }
 
     /**

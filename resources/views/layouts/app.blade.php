@@ -525,14 +525,20 @@
                         <span class="nav-text">Pengiriman Baru</span>
                     </a>
                 </li>
-                
-                
             </ul>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a href="/dashboard/pengirim/alamat-tujuan" class="nav-link {{ Request::is('dashboard/pengirim/alamat-tujuan*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Form Pengiriman Baru">
                         <i class="fa-solid fa-truck-fast"></i>
                         <span class="nav-text">Alamat Tujuan</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="/alamat-penjemputan" class="nav-link {{ Request::is('/alamat-penjemputan*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Form Pengiriman Baru">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span class="nav-text">Alamat Penjemputan</span>
                     </a>
                 </li>
             </ul>
