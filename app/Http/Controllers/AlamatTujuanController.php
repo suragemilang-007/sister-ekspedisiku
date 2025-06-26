@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AlamatTujuan;
 use App\Models\Pengguna;
+use App\Models\ZonaPengiriman;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -25,7 +26,8 @@ class AlamatTujuanController extends Controller
         $alamatTujuan = AlamatTujuan::where('id_pengirim', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
-
+        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
+        $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('kecamatan_tujuan');
         return view('alamat-tujuan.index', compact('alamatTujuan'));
     }
 
@@ -35,12 +37,13 @@ class AlamatTujuanController extends Controller
     public function create()
     {
         $userId = Session::get('user_id');
-
+        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
+        $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('kecamatan_tujuan');
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        return view('alamat-tujuan.create');
+        return view('alamat-tujuan.create', compact('kecamatanTujuan'));
     }
 
     /**

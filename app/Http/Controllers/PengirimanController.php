@@ -71,7 +71,7 @@ class PengirimanController extends Controller
             'kecamatan_asal' => 'required|string',
             'kecamatan_tujuan' => 'required|string',
             'catatan_opsional' => 'nullable|string',
-            'foto_barang' => 'nullable|string', // base64 atau path
+            'foto_barang' => 'nullable|string',
         ]);
 
         // Validasi alamat penjemputan
@@ -117,10 +117,11 @@ class PengirimanController extends Controller
         $nomorResi = 'EXP' . date('Ymd') . strtoupper(Str::random(6));
 
         // Calculate total biaya
-        $totalBiaya = $zonaPengiriman->biaya_tambahan + $zonaPengiriman->layananPaket->harga_Dasar;
+        $totalBiaya = $zonaPengiriman->biaya_tambahan + $zonaPengiriman->layananPaket->harga_dasar;
 
+        $base64 = base64_encode(file_get_contents($request->foto_barang));
         // Send to Kafka producer
-        $response = Http::post('http://localhost:3001/pengiriman', [
+        $response = Http::post('http://localhost:3001/pengiriman_add', [
             'id_pengirim' => $userId,
             'id_alamat_tujuan' => $idAlamatTujuan,
             'id_alamat_penjemputan' => $idAlamatPenjemputan,
@@ -129,7 +130,8 @@ class PengirimanController extends Controller
             'status' => 'MENUNGGU KONFIRMASI',
             'nomor_resi' => $nomorResi,
             'catatan_opsional' => $request->catatan_opsional,
-            'foto_barang' => $request->foto_barang,
+            'foto_barang' => $base64,
+            'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
 
         if ($response->successful()) {
@@ -190,6 +192,7 @@ class PengirimanController extends Controller
             'id_layanan' => 'required|exists:layanan_paket,id_layanan'
         ]);
 
+
         $zonaPengiriman = ZonaPengiriman::where('kecamatan_asal', $request->kecamatan_asal)
             ->where('kecamatan_tujuan', $request->kecamatan_tujuan)
             ->where('id_layanan', $request->id_layanan)
@@ -204,10 +207,11 @@ class PengirimanController extends Controller
 
         return response()->json([
             'id_zona' => $zonaPengiriman->id_zona,
-            'biaya_zona' => $zonaPengiriman->biaya_zona,
+            'biaya_zona' => $zonaPengiriman->biaya_tambahan,
             'asal' => $zonaPengiriman->kecamatan_asal,
             'tujuan' => $zonaPengiriman->kecamatan_tujuan,
             'layanan' => $zonaPengiriman->layananPaket->nama_layanan,
+            'harga_dasar' => $zonaPengiriman->layananPaket->harga_dasar,
             'deskripsi_layanan' => $zonaPengiriman->layananPaket->deskripsi
         ]);
     }

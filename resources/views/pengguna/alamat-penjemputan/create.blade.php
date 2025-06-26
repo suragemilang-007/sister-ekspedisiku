@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-5">
     <div class="card shadow p-4 rounded-4">
-        <h4>Tambah Alamat Tujuan</h4>
+        <h4>Tambah Alamat</h4>
         <form id="alamatForm">
             @csrf
             <div class="mb-3">
@@ -23,7 +23,7 @@
                 
                 <select class="form-select" id="kecamatan" name="kecamatan" required>
                                             <option value="">Pilih kecamatan asal...</option>
-                                            @foreach($kecamatanTujuan as $kecamatan)
+                                            @foreach($kecamatanAsal as $kecamatan)
                                             <option value="{{ $kecamatan }}">{{ $kecamatan }}</option>
                                             @endforeach
                                         </select>
@@ -77,12 +77,12 @@ document.getElementById('alamatForm').addEventListener('submit', function(e) {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            axios.post("{{ route('alamat-tujuan.store') }}", new FormData(this))
+            axios.post("{{ route('alamat-penjemputan.store') }}", new FormData(this))
                 .then(response => {
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: 'Alamat tujuan berhasil disimpan.',
+                        text: 'Alamat penjemputan berhasil disimpan.',
                         timer: 2000,
                         showConfirmButton: false
                     });

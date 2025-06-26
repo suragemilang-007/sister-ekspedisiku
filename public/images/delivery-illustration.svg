@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+    <!-- Delivery Van -->
+    <g transform="translate(400, 300)">
+        <!-- Van Body -->
+        <path d="M-200,-50 h300 l50,50 v100 h-350 v-150 z" fill="#0ea5e9" stroke="#0284c7" stroke-width="4"/>
+        <!-- Van Window -->
+        <path d="M-180,-30 h100 v60 h-100 v-60 z" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+        <!-- Wheels -->
+        <circle cx="-150" cy="120" r="30" fill="#1e293b" stroke="#0f172a" stroke-width="4"/>
+        <circle cx="100" cy="120" r="30" fill="#1e293b" stroke="#0f172a" stroke-width="4"/>
+        <!-- Wheel Hubs -->
+        <circle cx="-150" cy="120" r="10" fill="#94a3b8"/>
+        <circle cx="100" cy="120" r="10" fill="#94a3b8"/>
+    </g>
+    <!-- Package -->
+    <g transform="translate(550, 280)">
+        <path d="M-30,-30 h60 l10,10 v50 h-80 v-50 l10,-10 z" fill="#f59e0b" stroke="#d97706" stroke-width="3"/>
+        <path d="M-30,-30 l10,10 h60 l-10,-10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+        <path d="M40,-20 v50 l-10,10" fill="none" stroke="#d97706" stroke-width="2"/>
+    </g>
+    <!-- Decorative Elements -->
+    <g transform="translate(400, 300)">
+        <!-- Speed Lines -->
+        <path d="M-250,0 h-50" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+        <path d="M-270,20 h-40" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+        <path d="M-260,-20 h-45" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    </g>
+</svg>

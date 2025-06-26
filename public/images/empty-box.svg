@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+    <!-- Box Base -->
+    <path d="M50,250 l150,-86.6 l150,86.6 l-150,86.6 z" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+    
+    <!-- Box Right Side -->
+    <path d="M350,250 v-100 l-150,-86.6 v100 z" fill="#cbd5e1" stroke="#94a3b8" stroke-width="4"/>
+    
+    <!-- Box Left Side -->
+    <path d="M50,250 v-100 l150,-86.6 v100 z" fill="#f1f5f9" stroke="#94a3b8" stroke-width="4"/>
+    
+    <!-- Box Top Opening -->
+    <path d="M75,140 l125,-72.16 l125,72.16 l-125,72.16 z" fill="#f8fafc" stroke="#94a3b8" stroke-width="4"/>
+    
+    <!-- Box Flaps -->
+    <path d="M75,140 l50,-80 l75,7.84 l-125,72.16 z" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+    <path d="M325,140 l-50,-80 l-75,7.84 l125,72.16 z" fill="#cbd5e1" stroke="#94a3b8" stroke-width="4"/>
+    
+    <!-- Decorative Lines -->
+    <path d="M150,200 l100,-57.74" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M200,230 v60" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4"/>
+</svg>

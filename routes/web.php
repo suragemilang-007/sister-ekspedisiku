@@ -37,22 +37,23 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
-    //    Route::get('admin/edit', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
-
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
     Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
     Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
     Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
     Route::delete('pengguna/{id}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
+    Route::post('/pengguna/update/{id}', [adminController::class, 'updateUserInfo'])->name('admin.pengguna.update');
+    Route::post('/pengguna/update-password/{id}', [adminController::class, 'updateUserPassword'])->name('admin.pengguna.update.password');
 
 
+    // Route untuk mengelola zona pengiriman
     Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
     Route::get('/zona/create', [ZonaPengirimanController::class, 'create'])->name('admin.zona.create');
     Route::post('/zona/store', [ZonaPengirimanController::class, 'store'])->name('admin.zona.store');
     Route::get('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'show'])->name('admin.zona.show');
     Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
-    Route::put('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
-    Route::delete('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'destroy'])->name('admin.zona.destroy');
+    Route::post('/zona/update/{id}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
+    Route::delete('/zona/{id}', [ZonaPengirimanController::class, 'deleteZona'])->name('admin.zona.delete');
 });
 
 // Route untuk pengirim

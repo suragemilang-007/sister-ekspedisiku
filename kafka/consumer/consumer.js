@@ -3,11 +3,16 @@ import { TOPICS } from "../config/topics.js";
 
 import { updateInfoHandler } from "../handlers/updateInfo.js";
 import { updatePasswordHandler } from "../handlers/updatePassword.js";
+import { penggunaDeleteHandler } from "../handlers/penggunaDelete.js";
 import { feedbackHandler } from "../handlers/feedback.js";
 import { alamatTambahHandler } from "../handlers/alamatTambah.js";
 import { alamatEditHandler } from "../handlers/alamatEdit.js";
 import { alamatDeleteHandler } from "../handlers/alamatDelete.js";
 import { penggunaTambahHandler } from "../handlers/penggunaAdd.js";
+import { addPengirimanHandler } from "../handlers/addPengiriman.js";
+import { zonaCreateHandler } from "../handlers/zonaAdd.js";
+import { updateZonaHandler } from "../handlers/updateZona.js";
+import { zonaDeleteHandler } from "../handlers/zonaDelete.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -23,6 +28,10 @@ await Promise.all([
     consumer.subscribe({ topic: TOPICS.ALAMAT_DELETE, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.DELETE_USER, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ADD_USER, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.ADD_PENGIRIMAN, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.ADD_ZONA, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.UPDATE_ZONA, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.DELETE_ZONA, fromBeginning: false }),
 ]);
 
 await consumer.run({
@@ -51,6 +60,21 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_USER:
                     await penggunaTambahHandler(data);
+                    break;
+                case TOPICS.DELETE_USER:
+                    await penggunaDeleteHandler(data);
+                    break;
+                case TOPICS.ADD_PENGIRIMAN:
+                    await addPengirimanHandler(data);
+                    break;
+                case TOPICS.ADD_ZONA:
+                    await zonaCreateHandler(data);
+                    break;
+                case TOPICS.UPDATE_ZONA:
+                    await updateZonaHandler(data);
+                    break;
+                case TOPICS.DELETE_ZONA:
+                    await zonaDeleteHandler(data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

@@ -24,3 +24,4 @@ Homestead.yaml
 Thumbs.db
 /kafka/node_modules
 composer.lock
+/kafka/config/db.js
