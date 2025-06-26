@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 
 class ZonaPengirimanController extends Controller
 {
@@ -128,7 +127,7 @@ class ZonaPengirimanController extends Controller
     public function show(ZonaPengiriman $zonaPengiriman)
     {
         $zonaPengiriman->load('layananPaket');
-        return view('admin/zona.show', compact('zonaPengiriman'));
+        return view('admin.zona.index', compact('zonaPengiriman'));
     }
 
     /**
@@ -199,8 +198,11 @@ class ZonaPengirimanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function deleteZona($id)
     {
+        $zonaPengiriman = ZonaPengiriman::findOrFail($id);
+
+        
         try {
             // Siapkan data untuk dikirim ke Kafka Producer
             $dataToProducer = [
@@ -209,7 +211,7 @@ class ZonaPengirimanController extends Controller
             ];
 
             // Kirim data ke JS Producer endpoint (misal: /zona/delete)
-            $response = Http::timeout(5)->post('http://localhost:3001/zona/delete', $dataToProducer);
+            $response = Http::timeout(10)->post('http://localhost:3001/zona/delete', $dataToProducer);
 
             if ($response->successful()) {
                 Log::info("Permintaan penghapusan zona pengiriman dikirim ke JS Producer: " . $zonaPengiriman->nama_zona);
