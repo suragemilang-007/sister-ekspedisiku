@@ -52,7 +52,7 @@ document.getElementById('editForm').addEventListener('submit', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             const formData = new FormData(this);
-            axios.post("{{ route('alamat-tujuan.update', $data->id_alamat_tujuan) }}", formData)
+            axios.post("{{ route('alamat-tujuan.update', $data->uid) }}", formData)
                 .then(() => {
                     Swal.fire({
                         icon: 'success',

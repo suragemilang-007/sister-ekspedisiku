@@ -5,7 +5,7 @@ export async function alamatEditHandler(data) {
         `
         UPDATE alamat_tujuan 
         SET nama_penerima=?, no_hp=?, alamat_lengkap=?, kecamatan=?, kode_pos=?, keterangan_alamat=?
-        WHERE id_alamat_tujuan=?
+        WHERE uid=?
     `,
         [
             data.nama_penerima,
@@ -14,7 +14,7 @@ export async function alamatEditHandler(data) {
             data.kecamatan,
             data.kode_pos,
             data.keterangan_alamat,
-            data.id_alamat_tujuan,
+            data.uid,
         ]
     );
     console.log("✏️ Alamat diperbarui:", data.id_alamat_tujuan);
