@@ -44,7 +44,7 @@ class PengirimanController extends Controller
         $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('kecamatan_tujuan');
 
-        return view('pengiriman.create', compact(
+        return view('pengguna.pengiriman.create', compact(
             'alamatPenjemputan',
             'alamatTujuan',
             'layananPaket',
@@ -77,7 +77,7 @@ class PengirimanController extends Controller
         // Validasi alamat penjemputan
         if ($request->alamat_penjemputan_type === 'existing') {
             $request->validate([
-                'id_alamat_penjemputan' => 'required|exists:alamat_penjemputan,id_alamat_penjemputan'
+                'id_alamat_penjemputan' => 'required|exists:alamat_penjemputan,uid'
             ]);
             $idAlamatPenjemputan = $request->id_alamat_penjemputan;
         } else {
@@ -90,7 +90,7 @@ class PengirimanController extends Controller
         // Validasi alamat tujuan
         if ($request->alamat_tujuan_type === 'existing') {
             $request->validate([
-                'id_alamat_tujuan' => 'required|exists:alamat_tujuan,id_alamat_tujuan'
+                'id_alamat_tujuan' => 'required|exists:alamat_tujuan,uid'
             ]);
             $idAlamatTujuan = $request->id_alamat_tujuan;
         } else {

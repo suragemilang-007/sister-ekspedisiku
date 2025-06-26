@@ -21,8 +21,8 @@ return new class extends Migration {
             $table->string('nomor_resi')->unique();
             $table->text('catatan_opsional')->nullable();
             $table->text('keterangan_batal')->nullable();
-            $table->string('foto_barang')->nullable();
-            $table->string('foto_bukti_sampai')->nullable();
+            $table->longText('foto_barang')->nullable();
+            $table->longText('foto_bukti_sampai')->nullable();
             $table->timestamp('tanggal_sampai')->nullable();
             $table->timestamp('created_at');
         });
