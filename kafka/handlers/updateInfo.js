@@ -5,7 +5,7 @@ export async function updateInfoHandler(data) {
         `
         UPDATE pengguna 
         SET nama=?, email=?, tgl_lahir=?, nohp=?, alamat=?, kelamin=? 
-        WHERE id_pengguna=?
+        WHERE uid=?
     `,
         [
             data.nama,
@@ -14,8 +14,8 @@ export async function updateInfoHandler(data) {
             data.nohp,
             data.alamat,
             data.kelamin,
-            data.id_pengguna,
+            data.uid,
         ]
     );
-    console.log("✅ Informasi pengguna diperbarui:", data.id_pengguna);
+    console.log("✅ Informasi pengguna diperbarui:", data.uid);
 }

@@ -19,7 +19,7 @@ class FeedbackController extends Controller
      */
     public function index()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         // Pengiriman yang sudah selesai (DITERIMA) tapi belum ada feedback
         // $pengirimanTanpaFeedback = Pengiriman::where('id_pengirim', $userId)
@@ -65,7 +65,7 @@ class FeedbackController extends Controller
      */
     public function create($id_pengiriman)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
         // Cek apakah pengiriman ini milik user dan sudah selesai
         $pengiriman = Pengiriman::where('id_pengirim', $userId)
             ->where('id_pengiriman', $id_pengiriman)
@@ -100,7 +100,7 @@ class FeedbackController extends Controller
      */
     public function show($id_pengiriman)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         // Ambil pengiriman dengan feedback
         $pengiriman = Pengiriman::where('id_pengiriman', $id_pengiriman)
@@ -125,7 +125,7 @@ class FeedbackController extends Controller
      */
     public function statistics()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         $stats = [
             'total_pengiriman_selesai' => Pengiriman::where('id_pengirim', $userId)

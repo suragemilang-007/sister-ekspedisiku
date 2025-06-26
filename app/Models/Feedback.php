@@ -15,7 +15,8 @@ class Feedback extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_pengiriman',
+        'uid',
+        'id_pengirim',
         'rating',
         'komentar',
         'created_at'
@@ -29,5 +30,14 @@ class Feedback extends Model
     public function pengiriman(): BelongsTo
     {
         return $this->belongsTo(Pengiriman::class, 'id_pengiriman');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->uid = (string) str()::uuid();
+        });
     }
 }
