@@ -487,6 +487,11 @@ class PenggunaSeeder extends Seeder
             ],
         ];
 
+        foreach ($data as $index => &$item) {
+            $item['uid'] = sprintf('00000000-0000-0000-0000-%012d', $index + 1);
+        }
+
         DB::table('pengguna')->insert($data);
+
     }
 }
