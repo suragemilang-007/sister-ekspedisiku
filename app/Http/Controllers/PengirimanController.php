@@ -114,7 +114,7 @@ class PengirimanController extends Controller
         }
 
         // Generate nomor resi
-        $nomorResi = 'EXP' . date('Ymd') . strtoupper(Str::random(6));
+        $nomorResi = 'RESI' . date('Ymd') . strtoupper(Str::random(6));
 
         // Calculate total biaya
         $totalBiaya = $zonaPengiriman->biaya_tambahan + $zonaPengiriman->layananPaket->harga_dasar;

@@ -1,13 +1,14 @@
 import db from "../config/db.js";
 
 export async function feedbackHandler(data) {
+    console.log(data);
     await db.execute(
         `
-        INSERT INTO feedback (id_pengiriman, rating, komentar, created_at)
-        VALUES (?, ?, ?, NOW())
+        INSERT INTO feedback (uid,nomor_resi, rating, komentar, created_at)
+        VALUES (?,?, ?, ?, NOW())
     `,
-        [data.id_pengiriman, data.rating, data.komentar || null]
+        [data.uid, data.nomor_resi, data.rating, data.komentar || null]
     );
 
-    console.log("⭐ Feedback disimpan:", data.id_pengiriman);
+    console.log("⭐ Feedback disimpan:", data.nomor_resi);
 }

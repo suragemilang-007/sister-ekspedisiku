@@ -10,9 +10,8 @@ return new class extends Migration {
         Schema::create('feedback', function (Blueprint $table) {
             $table->id('id_feedback');
             $table->uuid('uid')->unique();
-            $table->uuid('id_pengirim');
-            $table->foreign('id_pengirim')->references('uid')->on('pengguna')->onDelete('cascade');
-            $table->foreignId('id_pengiriman')->constrained('pengiriman', 'id_pengiriman');
+            $table->string('nomor_resi');
+            $table->foreign('nomor_resi')->references('nomor_resi')->on('pengiriman')->onDelete('cascade');
             $table->integer('rating');
             $table->text('komentar')->nullable();
             $table->timestamp('created_at');

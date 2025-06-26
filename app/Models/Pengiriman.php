@@ -41,7 +41,7 @@ class Pengiriman extends Model
 
     public function pengirim(): BelongsTo
     {
-        return $this->belongsTo(Pengguna::class, 'id_pengirim');
+        return $this->belongsTo(Pengguna::class, 'nomor_resi');
     }
 
     public function alamatTujuan(): BelongsTo
@@ -84,7 +84,7 @@ class Pengiriman extends Model
 
     public function feedback(): HasOne
     {
-        return $this->hasOne(Feedback::class, 'id_pengiriman');
+        return $this->hasOne(Feedback::class, 'nomor_resi', 'nomor_resi');
     }
 
     public function pembayaran(): HasOne

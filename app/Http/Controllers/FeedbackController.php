@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use Str;
 
 class FeedbackController extends Controller
 {
@@ -63,15 +64,15 @@ class FeedbackController extends Controller
     /**
      * Tampilkan form untuk memberikan feedback
      */
-    public function create($id_pengiriman)
+    public function create($nomor_resi)
     {
         $userId = Session::get('user_uid');
         // Cek apakah pengiriman ini milik user dan sudah selesai
         $pengiriman = Pengiriman::where('id_pengirim', $userId)
-            ->where('id_pengiriman', $id_pengiriman)
+            ->where('nomor_resi', $nomor_resi)
             ->where('status', 'DITERIMA')
             ->first();
-        return view('pengguna.createFeedback', compact('id_pengiriman', 'pengiriman'));
+        return view('pengguna.createFeedback', compact('nomor_resi', 'pengiriman'));
     }
 
     /**
@@ -79,15 +80,18 @@ class FeedbackController extends Controller
      */
     public function store(Request $request)
     {
+        $userId = Session::get('user_id');
         $request->validate([
-            'id_pengiriman' => 'required|integer',
+            'nomor_resi' => 'required',
             'rating' => 'required|integer|min:1|max:5',
             'komentar' => 'nullable|string|max:1000',
         ]);
-
+        $uid = 'FED' . $userId . date('Ymd') . strtoupper(Str::random(6));
+        $userId = Session::get('user_uid');
         // Kirim ke Kafka producer (Node.js)
         Http::post('http://localhost:3001/feedback', [
-            'id_pengiriman' => $request->id_pengiriman,
+            'uid' => $uid,
+            'nomor_resi' => $request->nomor_resi,
             'rating' => $request->rating,
             'komentar' => $request->komentar,
         ]);

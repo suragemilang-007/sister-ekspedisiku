@@ -32,9 +32,7 @@ class penggunaController extends Controller
                 ->where('status', 'DITERIMA')
                 ->count(),
             'total_biaya' => Pengiriman::where('id_pengirim', $userId)->sum('total_biaya'),
-            'rating_rata' => Feedback::whereHas('pengiriman', function ($query) use ($userId) {
-                $query->where('id_pengirim', $userId);
-            })->avg('rating') ?: 0,
+
         ];
 
         // Recent shipments
@@ -106,8 +104,8 @@ class penggunaController extends Controller
                 ->where('status', 'DITERIMA')
                 ->count(),
             'total_biaya' => Pengiriman::where('id_pengirim', $userId)->sum('total_biaya'),
-            'rating_avg' => Feedback::whereHas('pengiriman', function ($query) use ($userId) {
-                $query->where('id_pengirim', $userId);
+            'rating_avg' => Feedback::whereHas('pengiriman', function ($q) use ($userId) {
+                $q->where('id_pengirim', $userId);
             })->avg('rating') ?: 0,
         ];
 
