@@ -113,13 +113,13 @@ class AlamatTujuanController extends Controller
         $data = AlamatTujuan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
-
+        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         if (!$data) {
             return redirect()->route('alamat-tujuan.index')
                 ->with('error', 'Alamat tujuan tidak ditemukan');
         }
 
-        return view('pengguna.alamat-tujuan.edit', compact('data'));
+        return view('pengguna.alamat-tujuan.edit', compact('data', 'kecamatanAsal'));
     }
 
     /**

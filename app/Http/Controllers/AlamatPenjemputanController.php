@@ -112,13 +112,13 @@ class AlamatPenjemputanController extends Controller
         $data = AlamatPenjemputan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
-
+        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         if (!$data) {
             return redirect()->route('alamat-penjemputan.index')
                 ->with('error', 'Alamat penjemputan tidak ditemukan');
         }
 
-        return view('pengguna.alamat-penjemputan.edit', compact('data'));
+        return view('pengguna.alamat-penjemputan.edit', compact('data', 'kecamatanAsal'));
     }
 
     /**

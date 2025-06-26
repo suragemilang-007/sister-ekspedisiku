@@ -11,6 +11,10 @@ class ZonaPengirimanSeeder extends Seeder
     public function run(): void
     {
         $kecamatans = [
+            'Purwokerto Utara',
+            'Purwokerto Timur',
+            'Purwokerto Selatan',
+            'Purwokerto Barat',
             'Ajibarang',
             'Banyumas',
             'Baturraden',
