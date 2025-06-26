@@ -13,6 +13,7 @@ use App\Http\Controllers\adminController;
 use App\Http\Controllers\pengaturanAkunController;
 use App\Http\Controllers\ZonaPengirimanController;
 use App\Http\Controllers\KurirController;
+use App\Http\Controllers\LayananController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,18 +26,16 @@ Route::get('/logout', [loginController::class, 'logout'])->name('logout');
 
 // Route untuk admin
 Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(function () {
-    // Dashboard utama untuk pengirim
+    // Dashboard utama untuk admin
     Route::get('/dashboard', [adminController::class, 'index'])->name('dashboard.admin');
-    // Riwayat pengiriman
     Route::get('/history', [adminController::class, 'history'])->name('dashboard.history');
-    // Form pengiriman baru
     Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
     Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
-
     Route::get('/edit', [pengaturanAkunController::class, 'edit'])->name('pengaturan.edit');
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
+    // Route untuk mengelola Pengguna
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
     Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
     Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
@@ -54,6 +53,14 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
     Route::post('/zona/update/{id}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
     Route::delete('/zona/{id}', [ZonaPengirimanController::class, 'deleteZona'])->name('admin.zona.delete');
+
+    // Route untuk menglola layanan
+    Route::get('/layanan', [LayananController::class, 'index'])->name('admin.layanan.index');
+    Route::get('/layanan/create', [LayananController::class, 'create'])->name('admin.layanan.create');
+    Route::post('/layanan/store', [LayananController::class, 'store'])->name('admin.layanan.store');
+    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('admin.layanan.edit');
+    Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
+    Route::delete('/layanan/{id}', [LayananController::class, 'delete'])->name('admin.layanan.delete');
 });
 
 // Route untuk pengirim
