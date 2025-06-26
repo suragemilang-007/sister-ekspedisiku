@@ -8,7 +8,7 @@
             @csrf
             <div class="mb-3">
                 <label>Nama Penerima</label>
-                <input type="text" class="form-control" name="nama_penerima" value="{{ $data->nama_penerima }}" required>
+                <input type="text" class="form-control" name="nama_pengirim" value="{{ $data->nama_pengirim }}" required>
             </div>
             <div class="mb-3">
                 <label>No HP</label>
@@ -52,7 +52,7 @@ document.getElementById('editForm').addEventListener('submit', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             const formData = new FormData(this);
-            axios.post("{{ route('alamat-penjemputan.update', $data->id_alamat_penjemputan) }}", formData)
+            axios.post("{{ route('alamat-penjemputan.update', $data->uid) }}", formData)
                 .then(() => {
                     Swal.fire({
                         icon: 'success',

@@ -73,7 +73,7 @@
                                                         <i class="fas fa-user text-primary"></i>
                                                     </div>
                                                     <div>
-                                                        <h6 class="mb-0">{{ $alamat->nama_penerima }}</h6>
+                                                        <h6 class="mb-0">{{ $alamat->nama_pengirim }}</h6>
                                                         <small class="text-muted">
                                                             <i class="fas fa-calendar-alt me-1"></i>
                                                             {{ $alamat->created_at ? $alamat->created_at->format('d M Y') : '-' }}
@@ -106,18 +106,18 @@
                                                     </button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a class="dropdown-item" href="{{ route('alamat-penjemputan.show', $alamat->id_alamat_penjemputan) }}">
+                                                            <a class="dropdown-item" href="{{ route('alamat-penjemputan.show', $alamat->uid) }}">
                                                                 <i class="fas fa-eye me-2"></i>Lihat Detail
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item" href="{{ route('alamat-penjemputan.edit', $alamat->id_alamat_penjemputan) }}">
+                                                            <a class="dropdown-item" href="{{ route('alamat-penjemputan.edit', $alamat->uid) }}">
                                                                 <i class="fas fa-edit me-2"></i>Edit
                                                             </a>
                                                         </li>
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>
-                                                            <button class="dropdown-item text-danger" onclick="confirmDelete({{ $alamat->id_alamat_penjemputan }})">
+                                                            <button class="dropdown-item text-danger" onclick="confirmDelete('{{ $alamat->uid }}')">
                                                                 <i class="fas fa-trash me-2"></i>Hapus
                                                             </button>
                                                         </li>
@@ -136,26 +136,25 @@
                                 <div class="card mb-3 border-left-primary">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <h6 class="mb-0 text-primary">{{ $alamat->nama_penerima }}</h6>
+                                            <h6 class="mb-0 text-primary">{{ $alamat->nama_pengirim }}</h6>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('alamat-penjemputan.show', $alamat->id_alamat_penjemputan) }}">
+                                                        <a class="dropdown-item" href="{{ route('alamat-penjemputan.show', $alamat->uid) }}">
                                                             <i class="fas fa-eye me-2"></i>Lihat Detail
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('alamat-penjemputan.edit', $alamat->id_alamat_penjemputan) }}">
+                                                        <a class="dropdown-item" href="{{ route('alamat-penjemputan.edit', $alamat->uid) }}">
                                                             <i class="fas fa-edit me-2"></i>Edit
                                                         </a>
                                                     </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
-                                                        <button class="dropdown-item text-danger" onclick="confirmDelete({{ $alamat->id_alamat_penjemputan }})">
-                                                            <i class="fas fa-trash me-2"></i>Hapus
+                                                        <button class="dropdown-item text-danger" onclick="confirmDelete('{{ $alamat->uid }}')">
                                                         </button>
                                                     </li>
                                                 </ul>

@@ -8,6 +8,7 @@ use App\Models\ZonaPengiriman;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Str;
 
 class AlamatPenjemputanController extends Controller
 {
@@ -56,9 +57,12 @@ class AlamatPenjemputanController extends Controller
             'kode_pos' => 'required|string|max:10',
             'keterangan_alamat' => 'nullable|string|max:255'
         ]);
+        $userId = Session::get('user_id');
+        $uid = 'ALT' . date('Ymd') . $userId . strtoupper(Str::random(5));
 
         Http::post('http://localhost:3001/alamat-penjemputan', [
-            'id_pengirim' => Session::get('user_id'),
+            'uid' => $uid,
+            'id_pengirim' => Session::get('user_uid'),
             'nama_pengirim' => $request->nama_pengirim,
             'no_hp' => $request->no_hp,
             'alamat_lengkap' => $request->alamat_lengkap,
@@ -82,7 +86,7 @@ class AlamatPenjemputanController extends Controller
         }
 
 
-        $alamatPenjemputan = AlamatPenjemputan::where('id_alamat_penjemputan', $id)
+        $alamatPenjemputan = AlamatPenjemputan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 
@@ -105,7 +109,7 @@ class AlamatPenjemputanController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $data = AlamatPenjemputan::where('id_alamat_penjemputan', $id)
+        $data = AlamatPenjemputan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 
@@ -132,7 +136,7 @@ class AlamatPenjemputanController extends Controller
         ]);
 
         Http::post('http://localhost:3001/alamat-penjemputan-edit', [
-            'id_alamat_penjemputan' => $id,
+            'uid' => $id,
             'nama_pengirim' => $request->nama_pengirim,
             'no_hp' => $request->no_hp,
             'alamat_lengkap' => $request->alamat_lengkap,
@@ -151,7 +155,7 @@ class AlamatPenjemputanController extends Controller
     public function destroy($id)
     {
         Http::post('http://localhost:3001/alamat-penjemputan-delete', [
-            'id_alamat_penjemputan' => $id
+            'uid' => $id
         ]);
 
         return response()->json(['status' => 'ok']);

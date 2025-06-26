@@ -5,11 +5,12 @@ export async function alamatPenjemputanTambahHandler(data) {
     await db.execute(
         `
         INSERT INTO alamat_penjemputan (
-            id_pengirim, nama_pengirim, no_hp, alamat_lengkap, kecamatan, kode_pos, keterangan_alamat, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            id_pengirim,uid, nama_pengirim, no_hp, alamat_lengkap, kecamatan, kode_pos, keterangan_alamat, created_at
+        ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)
     `,
         [
             data.id_pengirim,
+            data.uid,
             data.nama_pengirim,
             data.no_hp,
             data.alamat_lengkap,
