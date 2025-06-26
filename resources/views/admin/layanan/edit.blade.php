@@ -8,82 +8,73 @@
     <div class="container py-4">
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-header bg-white border-bottom-0 py-3">
-                <h3 class="mb-0">Edit Zona Pengiriman</h3>
+                <h3 class="mb-0">Edit Layanan Paket</h3>
             </div>
             <div class="card-body">
-                <form id="form-zona" class="needs-validation" novalidate>
+                <form id="form-layanan" class="needs-validation" novalidate>
                     @csrf
                     <div class="row g-3">
-                        <input type="hidden" name="id_zona" value="{{ $zonaPengiriman->id_zona }}">
+                        <input type="hidden" name="id_layanan" value="{{ $layananPaket->id_layanan }}">
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" name="nama_zona" class="form-control" id="nama_zona"
-                                    placeholder="Nama Zona" value="{{ $zonaPengiriman->nama_zona }}" required>
-                                <label for="nama_zona">Nama Zona</label>
-                                <div class="invalid-feedback">Nama zona wajib diisi.</div>
+                                <input type="text" name="nama_layanan" class="form-control" id="nama_layanan"
+                                    placeholder="Nama Layanan" value="{{ $layananPaket->nama_layanan }}" required>
+                                <label for="nama_layanan">Nama Layanan</label>
+                                <div class="invalid-feedback">Nama layanan wajib diisi.</div>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <select name="id_layanan" class="form-select" id="id_layanan" required>
-                                    <option value="">-- Pilih Layanan --</option>
-                                    @foreach ($layananPakets as $layanan)
-                                        <option value="{{ $layanan->id_layanan }}"
-                                            {{ $layanan->id_layanan == $zonaPengiriman->id_layanan ? 'selected' : '' }}>
-                                            {{ $layanan->nama_layanan }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <label for="id_layanan">Layanan</label>
-                                <div class="invalid-feedback">Layanan harus dipilih.</div>
+                                <input type="text" name="deskripsi" class="form-control" id="deskripsi"
+                                    placeholder="Deskripsi" value="{{ $layananPaket->deskripsi }}" required>
+                                <label for="deskripsi">Deskripsi</label>
+                                <div class="invalid-feedback">Deskripsi wajib diisi.</div>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" name="kecamatan_asal" class="form-control" id="kecamatan_asal"
-                                    placeholder="Kecamatan Asal" value="{{ $zonaPengiriman->kecamatan_asal }}" required>
-                                <label for="kecamatan_asal">Kecamatan Asal</label>
-                                <div class="invalid-feedback">Kecamatan asal wajib diisi.</div>
+                                <input type="number" name="min_berat" class="form-control" id="min_berat"
+                                    placeholder="Minimal Berat" value="{{ $layananPaket->min_berat }}" required>
+                                <label for="min_berat">Minimal Berat</label>
+                                <div class="invalid-feedback">Minimal berat wajib diisi.</div>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" name="kecamatan_tujuan" class="form-control" id="kecamatan_tujuan"
-                                    placeholder="Kecamatan Tujuan" value="{{ $zonaPengiriman->kecamatan_tujuan }}" required>
-                                <label for="kecamatan_tujuan">Kecamatan Tujuan</label>
-                                <div class="invalid-feedback">Kecamatan tujuan wajib diisi.</div>
+                                <input type="number" name="max_berat" class="form-control" id="max_berat"
+                                    placeholder="Maksimal Berat" value="{{ $layananPaket->max_berat }}" required>
+                                <label for="max_berat">Maksimal Berat</label>
+                                <div class="invalid-feedback">Maksimal berat wajib diisi.</div>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" id="biaya_tambahan_display" class="form-control"
-                                    placeholder="Biaya Tambahan"
-                                    value="{{ number_format($zonaPengiriman->biaya_tambahan, 0, ',', '.') }}" required>
+                                <input type="number" id="harga_dasar_display" class="form-control"
+                                    placeholder="Harga Dasar"
+                                    value="{{ number_format($layananPaket->harga_dasar, 0, ',', '.') }}" required>
 
-                                <input type="hidden" name="biaya_tambahan" id="biaya_tambahan"
-                                    value="{{ $zonaPengiriman->biaya_tambahan }}">
+                                <input type="hidden" name="harga_dasar" id="harga_dasar"
+                                    value="{{ $layananPaket->harga_dasar }}">
 
-                                <label for="biaya_tambahan_display">Biaya Tambahan (Rp)</label>
-                                <div class="invalid-feedback">Biaya tambahan wajib diisi</div>
+                                <label for="harga_dasar_display">Harga Dasar (Rp)</label>
+                                <div class="invalid-feedback">Harga dasar wajib diisi</div>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="hidden" name="id_zona" class="form-control" id="id_zona"
-                                    placeholder="id zona" value="{{ $zonaPengiriman->id_zona }}" required>
+                                <input type="hidden" name="id_layanan" class="form-control" id="id_layanan"
+                                    placeholder="Username" value="{{ $layananPaket->id_layanan }}" required>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="{{ route('admin.zona.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('admin.layanan.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i> Batal
                         </a>
                         <button type="submit" class="btn btn-primary" id="btn-simpan">
@@ -101,8 +92,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const inputDisplay = document.getElementById('biaya_tambahan_display');
-        const inputHidden = document.getElementById('biaya_tambahan');
+        const inputDisplay = document.getElementById('harga_dasar_display');
+        const inputHidden = document.getElementById('harga_dasar');
 
         function formatRupiah(angka) {
             return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -125,7 +116,7 @@
             let raw = inputHidden.value;
             if (raw) inputDisplay.value = formatRupiah(raw);
         });
-        const form = document.getElementById('form-zona');
+        const form = document.getElementById('form-layanan');
         const btn = document.getElementById('btn-simpan');
         const spinner = btn.querySelector('.spinner-border');
 
@@ -154,19 +145,19 @@
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post(`/admin/zona/update/${id_zona}`, new FormData(form))
+                    axios.post(`/admin/layanan/update/${id_layanan}`, new FormData(form))
                         .then(res => {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil!',
-                                text: 'Data zona berhasil diperbarui.',
+                                text: 'Data layanan berhasil diperbarui.',
                                 timer: 2000,
                                 showConfirmButton: false,
                                 customClass: {
                                     popup: 'animate__animated animate__fadeInDown'
                                 }
                             }).then(() => {
-                                window.location.href = '{{ route('admin.zona.index') }}';
+                                window.location.href = '{{ route('admin.layanan.index') }}';
                             });
                         })
                         .catch(err => {
