@@ -25,7 +25,7 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <input type="text" class="form-control" name="search"
-                                    placeholder="Cari Nama Layanan, Jenis Layanan...."
+                                    placeholder="Cari Nama Layanan, Deskripsi...."
                                     value="{{ request('search') }}">
                             </div>
                         </div>
@@ -60,17 +60,16 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'kecamatan_asal', 'sort_order' => 'asc']) }}">Kecamatan
-                                        Asal</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_layanan', 'sort_order' => 'asc']) }}">Nama Layanan
+                                        </a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'kecamatan_tujuan', 'sort_order' => 'asc']) }}">Kecamatan
-                                        Tujuan</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'deskripsi', 'sort_order' => 'asc']) }}">Deskripsi</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'biaya_tambahan', 'sort_order' => 'asc']) }}">Biaya
-                                        Tambahan</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'min_berat', 'sort_order' => 'asc']) }}">Berat Minimal</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_zona', 'sort_order' => 'asc']) }}">Nama
-                                        Zona</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'max_berat', 'sort_order' => 'asc']) }}">Berat Maksimal</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'harga_dasar', 'sort_order' => 'asc']) }}">Harga</a></li>
                             </ul>
                         </div>
                     </div>
@@ -140,14 +139,14 @@
                             @if (request('search') || request('status') != 'all' || request('date_from') || request('date_to'))
                                 Tidak Ada Data Yang Sesuai
                             @else
-                                Belum Ada Pengiriman
+                                Belum Ada Layanan Paket
                             @endif
                         </h5>
                         <p class="text-muted mb-3">
                             @if (request('search') || request('status') != 'all' || request('date_from') || request('date_to'))
-                                Coba ubah filter pencarian atau buat pengiriman baru.
+                                Coba ubah filter pencarian atau buat layanan Paket baru.
                             @else
-                                Anda belum memiliki riwayat pengiriman. Mulai kirim paket sekarang!
+                                Anda belum memiliki layanan Paket. Mulai buat layanan paket sekarang!
                             @endif
                         </p>
                         <div class="d-flex gap-2 justify-content-center">
