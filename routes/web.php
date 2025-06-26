@@ -57,7 +57,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     // Route untuk menglola layanan
     Route::get('/layanan', [LayananController::class, 'index'])->name('admin.layanan.index');
     Route::get('/layanan/create', [LayananController::class, 'create'])->name('admin.layanan.create');
-    Route::post('/layanan/store', [LayananController::class, 'store'])->name('admin.layanan.store');
+    Route::post('/layanan/store', [LayananController::class, 'storeLayanan'])->name('admin.layanan.store');
     Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('admin.layanan.edit');
     Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
     Route::delete('/layanan/{id}', [LayananController::class, 'delete'])->name('admin.layanan.delete');
