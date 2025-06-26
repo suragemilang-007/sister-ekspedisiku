@@ -8,6 +8,9 @@ import { feedbackHandler } from "../handlers/feedback.js";
 import { alamatTambahHandler } from "../handlers/alamatTambah.js";
 import { alamatEditHandler } from "../handlers/alamatEdit.js";
 import { alamatDeleteHandler } from "../handlers/alamatDelete.js";
+import { alamatPenjemputanTambahHandler } from "../handlers/alamatPenjemputanTambah.js";
+import { alamatPenjemputanEditHandler } from "../handlers/alamatPenjemputanEdit.js";
+import { alamatPenjemputanDeleteHandler } from "../handlers/alamatPenjemputanDelete.js";
 import { penggunaTambahHandler } from "../handlers/penggunaAdd.js";
 import { addPengirimanHandler } from "../handlers/addPengiriman.js";
 import { zonaCreateHandler } from "../handlers/zonaAdd.js";
@@ -26,7 +29,22 @@ await Promise.all([
     consumer.subscribe({ topic: TOPICS.ALAMAT_TAMBAH, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ALAMAT_EDIT, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ALAMAT_DELETE, fromBeginning: false }),
-    consumer.subscribe({ topic: TOPICS.DELETE_USER, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.PENJEMPUTAN_TAMBAH,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.PENJEMPUTAN_EDIT,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.PENJEMPUTAN_DELETE,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.DELETE_USER,
+        fromBeginning: false,
+    }),
     consumer.subscribe({ topic: TOPICS.ADD_USER, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ADD_PENGIRIMAN, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ADD_ZONA, fromBeginning: false }),
@@ -57,6 +75,15 @@ await consumer.run({
                     break;
                 case TOPICS.ALAMAT_DELETE:
                     await alamatDeleteHandler(data);
+                    break;
+                case TOPICS.PENJEMPUTAN_TAMBAH:
+                    await alamatPenjemputanTambahHandler(data);
+                    break;
+                case TOPICS.PENJEMPUTAN_EDIT:
+                    await alamatPenjemputanEditHandler(data);
+                    break;
+                case TOPICS.PENJEMPUTAN_DELETE:
+                    await alamatPenjemputanDeleteHandler(data);
                     break;
                 case TOPICS.ADD_USER:
                     await penggunaTambahHandler(data);

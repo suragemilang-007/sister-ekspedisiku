@@ -45,6 +45,18 @@ app.post("/alamat-tujuan-delete", (req, res) =>
     sendToKafka(producer, TOPICS.ALAMAT_DELETE, req.body, res)
 );
 
+app.post("/alamat-penjemputan", (req, res) =>
+    sendToKafka(producer, TOPICS.PENJEMPUTAN_TAMBAH, req.body, res)
+);
+
+app.post("/alamat-penjemputan-edit", (req, res) =>
+    sendToKafka(producer, TOPICS.PENJEMPUTAN_EDIT, req.body, res)
+);
+
+app.post("/alamat-penjemputan-delete", (req, res) =>
+    sendToKafka(producer, TOPICS.PENJEMPUTAN_DELETE, req.body, res)
+);
+
 app.post("/pengiriman_add", (req, res) =>
     sendToKafka(producer, TOPICS.ADD_PENGIRIMAN, req.body, res)
 );
