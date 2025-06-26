@@ -22,7 +22,7 @@ class PengirimanController extends Controller
      */
     public function create()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -58,7 +58,7 @@ class PengirimanController extends Controller
      */
     public function store(Request $request)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -153,7 +153,7 @@ class PengirimanController extends Controller
      */
     public function show($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');

@@ -46,7 +46,12 @@ class Pengiriman extends Model
 
     public function alamatTujuan(): BelongsTo
     {
-        return $this->belongsTo(AlamatTujuan::class, 'id_alamat_tujuan');
+        return $this->belongsTo(AlamatTujuan::class, 'id_alamat_tujuan', 'uid');
+    }
+
+    public function alamatPenjemputan(): BelongsTo
+    {
+        return $this->belongsTo(AlamatPenjemputan::class, 'id_alamat_penjemputan', 'uid');
     }
 
     public function zonaPengiriman(): BelongsTo

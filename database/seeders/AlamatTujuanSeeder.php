@@ -12,8 +12,9 @@ class AlamatTujuanSeeder extends Seeder
     {
         DB::table('alamat_tujuan')->insert([
             [
+                'uid' => '00000000-0000-0000-0000-000000000001',
                 'nama_penerima' => 'Budi Santoso',
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'no_hp' => '081234567891',
                 'alamat_lengkap' => 'Jl. Jenderal Sudirman No. 45, Purwokerto',
                 'kecamatan' => 'Purwokerto Selatan',
@@ -21,8 +22,9 @@ class AlamatTujuanSeeder extends Seeder
                 'created_at' => Carbon::now(),
             ],
             [
+                'uid' => '00000000-0000-0000-0000-000000000002',
                 'nama_penerima' => 'Siti Aminah',
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'no_hp' => '082233445566',
                 'alamat_lengkap' => 'Perumahan Griya Indah Blok C3, Purbalingga',
                 'kecamatan' => 'Kalimanah',
@@ -30,8 +32,9 @@ class AlamatTujuanSeeder extends Seeder
                 'created_at' => Carbon::now(),
             ],
             [
+                'uid' => '00000000-0000-0000-0000-000000000003',
                 'nama_penerima' => 'Agus Supriyadi',
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'no_hp' => '081345678901',
                 'alamat_lengkap' => 'Jl. HR Bunyamin, Kampus Unsoed, Purwokerto',
                 'kecamatan' => 'Purwokerto Utara',
@@ -39,8 +42,9 @@ class AlamatTujuanSeeder extends Seeder
                 'created_at' => Carbon::now(),
             ],
             [
+                'uid' => '00000000-0000-0000-0000-000000000004',
                 'nama_penerima' => 'Lestari Widya',
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'no_hp' => '085677889900',
                 'alamat_lengkap' => 'Jl. Raya Bobotsari No. 123, Purbalingga',
                 'kecamatan' => 'Bobotsari',
@@ -48,8 +52,9 @@ class AlamatTujuanSeeder extends Seeder
                 'created_at' => Carbon::now(),
             ],
             [
+                'uid' => '00000000-0000-0000-0000-000000000005',
                 'nama_penerima' => 'Andi Saputra',
-                'id_pengirim' => 8,
+                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
                 'no_hp' => '089912345678',
                 'alamat_lengkap' => 'Komplek Taman Hijau, Purwokerto Timur',
                 'kecamatan' => 'Purwokerto Timur',

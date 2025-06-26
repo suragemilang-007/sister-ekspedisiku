@@ -17,6 +17,7 @@ class AlamatTujuan extends Model
 
     protected $fillable = [
         'id_pengirim',
+        'uid',
         'nama_penerima',
         'no_hp',
         'alamat_lengkap',

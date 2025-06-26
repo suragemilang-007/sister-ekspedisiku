@@ -16,7 +16,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function index()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -34,7 +34,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function create()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
         $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -75,7 +75,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function show($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -99,7 +99,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function edit($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -162,7 +162,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function getAlamatPenjemputan()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -181,7 +181,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function getAlamatPenjemputanDetail($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthorized'], 401);

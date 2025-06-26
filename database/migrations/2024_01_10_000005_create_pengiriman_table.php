@@ -11,8 +11,10 @@ return new class extends Migration {
             $table->id('id_pengiriman');
             $table->uuid('id_pengirim');
             $table->foreign('id_pengirim')->references('uid')->on('pengguna')->onDelete('cascade');
-            $table->foreignId('id_alamat_tujuan')->constrained('alamat_tujuan', 'id_alamat_tujuan');
-            $table->foreignId('id_alamat_penjemputan')->constrained('alamat_penjemputan', 'id_alamat_penjemputan');
+            $table->uuid('id_alamat_tujuan');
+            $table->foreign('id_alamat_tujuan')->references('uid')->on('alamat_tujuan')->onDelete('cascade');
+            $table->uuid('id_alamat_penjemputan');
+            $table->foreign('id_alamat_penjemputan')->references('uid')->on('alamat_penjemputan')->onDelete('cascade');
             $table->decimal('total_biaya', 12, 2);
             $table->foreignId('id_zona')->constrained('zona_pengiriman', 'id_zona');
             $table->enum('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
