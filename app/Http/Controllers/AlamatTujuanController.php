@@ -191,7 +191,7 @@ class AlamatTujuanController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $alamatTujuan = AlamatTujuan::where('id_alamat_tujuan', $id)
+        $alamatTujuan = AlamatTujuan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 

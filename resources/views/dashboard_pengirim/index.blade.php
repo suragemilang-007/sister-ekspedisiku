@@ -98,15 +98,20 @@
 @include('dashboard_pengirim.modal_detail')
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 <script>
-    $(document).ready(function () {
-        function loadDashboard() {
+    const socket = io("http://localhost:4000");
+
+    socket.on("update-dashboard-pengirim", function (data) {
+        loadDashboard(); 
+    });
+    function loadDashboard() {
             $.ajax({
                 url: "{{ route('dashboard.pengirim') }}",
                 type: 'GET',
                 dataType: 'json',
                 success: function (res) {
-                    // Update statistik
+                    
                     $('#total-pengiriman').text(res.stats.total_pengiriman);
                     $('#pengiriman-aktif').text(res.stats.pengiriman_aktif);
                     $('#pengiriman-selesai').text(res.stats.pengiriman_selesai);
@@ -133,7 +138,7 @@
                             }
                         }
                         res.recent_shipments.forEach(function (item) {
-                            console.log(item);
+                            // console.log(item);
                             const statusColor = getStatusColor(item.status);
                             tbody += `
                                 <tr class="text-dark">
@@ -181,6 +186,8 @@
                 }
             });
         }
+    $(document).ready(function () {
+        
 
         loadDashboard(); 
     });

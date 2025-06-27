@@ -1,5 +1,7 @@
 import { createKafka } from "../config/kafka.js";
 import { TOPICS } from "../config/topics.js";
+import { Server } from "socket.io";
+import http from "http";
 
 import { updateInfoHandler } from "../handlers/updateInfo.js";
 import { updatePasswordHandler } from "../handlers/updatePassword.js";
@@ -56,6 +58,17 @@ await Promise.all([
     consumer.subscribe({ topic: TOPICS.UPDATE_LAYANAN, fromBeginning: false }),
 ]);
 
+const httpServer = http.createServer();
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*",
+    },
+});
+
+io.on("connection", (socket) => {
+    console.log("🔗 Client terhubung ke WebSocket");
+});
+
 await consumer.run({
     eachMessage: async ({ topic, message }) => {
         const data = JSON.parse(message.value.toString());
@@ -97,6 +110,7 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
+                    io.emit("update-dashboard-pengirim", data);
                     break;
                 case TOPICS.ADD_ZONA:
                     await zonaCreateHandler(data);
@@ -120,4 +134,9 @@ await consumer.run({
             console.error(`❌ Gagal memproses pesan dari topik ${topic}:`, err);
         }
     },
+});
+
+const PORT = 4000;
+httpServer.listen(PORT, () => {
+    console.log(`🚀 WebSocket server berjalan di http://localhost:${PORT}`);
 });
