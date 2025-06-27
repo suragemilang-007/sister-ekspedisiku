@@ -11,4 +11,7 @@ export async function feedbackHandler(data) {
     );
 
     console.log("⭐ Feedback disimpan:", data.nomor_resi);
+    return {
+        nomor_resi: data.nomor_resi,
+    };
 }

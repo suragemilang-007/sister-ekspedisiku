@@ -83,6 +83,7 @@ await consumer.run({
                     break;
                 case TOPICS.FEEDBACK:
                     await feedbackHandler(data);
+                    io.emit("update-sidebar", data);
                     break;
                 case TOPICS.ALAMAT_TAMBAH:
                     await alamatTambahHandler(data);
