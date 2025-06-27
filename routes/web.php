@@ -24,45 +24,6 @@ Route::get('/login', [loginController::class, 'showLogin'])->name('login');
 Route::post('/login', [loginController::class, 'login'])->name('login.post');
 Route::get('/logout', [loginController::class, 'logout'])->name('logout');
 
-// Route untuk admin
-Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(function () {
-    // Dashboard utama untuk admin
-    Route::get('/dashboard', [adminController::class, 'index'])->name('dashboard.admin');
-    Route::get('/history', [adminController::class, 'history'])->name('dashboard.history');
-    Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
-    Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
-    Route::get('/edit', [pengaturanAkunController::class, 'edit'])->name('pengaturan.edit');
-    Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
-    Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
-
-    // Route untuk mengelola Pengguna
-    Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
-    Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
-    Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
-    Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
-    Route::delete('pengguna/{id}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
-    Route::post('/pengguna/update/{id}', [adminController::class, 'updateUserInfo'])->name('admin.pengguna.update');
-    Route::post('/pengguna/update-password/{id}', [adminController::class, 'updateUserPassword'])->name('admin.pengguna.update.password');
-
-
-    // Route untuk mengelola zona pengiriman
-    Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
-    Route::get('/zona/create', [ZonaPengirimanController::class, 'create'])->name('admin.zona.create');
-    Route::post('/zona/store', [ZonaPengirimanController::class, 'store'])->name('admin.zona.store');
-    Route::get('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'show'])->name('admin.zona.show');
-    Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
-    Route::post('/zona/update/{id}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
-    Route::delete('/zona/{id}', [ZonaPengirimanController::class, 'deleteZona'])->name('admin.zona.delete');
-
-    // Route untuk menglola layanan
-    Route::get('/layanan', [LayananController::class, 'index'])->name('admin.layanan.index');
-    Route::get('/layanan/create', [LayananController::class, 'create'])->name('admin.layanan.create');
-    Route::post('/layanan/store', [LayananController::class, 'storeLayanan'])->name('admin.layanan.store');
-    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('admin.layanan.edit');
-    Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
-    Route::delete('/layanan/{id}', [LayananController::class, 'delete'])->name('admin.layanan.delete');
-});
-
 // Route untuk pengirim
 Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session'])->group(function () {
     // Dashboard utama untuk pengirim
@@ -70,38 +31,9 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
     // Riwayat pengiriman
     Route::get('/history', [penggunaController::class, 'history'])->name('dashboard.history.pengiriman');
 
-    Route::get("/dashboard/pengirim/detail/{id}", [penggunaController::class, 'showDetail'])->name('dashboard.pengirim.detail');
+    Route::get("/detail/{id}", [penggunaController::class, 'showDetail'])->name('dashboard.pengirim.detail');
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
     Route::get('/alamat-tujuan', [AlamatTujuanController::class, 'index'])->name('alamattujuan.index');
-});
-
-
-
-// Untuk pelanggan (pelanggan)
-Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
-    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
-    Route::post('/pengguna/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('pengaturan.update.info');
-    Route::post('/pengguna/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('pengaturan.update.password');
-    Route::get('/detail/{id}', [penggunaController::class, 'showDetail'])->name('pengiriman.detail');
-});
-
-// Untuk admin
-Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
-    Route::post('/admin/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('admin.pengaturan.update.info');
-    Route::post('/admin/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('admin.pengaturan.update.password');
-    Route::get('/admin/detail/{id}', [penggunaController::class, 'showDetail'])->name('admin.pengiriman.detail');
-});
-
-// Route untuk kurir
-Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(function () {
-    // Dashboard kurir
-    Route::get('/dashboard', [KurirController::class, 'dashboard'])->name('kurir.dashboard');
-    // Detail tugas kurir
-    Route::get('/detail/{id_penugasan}', [KurirController::class, 'detail'])->name('kurir.detail');
-    // Update status pengiriman
-    Route::post('/update-status', [KurirController::class, 'updateStatus'])->name('kurir.update.status');
-    // API untuk data dashboard (opsional untuk refresh data)
-    Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
 });
 
 // Group routes untuk feedback 
@@ -165,4 +97,72 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::get('/alamat-penjemputan/edit/{id}', [AlamatPenjemputanController::class, 'edit'])->name('alamat-penjemputan.edit');
     Route::post('/alamat-penjemputan/update/{id}', [AlamatPenjemputanController::class, 'update'])->name('alamat-penjemputan.update');
     Route::delete('/alamat-penjemputan/delete/{id}', [AlamatPenjemputanController::class, 'destroy'])->name('alamat-penjemputan.destroy');
+});
+
+
+// Untuk pelanggan (pelanggan)
+Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
+    Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
+    Route::post('/pengguna/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('pengaturan.update.info');
+    Route::post('/pengguna/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('pengaturan.update.password');
+    Route::get('/detail/{id}', [penggunaController::class, 'showDetail'])->name('pengiriman.detail');
+});
+
+
+// Route untuk admin
+Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(function () {
+    // Dashboard utama untuk admin
+    Route::get('/dashboard', [adminController::class, 'index'])->name('dashboard.admin');
+    Route::get('/history', [adminController::class, 'history'])->name('dashboard.history');
+    Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
+    Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
+    Route::get('/edit', [pengaturanAkunController::class, 'edit'])->name('pengaturan.edit');
+    Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
+    Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
+
+    // Route untuk mengelola Pengguna
+    Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
+    Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
+    Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
+    Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
+    Route::delete('pengguna/{id}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
+    Route::post('/pengguna/update/{id}', [adminController::class, 'updateUserInfo'])->name('admin.pengguna.update');
+    Route::post('/pengguna/update-password/{id}', [adminController::class, 'updateUserPassword'])->name('admin.pengguna.update.password');
+
+
+    // Route untuk mengelola zona pengiriman
+    Route::get('/zona', [ZonaPengirimanController::class, 'index'])->name('admin.zona.index');
+    Route::get('/zona/create', [ZonaPengirimanController::class, 'create'])->name('admin.zona.create');
+    Route::post('/zona/store', [ZonaPengirimanController::class, 'store'])->name('admin.zona.store');
+    Route::get('/zona/{zonaPengiriman}', [ZonaPengirimanController::class, 'show'])->name('admin.zona.show');
+    Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
+    Route::post('/zona/update/{id}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
+    Route::delete('/zona/{id}', [ZonaPengirimanController::class, 'deleteZona'])->name('admin.zona.delete');
+
+    // Route untuk menglola layanan
+    Route::get('/layanan', [LayananController::class, 'index'])->name('admin.layanan.index');
+    Route::get('/layanan/create', [LayananController::class, 'create'])->name('admin.layanan.create');
+    Route::post('/layanan/store', [LayananController::class, 'storeLayanan'])->name('admin.layanan.store');
+    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('admin.layanan.edit');
+    Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
+    Route::delete('/layanan/{id}', [LayananController::class, 'delete'])->name('admin.layanan.delete');
+});
+
+// Untuk admin
+Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
+    Route::post('/admin/update-info', [pengaturanPenggunaController::class, 'updateInfo'])->name('admin.pengaturan.update.info');
+    Route::post('/admin/update-password', [pengaturanPenggunaController::class, 'updatePassword'])->name('admin.pengaturan.update.password');
+    Route::get('/admin/detail/{id}', [penggunaController::class, 'showDetail'])->name('admin.pengiriman.detail');
+});
+
+// Route untuk kurir
+Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(function () {
+    // Dashboard kurir
+    Route::get('/dashboard', [KurirController::class, 'dashboard'])->name('kurir.dashboard');
+    // Detail tugas kurir
+    Route::get('/detail/{id_penugasan}', [KurirController::class, 'detail'])->name('kurir.detail');
+    // Update status pengiriman
+    Route::post('/update-status', [KurirController::class, 'updateStatus'])->name('kurir.update.status');
+    // API untuk data dashboard (opsional untuk refresh data)
+    Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
 });

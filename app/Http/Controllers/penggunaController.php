@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Session;
 
 class penggunaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userId = Session::get('user_uid');
 
@@ -41,13 +42,37 @@ class penggunaController extends Controller
             ->whereIn('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM'])
             ->orderByRaw("FIELD(status, 'MENUNGGU KONFIRMASI','DIPROSES', 'DIBAYAR', 'DIKIRIM')")
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($item) {
+
+                return $item;
+            });
         $pengiriman = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan'])
             ->where('id_pengirim', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('dashboard_pengirim.index', compact('stats', 'recent_shipments'));
+        // Recent finished shipments in the last 3 days
+        $recent_finish_shipment_3days = Pengiriman::with(['alamatTujuan', 'layananPaket'])
+            ->where('id_pengirim', $userId)
+            ->where('status', 'DITERIMA')
+            ->where('created_at', '>=', Carbon::now()->subDays(3))
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'stats' => $stats,
+                'recent_shipments' => $recent_shipments,
+                'recent_finish_shipments' => $recent_finish_shipment_3days,
+            ]);
+        }
+
+        return view('dashboard_pengirim.index', compact(
+            'stats',
+            'recent_shipments',
+            'recent_finish_shipment_3days'
+        ));
     }
 
     public function history(Request $request)
