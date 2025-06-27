@@ -69,6 +69,7 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
     Route::get('/', [penggunaController::class, 'index'])->name('dashboard.pengirim');
     // Riwayat pengiriman
     Route::get('/history', [penggunaController::class, 'history'])->name('dashboard.history.pengiriman');
+    Route::get('/feedbackCount', [penggunaController::class, 'feedbackSidebar'])->name('dashboard.history.feedbackCount');
 
     Route::get("/dashboard/pengirim/detail/{id}", [penggunaController::class, 'showDetail'])->name('dashboard.pengirim.detail');
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');

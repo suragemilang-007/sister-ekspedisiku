@@ -179,5 +179,20 @@ class penggunaController extends Controller
         return view('dashboard.create-shipment', compact('layanan'));
     }
 
+    public function feedbackSidebar()
+    {
+        $userId = Session::get('user_uid');
+
+        $stats = [
+            'total_pengirimanDenganFeedback' => Pengiriman::where('id_pengirim', $userId)
+                ->where('status', 'DITERIMA')
+                ->whereDoesntHave('feedback')
+                ->count(),
+        ];
+        return response()->json([
+            'stats' => $stats,
+        ]);
+    }
+
 
 }

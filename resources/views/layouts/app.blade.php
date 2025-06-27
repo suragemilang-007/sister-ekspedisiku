@@ -506,6 +506,7 @@
                     <a href="/dashboard/pengirim/feedback" class="nav-link {{ Request::is('dashboard/pengirim/feedback*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Feedback Rating">
                         <i class="fas fa-star"></i>
                         <span class="nav-text">Feedback Rating</span>
+                        <span class="nav-text" id="feedbackCount">0</span>
                     </a>
                 </li>
                 
@@ -586,6 +587,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <!-- Custom JS -->
     <script>
@@ -601,6 +603,29 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
+            function loadSidebar() {
+            $.ajax({
+                url: "{{ route('dashboard.history.feedbackCount') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    if (res.stats.total_pengirimanDenganFeedback === 0) {
+                        $('#feedbackCount').text('');
+                    } else {
+                        $('#feedbackCount').text(res.stats.total_pengirimanDenganFeedback);
+                    }
+                    // $('#feedbackCount').text(res.stats.total_pengirimanDenganFeedback);
+                    
+                }});
+            }
+            $(document).ready(function () {
+                
+
+                loadSidebar(); 
+            });
+            
+            
             // Desktop sidebar toggle
             if (sidebarToggle) {
                 sidebarToggle.addEventListener('click', function() {
