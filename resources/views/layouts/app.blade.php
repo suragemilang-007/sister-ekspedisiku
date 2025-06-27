@@ -588,22 +588,16 @@
     <!-- Font Awesome JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
     <!-- Custom JS -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileOverlay = document.getElementById('mobileOverlay');
+        const socket = io("http://localhost:4000");
 
-            // Initialize tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+        socket.on("update-sidebar", function (data) {
+            loadSidebar(); 
+        });
 
-            function loadSidebar() {
+         function loadSidebar() {
             $.ajax({
                 url: "{{ route('dashboard.history.feedbackCount') }}",
                 type: 'GET',
@@ -624,6 +618,22 @@
 
                 loadSidebar(); 
             });
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+           
             
             
             // Desktop sidebar toggle

@@ -100,7 +100,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 <script>
-    const socket = io("http://localhost:4000");
+    
 
     socket.on("update-dashboard-pengirim", function (data) {
         loadDashboard(); 
