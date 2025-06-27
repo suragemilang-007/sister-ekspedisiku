@@ -168,9 +168,7 @@ class AlamatPenjemputanController extends Controller
     {
         $userId = Session::get('user_uid');
 
-        if (!$userId) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+
 
         $alamatPenjemputan = AlamatPenjemputan::where('id_pengirim', $userId)
             ->select('id_alamat_penjemputan', 'nama_pengirim', 'alamat_lengkap', 'kecamatan', 'no_hp')
@@ -191,7 +189,7 @@ class AlamatPenjemputanController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $alamatPenjemputan = AlamatPenjemputan::where('id_alamat_penjemputan', $id)
+        $alamatPenjemputan = AlamatPenjemputan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 

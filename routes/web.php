@@ -152,14 +152,13 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
 
     // Alamat Penjemputan routes
     Route::resource('alamat-penjemputan', AlamatPenjemputanController::class);
-    Route::get('/api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatPenjemputan']);
-    Route::get('/api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getAlamatPenjemputanDetail']);
+
 });
 
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::resource('alamat-penjemputan', AlamatPenjemputanController::class);
-    Route::get('api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatTujuan']);
-    Route::get('api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getPenjemputanDetail']);
+    Route::get('api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatPenjemputan']);
+    Route::get('api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getAlamatPenjemputanDetail']);
     Route::post('/alamat-penjemputan/store', [AlamatPenjemputanController::class, 'store'])->name('alamat-penjemputan.store');
     Route::get('/alamat-penjemputan', [AlamatPenjemputanController::class, 'index'])->name('alamat-penjemputan.index');
     Route::get('/alamat-penjemputan/edit/{id}', [AlamatPenjemputanController::class, 'edit'])->name('alamat-penjemputan.edit');
