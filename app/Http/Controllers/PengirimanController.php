@@ -8,10 +8,12 @@ use App\Models\AlamatPenjemputan;
 use App\Models\LayananPaket;
 use App\Models\ZonaPengiriman;
 use App\Models\Pengguna;
+use App\Models\PenugasanKurir;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+
 
 class PengirimanController extends Controller
 {
@@ -381,3 +383,34 @@ class PengirimanController extends Controller
         return response()->json(['status' => 'ok']);
     }
 }
+
+    public function pesananBaru(Request $request)
+    {
+        // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
+        $statusList = ['DIBAYAR', 'MENUNGGU KONFIRMASI', 'DIPROSES'];
+        $pesananBaru = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])
+            ->whereIn('status', $statusList)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('admin.pesanan.index', compact('pesananBaru'));
+    }
+
+    public function semuaPesanan()
+    {
+        // Get all pengiriman with kurir data
+        $semuaPesanan = Pengiriman::with([
+                'pengguna',
+                'alamatPenjemputan',
+                'alamatTujuan',
+                'layananPaket',
+                'pelacakan' // include kurir data
+            ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('admin.pesanan.semua', compact('semuaPesanan'));
+    }
+}
+
+

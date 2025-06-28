@@ -61,6 +61,11 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('admin.layanan.edit');
     Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
     Route::delete('/layanan/{id}', [LayananController::class, 'deleteLayanan'])->name('admin.layanan.delete');
+
+    // Route untuk mengelola pengiriman
+    Route::get('/pesanan/baru', [PengirimanController::class, 'pesananBaru'])->name('admin.pesanan.baru.index');
+    Route::get('pesanan/baru/penugasan/{id_pengiriman}', [PengirimanController::class, 'penugasan'])->name('admin.pesanan.baru.penugasan');
+    Route::get('/pesanan/list', [PengirimanController::class, 'semuaPesanan'])->name('admin.pesanan.list');
 });
 
 // Route untuk pengirim
