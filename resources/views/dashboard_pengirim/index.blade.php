@@ -102,7 +102,7 @@
 <script>
     
 
-    socket.on("update-dashboard-pengirim", function (data) {
+    socket.on("update-data-pengiriman", function (data) {
         loadDashboard(); 
     });
     function loadDashboard() {

@@ -360,4 +360,24 @@ class PengirimanController extends Controller
 
         return view('pengiriman.track', compact('pengiriman'));
     }
+
+
+    public function editStatus($id)
+    {
+
+        $pengiriman = \DB::table('pengiriman')->where('id_pengiriman', $id)->first();
+        return view('pengguna.test_websoket.edit', compact('pengiriman'));
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $data = [
+            'id_pengiriman' => $request->id_pengiriman,
+            'status' => $request->status,
+            'keterangan_batal' => $request->status === 'DIBATALKAN' ? $request->keterangan_batal : null,
+        ];
+
+        Http::post('http://localhost:3001/pengiriman/update-status_pengiriman', $data);
+        return response()->json(['status' => 'ok']);
+    }
 }
