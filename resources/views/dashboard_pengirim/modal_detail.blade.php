@@ -25,9 +25,7 @@
                             <span id="status">Menunggu</span>
                         </div>
                     </div>
-                    <div class="mt-3">
-                        <small class="text-muted">Status terakhir diperbarui</small>
-                    </div>
+                    
                 </div>
 
                 <!-- Service Info -->
@@ -124,6 +122,49 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+<script>
+  function showDetailModal(id) {
+    console.log("ID Pengiriman:", id);
+    
+    // Set ID ke modal
+    $('#modalDetailPengiriman').data('id', id);
+    
+    // Panggil showData dengan ID yang benar
+    showData(id);
+    
+    // Tampilkan modal
+    $("#modalDetailPengiriman").modal('show');
+}
+  function showData(id) {
+    $.ajax({
+      url: "{{ route('dashboard.pengirim.detail', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id),
+      type: "GET",
+      dataType: "json",
+      success: function(response) {
+        if (response.status === "success") {
+          const data = response.data.pengiriman;
+          const datalayanan = response.data.layanan;
+          $("#resi").text(data.nomor_resi);
+          $("#nama_layanan").text(datalayanan.nama_layanan);
+          $("#deskripsi").text(datalayanan.deskripsi);
+          $("#status").text(data.status);
+          $("#catatan").text(data.catatan_opsional || '-');
+
+          $("#alamat").text(data.alamat_tujuan && data.alamat_tujuan.alamat_lengkap ? data.alamat_tujuan.alamat_lengkap : '-');
+          $("#nama_penerima").text(data.alamat_tujuan && data.alamat_tujuan.nama_penerima ? data.alamat_tujuan.nama_penerima : '-');
+          $("#nohp_penerima").text(data.alamat_tujuan && data.alamat_tujuan.no_hp ? data.alamat_tujuan.no_hp : '-');
+
+          $("#kurir").text(data.kurir && data.kurir.nama ? data.kurir.nama : 'Belum ditugaskan');
+
+          
+        }
+      }
+    });
+  }
+</script>
+
 
 <style>
     .modal-content {

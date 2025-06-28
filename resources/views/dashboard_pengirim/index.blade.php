@@ -187,32 +187,9 @@
             });
         }
     $(document).ready(function () {
-        
-
         loadDashboard(); 
     });
 
-    function showDetailModal(id) {
-    $.get("{{ route('dashboard.pengirim.detail', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id), function(response) {
-        if (response.status === "success") {
-            const data = response.data.pengiriman;
-            const datalayanan = response.data.layanan;
-            $("#resi").text(data.nomor_resi);
-            $("#nama_layanan").text(datalayanan.nama_layanan);
-            $("#deskripsi").text(datalayanan.deskripsi);
-            $("#status").text(data.status);
-            $("#catatan").text(data.catatan_opsional || '-');
-
-            $("#alamat").text(data.alamat_tujuan?.alamat_lengkap ?? '-');
-            $("#nama_penerima").text(data.alamat_tujuan?.nama_penerima ?? '-');
-            $("#nohp_penerima").text(data.alamat_tujuan?.no_hp ?? '-');
-
-            
-            $("#kurir").text(data.kurir?.nama ?? 'Belum ditugaskan');
-
-            $("#modalDetailPengiriman").modal('show');
-        }
-    });
-}
+    
 </script>
 @endsection
