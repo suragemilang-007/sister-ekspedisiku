@@ -81,6 +81,10 @@ app.post("/layanan/update", (req, res) =>
     sendToKafka(producer, TOPICS.UPDATE_LAYANAN, req.body, res)
 );
 
+app.post("/layanan/delete", (req, res) =>
+    sendToKafka(producer, TOPICS.DELETE_LAYANAN, req.body, res)
+);
+
 process.on("SIGINT", async () => {
     console.log("⛔ Menutup koneksi Kafka...");
     await producer.disconnect();

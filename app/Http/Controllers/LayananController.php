@@ -123,4 +123,30 @@ class LayananController extends Controller
         }
     }
 
+    public function deleteLayanan($id)
+    {
+        // Validasi input
+        $layananPaket = LayananPaket::findOrFail($id);
+
+        try {
+            $dataToProducer = [
+                'id_layanan' => $layananPaket->id_layanan,
+                'action_type' => 'delete_layanan',
+            ];
+
+            $response = Http::timeout(5)->post('http://localhost:3001/layanan/delete', $dataToProducer);
+
+            if ($response->successful()) {
+                Log::info('Permintaan penghapusan layanan Paket berhasil dikirim ke Kafka');
+                return response()->json(['message' => 'Permintaan penghapusan layanan Paket telah dikirim. Layanan Paket akan segera dihapus.'], 200);
+            } else {
+                Log::error('Gagal mengirim permintaan penghapusan layanan Paket ke Kafka: ' . $response->body());
+                return response()->json(['message' => 'Gagal menghapus layanan Paket.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error saat menghapus layanan Paket: ' . $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan saat menghapus layanan Paket.'], 500);
+        }
+    }
+
 }

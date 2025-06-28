@@ -164,7 +164,6 @@
             </div>
         </div>
     </div>
-    @include('dashboard_pengirim.modal_detail')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -216,7 +215,7 @@
                                     icon: 'success',
                                     title: 'Permintaan Dikirim!',
                                     text: res.data.message ||
-                                        'Permintaan penghapusan zona pengiriman telah dikirim. Zona Pengiriman akan segera dihapus.',
+                                        'Permintaan penghapusan layanan paket telah dikirim. Layanan Paket akan segera dihapus.',
                                     timer: 3000,
                                     showConfirmButton: false
                                 }).then(() => {
