@@ -124,10 +124,11 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
-<script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+
 <script>
   socket.on("update-data-pengiriman", function (data) {
       const currentId = $('#modalDetailPengiriman').data('id');
+      console.log("Update data pengiriman diterima untuk ID:", currentId);
       showData(currentId); 
     });
   function showDetailModal(id) {

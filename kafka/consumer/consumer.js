@@ -21,6 +21,7 @@ import { zonaDeleteHandler } from "../handlers/zonaDelete.js";
 import { layananCreateHandler } from "../handlers/layananAdd.js";
 import { updateLayananHandler } from "../handlers/updateLayanan.js";
 import { layananDeleteHandler } from "../handlers/layananDelete.js";
+import { handlePengirimanUpdateStatus } from "../handlers/pengirimanUpdateStatus.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -58,6 +59,10 @@ await Promise.all([
     consumer.subscribe({ topic: TOPICS.ADD_LAYANAN, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.UPDATE_LAYANAN, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.DELETE_LAYANAN, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.PENGIRIMAN_UPDATE_STATUS,
+        fromBeginning: false,
+    }),
 ]);
 
 const httpServer = http.createServer();
@@ -113,7 +118,7 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
-                    io.emit("update-dashboard-pengirim", data);
+                    io.emit("update-data-pengiriman", data);
                     break;
                 case TOPICS.ADD_ZONA:
                     await zonaCreateHandler(data);
@@ -132,6 +137,10 @@ await consumer.run({
                     break;
                 case TOPICS.DELETE_LAYANAN:
                     await layananDeleteHandler(data);
+                    break;
+                case TOPICS.PENGIRIMAN_UPDATE_STATUS:
+                    await handlePengirimanUpdateStatus(data);
+                    io.emit("update-data-pengiriman", data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

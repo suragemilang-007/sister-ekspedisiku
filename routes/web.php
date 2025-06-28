@@ -171,3 +171,11 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::post('/alamat-penjemputan/update/{id}', [AlamatPenjemputanController::class, 'update'])->name('alamat-penjemputan.update');
     Route::delete('/alamat-penjemputan/delete/{id}', [AlamatPenjemputanController::class, 'destroy'])->name('alamat-penjemputan.destroy');
 });
+
+
+
+//buat testing
+Route::prefix('dashboard/pengiriman')->group(function () {
+    Route::get('/edit-status/{id}', [PengirimanController::class, 'editStatus'])->name('pengiriman.editStatus');
+    Route::post('/update-status', [PengirimanController::class, 'updateStatus'])->name('pengiriman.updateStatus');
+});
