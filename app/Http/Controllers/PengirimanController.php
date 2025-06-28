@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
+
 class PengirimanController extends Controller
 {
 
@@ -360,4 +361,27 @@ class PengirimanController extends Controller
 
         return view('pengiriman.track', compact('pengiriman'));
     }
+
+    public function pesananBaru(Request $request)
+    {
+        // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
+        $statusList = ['DIBAYAR', 'MENUNGGU KONFIRMASI', 'DIPROSES'];
+        $pesananBaru = Pengiriman::with(['pengguna:id_pengguna,nama', 'alamatPenjemputan:uid,alamat_lengkap', 'alamatTujuan:uid,alamat_lengkap', 'layananPaket:id_layanan,nama_layanan'])
+            ->whereIn('status', $statusList)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('admin.pesanan.index', compact('pesananBaru'));
+    }
+
+    public function semuaPesanan()
+    {
+        // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
+        $semuaPesanan = Pengiriman::with(['pengguna:id_pengguna,nama', 'alamatPenjemputan:uid,alamat_lengkap', 'alamatTujuan:uid,alamat_lengkap', 'layananPaket:id_layanan,nama_layanan'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('admin.pesanan.semua', compact('semuaPesanan'));
+    }
 }
+
