@@ -40,12 +40,12 @@
             </div>
 
             <div class="card-body">
-                @if (isset($pengirimanBaru) && count($pengirimanBaru) > 0)
+                @if (isset($pesananBaru) && count($pesananBaru) > 0)
                     <!-- Results Info -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="text-muted small">
-                            Menampilkan {{ $pengirimanBaru->firstItem() }} - {{ $pengirimanBaru->lastItem() }}
-                            dari {{ $pengirimanBaru->total() }} hasil
+                            Menampilkan {{ $pesananBaru->firstItem() }} - {{ $pesananBaru->lastItem() }}
+                            dari {{ $pesananBaru->total() }} hasil
                             @if (request('search'))
                                 untuk pencarian "<strong>{{ request('search') }}</strong>"
                             @endif
@@ -80,16 +80,18 @@
                             <tbody>
                                 @foreach ($pesananBaru as $baru)
                                     <tr class="text-dark">
-                                        <td class="fw-medium">{{ $baru->pengguna->nama ?? '-' }}</td>
+                                        <td class="fw-medium">{{ $baru->alamatPenjemputan->nama_pengirim ?? '-' }}</td>
                                         <td class="text-dark">
-                                            {{ $baru->alamat_penjemputan->alamat_lengkap ?? '-' }}</td>
+                                            {{ $baru->alamatPenjemputan->alamat_lengkap ?? '-' }}</td>
                                         <td class="text-dark">
-                                            {{ $baru->alamat_tujuan->alamat_lengkap ?? '' }}</td>
+                                            {{ $baru->alamatTujuan->alamat_lengkap ?? '' }}</td>
                                         <td class="text-dark">
                                             {{ $baru->total_biaya ? 'Rp ' . number_format($baru->total_biaya, 0, ',', '.') : '-' }}
                                         </td>
-                                        <td class="text-dark">
-                                            {{ $baru->status ?? '' }}
+                                        <td>
+                                            <span class="badge bg-{{ $baru->status_color }} text-dark rounded-pill">
+                                                {{ $baru->status }}
+                                            </span>
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
@@ -116,11 +118,11 @@
                     <!-- Pagination -->
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <div class="text-muted small">
-                            Halaman {{ $pengirimanBaru->currentPage() }} dari {{ $pengirimanBaru->lastPage() }}
-                            ({{ $pengirimanBaru->total() }} total data)
+                            Halaman {{ $pesananBaru->currentPage() }} dari {{ $pesananBaru->lastPage() }}
+                            ({{ $pesananBaru->total() }} total data)
                         </div>
                         <div>
-                            {{ $pengirimanBaru->links('pagination::bootstrap-4') }}
+                            {{ $pesananBaru->links('pagination::bootstrap-4') }}
                         </div>
                     </div>
                 @else
