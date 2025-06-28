@@ -14,6 +14,7 @@ use App\Http\Controllers\pengaturanAkunController;
 use App\Http\Controllers\ZonaPengirimanController;
 use App\Http\Controllers\KurirController;
 use App\Http\Controllers\LayananController;
+use Illuminate\Support\Facades\Session;
 
 Route::get('/', function () {
     return view('welcome');
@@ -81,7 +82,21 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
     Route::get('/alamat-tujuan', [AlamatTujuanController::class, 'index'])->name('alamattujuan.index');
 });
 
+// Route untuk redirect kurir yang mencoba akses dashboard pengirim
+Route::get('/dashboard/pengirim', function () {
+    if (Session::get('user_role') === 'kurir') {
+        return redirect('/kurir/dashboard')->with('warning', 'Anda diarahkan ke dashboard kurir.');
+    }
+    return redirect('/login');
+})->middleware('auth.session');
 
+// Route untuk redirect kurir yang mencoba akses dashboard admin
+Route::get('/admin/dashboard', function () {
+    if (Session::get('user_role') === 'kurir') {
+        return redirect('/kurir/dashboard')->with('warning', 'Anda diarahkan ke dashboard kurir.');
+    }
+    return redirect('/login');
+})->middleware('auth.session');
 
 // Untuk pelanggan (pelanggan)
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
@@ -102,6 +117,18 @@ Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
 Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(function () {
     // Dashboard kurir
     Route::get('/dashboard', [KurirController::class, 'dashboard'])->name('kurir.dashboard');
+    // Tugas pengiriman
+    Route::get('/tugas', [KurirController::class, 'tugas'])->name('kurir.tugas');
+    // Riwayat pengiriman
+    Route::get('/riwayat', [KurirController::class, 'riwayat'])->name('kurir.riwayat');
+    // Feedback
+    Route::get('/feedback', [KurirController::class, 'feedback'])->name('kurir.feedback');
+    // Pengaturan
+    Route::get('/pengaturan', [KurirController::class, 'pengaturan'])->name('kurir.pengaturan');
+    // Update informasi kurir
+    Route::post('/update-info', [KurirController::class, 'updateInfo'])->name('kurir.update.info');
+    // Update password kurir
+    Route::post('/update-password', [KurirController::class, 'updatePassword'])->name('kurir.update.password');
     // Detail tugas kurir
     Route::get('/detail/{id_penugasan}', [KurirController::class, 'detail'])->name('kurir.detail');
     // Update status pengiriman
