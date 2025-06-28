@@ -18,7 +18,6 @@ class loginController extends Controller
             $role = Session::get('user_role');
             $name = Session::get('user_name');
 
-
             if ($role === 'admin') {
                 return redirect()->intended('/admin/dashboard')
                     ->with('success', 'Selamat datang Admin ' . $name);
