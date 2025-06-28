@@ -126,6 +126,7 @@
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 <script>
+    
   socket.on("update-data-pengiriman", function (data) {
       const currentId = $('#modalDetailPengiriman').data('id');
       showData(currentId); 

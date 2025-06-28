@@ -153,10 +153,10 @@
                                     <td>${new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-secondary" 
-                                            onclick="showDetailModal(${item.id_pengiriman})"
-                                            data-bs-toggle="tooltip" 
-                                            title="Detail Pengiriman">
-                                            <i class="fas fa-eye"></i>
+        onclick="showDetailModal('${item.nomor_resi}')"
+        data-bs-toggle="tooltip" 
+        title="Detail Pengiriman">
+    <i class="fas fa-eye"></i>
                                         </button>
                                     </td>
                                 </tr>

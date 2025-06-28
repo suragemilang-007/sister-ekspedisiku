@@ -197,7 +197,7 @@
                                         <div class="btn-group" role="group">
                                                                                
                                             <button class="btn btn-sm btn-outline-secondary" 
-                                                    onclick="showDetailModal({{ $shipment->id_pengiriman }})"
+                                                    onclick="showDetailModal('{{ $shipment->nomor_resi }}')"
                                                     data-bs-toggle="tooltip" 
                                                     title="Detail Pengiriman">
                                                 <i class="fas fa-eye"></i>

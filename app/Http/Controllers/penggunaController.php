@@ -151,14 +151,14 @@ class penggunaController extends Controller
         ));
     }
 
-    public function showDetail($id)
+    public function showDetail($nomor_resi)
     {
         try {
             $pengiriman = Pengiriman::with([
                 'alamatTujuan',
                 'zonaPengiriman.layananPaket',
                 'kurir',
-            ])->findOrFail($id);
+            ])->where('nomor_resi', $nomor_resi)->firstOrFail();
 
             $layanan = optional($pengiriman->zonaPengiriman)->layananPaket;
             return response()->json([
