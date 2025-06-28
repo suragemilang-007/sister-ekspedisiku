@@ -37,7 +37,7 @@ class adminController extends Controller
         ];
 
         // Recent shipments
-        $recent_shipments = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan', 'pengguna'])
+        $recent_shipments = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan', 'pengguna', 'alamatPenjemputan'])
             ->where('status', '!=', 'DIBATALKAN')
             ->where('status', '!=', 'DITERIMA') // Exclude cancelled shipments
             ->orderBy('created_at', 'desc')

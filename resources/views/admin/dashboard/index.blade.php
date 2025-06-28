@@ -16,17 +16,19 @@
         <div class="row g-4 mb-4">
             <div class="col-md-3">
                 <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 bg-primary-light rounded-3 p-3">
-                                <i class="fas fa-box fa-2x text-primary"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h6 class="fw-medium mb-1">Pesanan Baru</h6>
-                                <h3 class="fw-bold mb-0">{{ $stats['pengiriman_baru'] ?? 0 }}</h3>
+                    <a href="{{ route('admin.pesanan.baru.index') }}" class="card-link-overlay text-decoration-none text-dark">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 bg-primary-light rounded-3 p-3">
+                                    <i class="fas fa-box fa-2x text-primary"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="fw-medium mb-1">Pesanan Baru</h6>
+                                    <h3 class="fw-bold mb-0">{{ $stats['pengiriman_baru'] ?? 0 }}</h3>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="col-md-3">
@@ -105,7 +107,7 @@
                                         <td class="fw-medium">{{ $shipment->nomor_resi }}</td>
                                         <td class="text-dark">{{ $shipment->created_at->format('d M Y') }}</td>
                                         <td class="text-dark">
-                                            {{ $shipment->pengguna->nama ?? '-' }}
+                                            {{ $shipment->alamatPenjemputan->nama_pengirim ?? '-' }}
                                         </td>
                                         <td class="text-dark">
                                             {{ $shipment->alamatTujuan->nama_penerima ?? '-' }}
@@ -118,27 +120,27 @@
                                             </span>
                                         </td>
                                         <!--
-                                        <td>
-                                            <a href="/dashboard/admin/lacak/{{ $shipment->no_resi }}"
-                                               class="btn btn-sm btn-outline-primary me-2"
-                                               data-bs-toggle="tooltip"
-                                               title="Lacak Paket">
-                                                <i class="fas fa-search"></i>
-                                            </a>
-                                            <a href="/dashboard/admin/detail/{{ $shipment->id }}"
-                                               class="btn btn-sm btn-outline-secondary"
-                                               data-bs-toggle="tooltip"
-                                               title="Detail Pengiriman">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ in_array($shipment->status, ['DIPROSES', 'MENUNGGU KONFIRMASI']) ? url('/dashboard/admin/batal/' . $shipment->id) : '#' }}"
-                                            class="btn btn-sm btn-outline-secondary {{ $shipment->status !== 'DIPROSES' ? 'disabled' : '' }}"
-                                            data-bs-toggle="tooltip"
-                                            title="Batal">
-                                                <i class="fas fa-cancel"></i>
-                                            </a>
-                                        </td>
-    -->
+                                            <td>
+                                                <a href="/dashboard/admin/lacak/{{ $shipment->no_resi }}"
+                                                   class="btn btn-sm btn-outline-primary me-2"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Lacak Paket">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                                <a href="/dashboard/admin/detail/{{ $shipment->id }}"
+                                                   class="btn btn-sm btn-outline-secondary"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Detail Pengiriman">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ in_array($shipment->status, ['DIPROSES', 'MENUNGGU KONFIRMASI']) ? url('/dashboard/admin/batal/' . $shipment->id) : '#' }}"
+                                                class="btn btn-sm btn-outline-secondary {{ $shipment->status !== 'DIPROSES' ? 'disabled' : '' }}"
+                                                data-bs-toggle="tooltip"
+                                                title="Batal">
+                                                    <i class="fas fa-cancel"></i>
+                                                </a>
+                                            </td>
+        -->
                                     </tr>
                                 @endforeach
                             </tbody>
