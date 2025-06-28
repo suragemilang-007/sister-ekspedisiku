@@ -382,7 +382,7 @@ class PengirimanController extends Controller
         Http::post('http://localhost:3001/pengiriman/update-status_pengiriman', $data);
         return response()->json(['status' => 'ok']);
     }
-}
+
 
     public function pesananBaru(Request $request)
     {
@@ -400,17 +400,15 @@ class PengirimanController extends Controller
     {
         // Get all pengiriman with kurir data
         $semuaPesanan = Pengiriman::with([
-                'pengguna',
-                'alamatPenjemputan',
-                'alamatTujuan',
-                'layananPaket',
-                'pelacakan' // include kurir data
-            ])
+            'pengguna',
+            'alamatPenjemputan',
+            'alamatTujuan',
+            'layananPaket',
+            'pelacakan' // include kurir data
+        ])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('admin.pesanan.semua', compact('semuaPesanan'));
     }
 }
-
-
