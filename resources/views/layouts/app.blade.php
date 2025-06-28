@@ -486,10 +486,23 @@
                     <i class="fas fa-shipping-fast"></i>
                 </div>
                 <div class="brand-text">
+                    @if(Session::get('user_role') === 'pelanggan')
                     <a href="{{ url('/dashboard/pengirim') }}" class="text-decoration-none text-white fw-bold">
-                Ekspedisiku
-            </a>
-                    
+                        Ekspedisiku
+                    </a>
+                    @elseif(Session::get('user_role') === 'admin')
+                    <a href="{{ url('/admin/dashboard') }}" class="text-decoration-none text-white fw-bold">
+                        Ekspedisiku
+                    </a>
+                    @elseif(Session::get('user_role') === 'kurir')
+                    <a href="{{ url('/kurir/dashboard') }}" class="text-decoration-none text-white fw-bold">
+                        Ekspedisiku
+                    </a>
+                    @else
+                    <a href="{{ url('/') }}" class="text-decoration-none text-white fw-bold">
+                        Ekspedisiku
+                    </a>
+                    @endif
                 </div>
             </div>
             <button class="sidebar-toggle" id="sidebarToggle" data-bs-toggle="tooltip" data-bs-placement="right" title="Toggle Sidebar">
@@ -501,6 +514,7 @@
         <div class="sidebar-nav">
             <div class="nav-section-title">Menu Utama</div>
             
+            @if(Session::get('user_role') === 'pelanggan')
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a href="javascript:void(0);" class="nav-link {{ Request::is('dashboard/pengirim/feedback*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Lacak Paket" onclick="showLacakModal()">
@@ -557,6 +571,7 @@
                     </a>
                 </li>
             </ul>
+            @endif
         </div>
 
         <!-- Sidebar Footer -->
@@ -567,7 +582,17 @@
                 </div>
                 <div class="user-info">
                     <div class="user-name fw-semibold">{{ Session::get('user_name') ?? 'User' }}</div>
-                    <div class="user-role" style="font-size: 0.85rem;">Pengirim</div>
+                    <div class="user-role" style="font-size: 0.85rem;">
+                        @if(Session::get('user_role') === 'pelanggan')
+                            Pengirim
+                        @elseif(Session::get('user_role') === 'admin')
+                            Admin
+                        @elseif(Session::get('user_role') === 'kurir')
+                            Kurir
+                        @else
+                            User
+                        @endif
+                    </div>
                 </div>
                 <div>
                 <form action="{{ route('logout') }}" method="get">
