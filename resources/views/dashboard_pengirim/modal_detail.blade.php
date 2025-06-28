@@ -124,7 +124,12 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+<script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 <script>
+  socket.on("update-data-pengiriman", function (data) {
+      const currentId = $('#modalDetailPengiriman').data('id');
+      showData(currentId); 
+    });
   function showDetailModal(id) {
     console.log("ID Pengiriman:", id);
     
@@ -162,6 +167,10 @@
         }
       }
     });
+  }
+  function refreshTracking(){
+    const currentId = $('#modalDetailPengiriman').data('id');
+      showData(currentId);
   }
 </script>
 
