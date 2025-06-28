@@ -509,10 +509,27 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/dashboard/admin/kirim" class="nav-link {{ Request::is('dashboard/admin/kirim*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Pesanan Baru">
+                    <a class="nav-link {{ Request::is('admin/pesanan') || Request::is('admin/pesanan') ? 'active' : '' }}" data-bs-toggle="collapse" href="#submenuPesanan" role="button" aria-expanded="{{ Request::is('admin/pesanan') || Request::is('admin/pesanan') ? 'true' : 'false' }}" aria-controls="submenuPesanan" title="Pesanan">
                         <i class="fas fa-box"></i>
-                        <span class="nav-text">Pesanan Baru</span>
+                        <span class="nav-text">Pesanan</span>
+                        <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
+                    <div class="collapse {{ Request::is('admin/pesanan/*') || Request::is('admin/pesanan/*') ? 'show' : '' }}" id="submenuPesanan">
+                        <ul class="nav flex-column ms-4">
+                            <li class="nav-item">
+                                <a href="/admin/pesanan/baru" class="nav-link {{ Request::is('admin/pesanan/baru*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Pesanan Baru">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span class="nav-text">Pesanan Baru</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/admin/pesanan/list" class="nav-link {{ Request::is('admin/pesanan/list') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Semua Pesanan">
+                                    <i class="fas fa-list"></i>
+                                    <span class="nav-text">Semua Pesanan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="/dashboard/admin/kurir" class="nav-link {{ Request::is('dashboard/admin/kurir*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Kurir">
