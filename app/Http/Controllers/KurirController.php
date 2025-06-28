@@ -11,6 +11,7 @@ use App\Models\Pelacakan;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Hash;
 
 class KurirController extends Controller
 {
@@ -129,5 +130,155 @@ class KurirController extends Controller
         ];
 
         return response()->json(['stats' => $stats]);
+    }
+
+    public function tugas()
+    {
+        // Pastikan user yang login adalah kurir
+        if (Session::get('user_role') !== 'kurir') {
+            return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini');
+        }
+
+        $id_kurir = Session::get('user_id');
+
+        // Mengambil semua tugas kurir
+        $tugas = PenugasanKurir::with(['pengiriman.alamatTujuan'])
+            ->where('id_kurir', $id_kurir)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('kurir.tugas', compact('tugas'));
+    }
+
+    public function riwayat()
+    {
+        // Pastikan user yang login adalah kurir
+        if (Session::get('user_role') !== 'kurir') {
+            return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini');
+        }
+
+        $id_kurir = Session::get('user_id');
+
+        // Mengambil riwayat tugas yang sudah selesai
+        $riwayat = PenugasanKurir::with(['pengiriman.alamatTujuan'])
+            ->where('id_kurir', $id_kurir)
+            ->whereIn('status', ['SELESAI', 'DIBATALKAN'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('kurir.riwayat', compact('riwayat'));
+    }
+
+    public function feedback()
+    {
+        // Pastikan user yang login adalah kurir
+        if (Session::get('user_role') !== 'kurir') {
+            return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini');
+        }
+
+        $id_kurir = Session::get('user_id');
+
+        // Mengambil feedback untuk pengiriman yang ditangani kurir
+        $feedback = \App\Models\Feedback::with(['pengiriman.alamatTujuan'])
+            ->whereHas('pengiriman.penugasanKurir', function($query) use ($id_kurir) {
+                $query->where('id_kurir', $id_kurir);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('kurir.feedback', compact('feedback'));
+    }
+
+    public function pengaturan()
+    {
+        // Pastikan user yang login adalah kurir
+        if (Session::get('user_role') !== 'kurir') {
+            return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini');
+        }
+
+        $id_kurir = Session::get('user_id');
+        $kurir = Kurir::find($id_kurir);
+
+        return view('kurir.pengaturan', compact('kurir'));
+    }
+
+    public function updateInfo(Request $request)
+    {
+        try {
+            // Pastikan user yang login adalah kurir
+            if (Session::get('user_role') !== 'kurir') {
+                return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini');
+            }
+
+            // Validasi input
+            $request->validate([
+                'nama' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'nomor_telepon' => 'required|string|max:20',
+                'alamat' => 'required|string',
+            ]);
+
+            $id_kurir = Session::get('user_id');
+            $kurir = Kurir::find($id_kurir);
+
+            if (!$kurir) {
+                return redirect()->back()->with('error', 'Data kurir tidak ditemukan');
+            }
+
+            // Update informasi kurir
+            $kurir->update([
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'nomor_telepon' => $request->nomor_telepon,
+                'alamat' => $request->alamat,
+            ]);
+
+            // Update session
+            Session::put('user_name', $request->nama);
+
+            return redirect()->back()->with('success', 'Informasi berhasil diperbarui');
+        } catch (\Exception $e) {
+            Log::error('Error updating kurir info: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        try {
+            // Pastikan user yang login adalah kurir
+            if (Session::get('user_role') !== 'kurir') {
+                return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini');
+            }
+
+            // Validasi input
+            $request->validate([
+                'password_lama' => 'required|string',
+                'password_baru' => 'required|string|min:6',
+                'konfirmasi_password' => 'required|string|same:password_baru',
+            ]);
+
+            $id_kurir = Session::get('user_id');
+            $kurir = Kurir::find($id_kurir);
+
+            if (!$kurir) {
+                return redirect()->back()->with('error', 'Data kurir tidak ditemukan');
+            }
+
+            // Cek password lama
+            if (!Hash::check($request->password_lama, $kurir->sandi_hash)) {
+                return redirect()->back()->with('error', 'Password lama tidak sesuai');
+            }
+
+            // Update password
+            $kurir->update([
+                'sandi_hash' => Hash::make($request->password_baru),
+            ]);
+
+            return redirect()->back()->with('success', 'Password berhasil diperbarui');
+        } catch (\Exception $e) {
+            Log::error('Error updating kurir password: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }
