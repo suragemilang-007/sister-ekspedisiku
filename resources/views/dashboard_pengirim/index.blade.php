@@ -100,10 +100,14 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 <script>
-    
 
     socket.on("update-data-pengiriman", function (data) {
-        loadDashboard(); 
+        console.log('update');
+        const modalEl = document.getElementById('modalDetailPengiriman');
+        const bsModal = bootstrap.Modal.getInstance(modalEl);
+    setTimeout(() => {
+        loadDashboard();
+    }, 300);
     });
     function loadDashboard() {
             $.ajax({

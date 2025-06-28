@@ -118,7 +118,8 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
-                    io.emit("update-data-pengiriman", data);
+
+                    io.emit("update-data-pengiriman1", data);
                     break;
                 case TOPICS.ADD_ZONA:
                     await zonaCreateHandler(data);
@@ -140,7 +141,10 @@ await consumer.run({
                     break;
                 case TOPICS.PENGIRIMAN_UPDATE_STATUS:
                     await handlePengirimanUpdateStatus(data);
-                    io.emit("update-data-pengiriman", data);
+                    if (io) {
+                        io.emit("update-data-pengiriman", data);
+                        io.emit("update-data-pengiriman1", data);
+                    }
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

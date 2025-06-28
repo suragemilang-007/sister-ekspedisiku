@@ -503,7 +503,7 @@
             
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="javascript:void(0);" class="nav-link {{ Request::is('dashboard/pengirim/feedback*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Lacak Paket" onclick="showLacakModal()">
+                    <a href="javascript:void(0);" class="nav-link {{ Request::is('dashboard/pengirim/feedbacka*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Lacak Paket" onclick="showLacakModal()">
                         <i class="fas fa-map-marker-alt"></i>
                         <span class="nav-text">Lacak Paket</span>
                     </a>

@@ -128,14 +128,17 @@
 <script>
   socket.on("update-data-pengiriman", function (data) {
       const currentId = $('#modalDetailPengiriman').data('id');
-      console.log("Update data pengiriman diterima untuk ID:", currentId);
-      showData(currentId); 
+      setTimeout(() => {
+        showData(currentId); 
+    }, 300);
+      
     });
   function showDetailModal(id) {
     console.log("ID Pengiriman:", id);
     $('#modalDetailPengiriman').data('id', id);
     showData(id);
-    $("#modalDetailPengiriman").modal('show');
+    const modal = new bootstrap.Modal(document.getElementById('modalDetailPengiriman'));
+    modal.show();
 }
   function showData(id) {
     $.ajax({
