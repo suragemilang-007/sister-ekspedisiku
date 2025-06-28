@@ -13,4 +13,5 @@ export const TOPICS = {
     DELETE_ZONA: "zona-delete",
     ADD_LAYANAN: "layanan-add",
     UPDATE_LAYANAN: "layanan-update",
+    DELETE_LAYANAN: "layanan-delete",
 };

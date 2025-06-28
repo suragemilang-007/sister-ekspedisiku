@@ -60,7 +60,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/layanan/store', [LayananController::class, 'storeLayanan'])->name('admin.layanan.store');
     Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('admin.layanan.edit');
     Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
-    Route::delete('/layanan/{id}', [LayananController::class, 'delete'])->name('admin.layanan.delete');
+    Route::delete('/layanan/{id}', [LayananController::class, 'deleteLayanan'])->name('admin.layanan.delete');
 });
 
 // Route untuk pengirim
