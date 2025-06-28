@@ -8,6 +8,7 @@ use App\Models\AlamatPenjemputan;
 use App\Models\LayananPaket;
 use App\Models\ZonaPengiriman;
 use App\Models\Pengguna;
+use App\Models\PenugasanKurir;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -366,7 +367,7 @@ class PengirimanController extends Controller
     {
         // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
         $statusList = ['DIBAYAR', 'MENUNGGU KONFIRMASI', 'DIPROSES'];
-        $pesananBaru = Pengiriman::with(['pengguna:id_pengguna,nama', 'alamatPenjemputan:uid,alamat_lengkap', 'alamatTujuan:uid,alamat_lengkap', 'layananPaket:id_layanan,nama_layanan'])
+        $pesananBaru = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])
             ->whereIn('status', $statusList)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -376,8 +377,14 @@ class PengirimanController extends Controller
 
     public function semuaPesanan()
     {
-        // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
-        $semuaPesanan = Pengiriman::with(['pengguna:id_pengguna,nama', 'alamatPenjemputan:uid,alamat_lengkap', 'alamatTujuan:uid,alamat_lengkap', 'layananPaket:id_layanan,nama_layanan'])
+        // Get all pengiriman with kurir data
+        $semuaPesanan = Pengiriman::with([
+                'pengguna',
+                'alamatPenjemputan',
+                'alamatTujuan',
+                'layananPaket',
+                'pelacakan' // include kurir data
+            ])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
