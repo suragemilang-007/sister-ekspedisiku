@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Str;
 
 class Pengguna extends Model
 {
@@ -15,6 +16,7 @@ class Pengguna extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'uid',
         'nama',
         'email',
         'tgl_lahir',
@@ -47,4 +49,14 @@ class Pengguna extends Model
     {
         return $this->hasMany(Pelacakan::class, 'updated_by');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->uid = (string) str::uuid();
+        });
+    }
+
 }

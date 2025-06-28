@@ -9,6 +9,7 @@ use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Str;
 
 class AlamatTujuanController extends Controller
 {
@@ -17,7 +18,7 @@ class AlamatTujuanController extends Controller
      */
     public function index()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -28,7 +29,7 @@ class AlamatTujuanController extends Controller
             ->get();
         $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('kecamatan_tujuan');
-        return view('alamat-tujuan.index', compact('alamatTujuan'));
+        return view('pengguna.alamat-tujuan.index', compact('alamatTujuan'));
     }
 
     /**
@@ -36,14 +37,14 @@ class AlamatTujuanController extends Controller
      */
     public function create()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
         $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('kecamatan_tujuan');
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        return view('alamat-tujuan.create', compact('kecamatanTujuan'));
+        return view('pengguna.alamat-tujuan.create', compact('kecamatanTujuan'));
     }
 
     /**
@@ -59,9 +60,11 @@ class AlamatTujuanController extends Controller
             'kode_pos' => 'required|string|max:10',
             'keterangan_alamat' => 'nullable|string|max:255'
         ]);
-
+        $userId = Session::get('user_id');
+        $uid = 'ALT' . date('Ymd') . $userId . strtoupper(Str::random(5));
         Http::post('http://localhost:3001/alamat-tujuan', [
-            'id_pengirim' => Session::get('user_id'),
+            'uid' => $uid,
+            'id_pengirim' => Session::get('user_uid'),
             'nama_penerima' => $request->nama_penerima,
             'no_hp' => $request->no_hp,
             'alamat_lengkap' => $request->alamat_lengkap,
@@ -78,13 +81,13 @@ class AlamatTujuanController extends Controller
      */
     public function show($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $alamatTujuan = AlamatTujuan::where('id_alamat_tujuan', $id)
+        $alamatTujuan = AlamatTujuan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 
@@ -93,7 +96,7 @@ class AlamatTujuanController extends Controller
                 ->with('error', 'Alamat tujuan tidak ditemukan');
         }
 
-        return view('alamat-tujuan.show', compact('alamatTujuan'));
+        return view('pengguna.alamat-tujuan.show', compact('alamatTujuan'));
     }
 
     /**
@@ -101,22 +104,22 @@ class AlamatTujuanController extends Controller
      */
     public function edit($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $data = AlamatTujuan::where('id_alamat_tujuan', $id)
+        $data = AlamatTujuan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
-
+        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         if (!$data) {
             return redirect()->route('alamat-tujuan.index')
                 ->with('error', 'Alamat tujuan tidak ditemukan');
         }
 
-        return view('alamat-tujuan.edit', compact('data'));
+        return view('pengguna.alamat-tujuan.edit', compact('data', 'kecamatanAsal'));
     }
 
     /**
@@ -134,7 +137,7 @@ class AlamatTujuanController extends Controller
         ]);
 
         Http::post('http://localhost:3001/alamat-tujuan-edit', [
-            'id_alamat_tujuan' => $id,
+            'uid' => $id,
             'nama_penerima' => $request->nama_penerima,
             'no_hp' => $request->no_hp,
             'alamat_lengkap' => $request->alamat_lengkap,
@@ -152,7 +155,7 @@ class AlamatTujuanController extends Controller
     public function destroy($id)
     {
         Http::post('http://localhost:3001/alamat-tujuan-delete', [
-            'id_alamat_tujuan' => $id
+            'uid' => $id
         ]);
 
         return response()->json(['status' => 'ok']);
@@ -163,7 +166,7 @@ class AlamatTujuanController extends Controller
      */
     public function getAlamatTujuan()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -182,13 +185,13 @@ class AlamatTujuanController extends Controller
      */
     public function getAlamatTujuanDetail($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $alamatTujuan = AlamatTujuan::where('id_alamat_tujuan', $id)
+        $alamatTujuan = AlamatTujuan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 

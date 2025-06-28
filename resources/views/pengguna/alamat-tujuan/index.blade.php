@@ -106,18 +106,18 @@
                                                     </button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a class="dropdown-item" href="{{ route('alamat-tujuan.show', $alamat->id_alamat_tujuan) }}">
+                                                            <a class="dropdown-item" href="{{ route('alamat-tujuan.show', $alamat->uid) }}">
                                                                 <i class="fas fa-eye me-2"></i>Lihat Detail
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item" href="{{ route('alamat-tujuan.edit', $alamat->id_alamat_tujuan) }}">
+                                                            <a class="dropdown-item" href="{{ route('alamat-tujuan.edit', $alamat->uid) }}">
                                                                 <i class="fas fa-edit me-2"></i>Edit
                                                             </a>
                                                         </li>
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>
-                                                            <button class="dropdown-item text-danger" onclick="confirmDelete({{ $alamat->id_alamat_tujuan }})">
+                                                            <button class="dropdown-item text-danger" onclick="confirmDelete('{{ $alamat->uid }}')">
                                                                 <i class="fas fa-trash me-2"></i>Hapus
                                                             </button>
                                                         </li>
@@ -143,20 +143,21 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('alamat-tujuan.show', $alamat->id_alamat_tujuan) }}">
+                                                        <a class="dropdown-item" href="{{ route('alamat-tujuan.show', $alamat->uid) }}">
                                                             <i class="fas fa-eye me-2"></i>Lihat Detail
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('alamat-tujuan.edit', $alamat->id_alamat_tujuan) }}">
+                                                        <a class="dropdown-item" href="{{ route('alamat-tujuan.edit', $alamat->uid) }}">
                                                             <i class="fas fa-edit me-2"></i>Edit
                                                         </a>
                                                     </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
-                                                        <button class="dropdown-item text-danger" onclick="confirmDelete({{ $alamat->id_alamat_tujuan }})">
-                                                            <i class="fas fa-trash me-2"></i>Hapus
-                                                        </button>
+                                                        <button class="dropdown-item text-danger" onclick="confirmDelete('{{ $alamat->uid }}')">
+                                                                <i class="fas fa-trash me-2"></i>Hapus
+                                                            </button>
+                                                      
                                                     </li>
                                                 </ul>
                                             </div>

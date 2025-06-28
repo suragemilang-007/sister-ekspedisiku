@@ -214,7 +214,7 @@
                 <div class="card-body">
                     <form id="feedback-form" class="needs-validation" novalidate>
                         @csrf
-                        <input type="hidden" name="id_pengiriman" value="{{ $pengiriman->id_pengiriman }}">
+                        <input type="hidden" name="nomor_resi" value="{{ $pengiriman->nomor_resi }}">
 
                         <!-- Star Rating Section -->
                         <div class="shipping-rating-container mb-4">

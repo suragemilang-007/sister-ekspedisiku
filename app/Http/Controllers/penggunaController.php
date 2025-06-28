@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +18,9 @@ use Illuminate\Support\Facades\Session;
 
 class penggunaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         // Dashboard statistics
         $stats = [
@@ -32,9 +33,7 @@ class penggunaController extends Controller
                 ->where('status', 'DITERIMA')
                 ->count(),
             'total_biaya' => Pengiriman::where('id_pengirim', $userId)->sum('total_biaya'),
-            'rating_rata' => Feedback::whereHas('pengiriman', function ($query) use ($userId) {
-                $query->where('id_pengirim', $userId);
-            })->avg('rating') ?: 0,
+
         ];
 
         // Recent shipments
@@ -43,17 +42,42 @@ class penggunaController extends Controller
             ->whereIn('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM'])
             ->orderByRaw("FIELD(status, 'MENUNGGU KONFIRMASI','DIPROSES', 'DIBAYAR', 'DIKIRIM')")
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($item) {
+
+                return $item;
+            });
         $pengiriman = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan'])
             ->where('id_pengirim', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('dashboard_pengirim.index', compact('stats', 'recent_shipments'));
+        // Recent finished shipments in the last 3 days
+        $recent_finish_shipment_3days = Pengiriman::with(['alamatTujuan', 'layananPaket'])
+            ->where('id_pengirim', $userId)
+            ->where('status', 'DITERIMA')
+            ->where('created_at', '>=', Carbon::now()->subDays(3))
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'stats' => $stats,
+                'recent_shipments' => $recent_shipments,
+                'recent_finish_shipments' => $recent_finish_shipment_3days,
+            ]);
+        }
+
+        return view('dashboard_pengirim.index', compact(
+            'stats',
+            'recent_shipments',
+            'recent_finish_shipment_3days'
+        ));
     }
+
     public function history(Request $request)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         // Base query
         $query = Pengiriman::with(['alamatTujuan', 'layananPaket'])
@@ -105,8 +129,8 @@ class penggunaController extends Controller
                 ->where('status', 'DITERIMA')
                 ->count(),
             'total_biaya' => Pengiriman::where('id_pengirim', $userId)->sum('total_biaya'),
-            'rating_avg' => Feedback::whereHas('pengiriman', function ($query) use ($userId) {
-                $query->where('id_pengirim', $userId);
+            'rating_avg' => Feedback::whereHas('pengiriman', function ($q) use ($userId) {
+                $q->where('id_pengirim', $userId);
             })->avg('rating') ?: 0,
         ];
 
@@ -127,14 +151,14 @@ class penggunaController extends Controller
         ));
     }
 
-    public function showDetail($id)
+    public function showDetail($nomor_resi)
     {
         try {
             $pengiriman = Pengiriman::with([
                 'alamatTujuan',
                 'zonaPengiriman.layananPaket',
                 'kurir',
-            ])->findOrFail($id);
+            ])->where('nomor_resi', $nomor_resi)->firstOrFail();
 
             $layanan = optional($pengiriman->zonaPengiriman)->layananPaket;
             return response()->json([
@@ -149,227 +173,26 @@ class penggunaController extends Controller
         }
     }
 
-    public function tracking()
-    {
-        $userId = Auth::id();
-        $pengiriman = Pengiriman::with(['alamatTujuan', 'layanan', 'pelacakan'])
-            ->where('id_pengirim', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('dashboard.tracking', compact('pengiriman'));
-    }
-
-    public function trackingDetail($id)
-    {
-        $userId = Auth::id();
-        $pengiriman = Pengiriman::with(['alamatTujuan', 'layanan', 'pelacakan', 'penugasanKurir.kurir'])
-            ->where('id_pengirim', $userId)
-            ->where('id_pengiriman', $id)
-            ->firstOrFail();
-
-        $tracking_history = Pelacakan::where('id_pengiriman', $id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
-
-        return view('dashboard.tracking-detail', compact('pengiriman', 'tracking_history'));
-    }
-
-
-
     public function createShipment()
     {
         $layanan = LayananPaket::all();
         return view('dashboard.create-shipment', compact('layanan'));
     }
 
-    public function storeShipment(Request $request)
+    public function feedbackSidebar()
     {
-        $request->validate([
-            'nama_penerima' => 'required|string|max:100',
-            'no_hp' => 'required|string|max:100',
-            'alamat_lengkap' => 'required|string',
-            'kecamatan' => 'required|string|max:100',
-            'kode_pos' => 'required|string|max:10',
-            'telepon' => 'nullable|string|max:20',
-            'id_layanan' => 'required|exists:layanan_paket,id_layanan',
-            'catatan_opsional' => 'nullable|string'
-        ]);
+        $userId = Session::get('user_uid');
 
-        DB::beginTransaction();
-
-        try {
-            // Create alamat tujuan
-            $alamat = AlamatTujuan::create([
-                'nama_penerima' => $request->nama_penerima,
-                'no_hp' => $request->no_hp,
-                'alamat_lengkap' => $request->alamat_lengkap,
-                'kecematan' => $request->kecamatan,
-                'kode_pos' => $request->kode_pos,
-                'telepon' => $request->telepon,
-                'created_at' => now()
-            ]);
-
-            // Calculate shipping cost (simplified)
-            $layanan = LayananPaket::find($request->id_layanan);
-            $zona_biaya = ZonaPengiriman::where('id_layanan', $request->id_layanan)->first();
-            $total_biaya = $layanan->harga_dasar + ($zona_biaya->biaya_zona ?? 0);
-
-            // Generate resi number
-            $nomor_resi = 'EXP' . date('Ymd') . sprintf('%06d', rand(1, 999999));
-
-            // Create pengiriman
-            $pengiriman = Pengiriman::create([
-                'id_pengirim' => Auth::id(),
-                'id_alamat_tujuan' => $alamat->id_alamat_tujuan,
-                'total_biaya' => $total_biaya,
-                'id_layanan' => $request->id_layanan,
-                'status' => 'diproses',
-                'nomor_resi' => $nomor_resi,
-                'catatan_opsional' => $request->catatan_opsional,
-                'created_at' => now()
-            ]);
-
-            // Create initial tracking
-            Pelacakan::create([
-                'id_pengiriman' => $pengiriman->id_pengiriman,
-                'status' => 'Paket telah diterima dan sedang diproses',
-                'lokasi' => 'Pusat Distribusi',
-                'updated_by' => Auth::id(),
-                'updated_at' => now()
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('dashboard.payment', $pengiriman->id_pengiriman)
-                ->with('success', 'Pengiriman berhasil dibuat! Silakan lakukan pembayaran.');
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    public function payment($id)
-    {
-        $userId = Auth::id();
-        $pengiriman = Pengiriman::with(['alamatTujuan', 'layanan', 'pembayaran'])
-            ->where('id_pengirim', $userId)
-            ->where('id_pengiriman', $id)
-            ->firstOrFail();
-
-        return view('dashboard.payment', compact('pengiriman'));
-    }
-
-    public function processPayment(Request $request, $id)
-    {
-        $request->validate([
-            'metode' => 'required|in:transfer,e-wallet,tunai,kartu'
-        ]);
-
-        $userId = Auth::id();
-        $pengiriman = Pengiriman::where('id_pengirim', $userId)
-            ->where('id_pengiriman', $id)
-            ->firstOrFail();
-
-        // Create payment record
-        Pembayaran::create([
-            'id_pengiriman' => $id,
-            'metode' => $request->metode,
-            'status' => 'berhasil', // Simplified - in real app would integrate with payment gateway
-            'jumlah_bayar' => $pengiriman->total_biaya,
-            'waktu_bayar' => now()
-        ]);
-
-        // Update shipment status
-        $pengiriman->update(['status' => 'menunggu kurir']);
-
-        // Create notification
-        Notifikasi::create([
-            'id_pengguna' => $userId,
-            'pesan' => "Pembayaran untuk resi {$pengiriman->nomor_resi} berhasil. Paket akan segera diproses.",
-            'jenis' => 'in-app',
-            'sent_at' => now()
-        ]);
-
-        return redirect()->route('dashboard.tracking')->with('success', 'Pembayaran berhasil! Paket Anda akan segera diproses.');
-    }
-
-    public function feedback()
-    {
-        $userId = Auth::id();
-        $completed_shipments = Pengiriman::with(['alamatTujuan', 'feedback'])
-            ->where('id_pengirim', $userId)
-            ->where('status', 'Sampai')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('dashboard.feedback', compact('completed_shipments'));
-    }
-
-    public function submitFeedback(Request $request, $id)
-    {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'komentar' => 'nullable|string|max:500'
-        ]);
-
-        $userId = Auth::id();
-        $pengiriman = Pengiriman::where('id_pengirim', $userId)
-            ->where('id_pengiriman', $id)
-            ->where('status', 'Sampai')
-            ->firstOrFail();
-
-        // Check if feedback already exists
-        $existing_feedback = Feedback::where('id_pengiriman', $id)->first();
-
-        if ($existing_feedback) {
-            $existing_feedback->update([
-                'rating' => $request->rating,
-                'komentar' => $request->komentar
-            ]);
-            $message = 'Feedback berhasil diperbarui!';
-        } else {
-            Feedback::create([
-                'id_pengiriman' => $id,
-                'rating' => $request->rating,
-                'komentar' => $request->komentar,
-                'created_at' => now()
-            ]);
-            $message = 'Feedback berhasil dikirim!';
-        }
-
-        return back()->with('success', $message);
-    }
-
-    public function notifications()
-    {
-        $userId = Auth::id();
-        $notifications = Notifikasi::where('id_pengguna', $userId)
-            ->orderBy('id_pengguna ', 'desc')
-            ->paginate(15);
-
-        return view('dashboard.notifications', compact('notifications'));
-    }
-
-    public function calculateCost(Request $request)
-    {
-        $request->validate([
-            'kecamatan' => 'required|string',
-            'id_layanan' => 'required|exists:layanan_paket,id_layanan'
-        ]);
-
-        $layanan = LayananPaket::find($request->id_layanan);
-        $zona_biaya = ZonaPengiriman::where('tujuan', 'like', '%' . $request->kecamatan . '%')
-            ->where('id_layanan', $request->id_layanan)
-            ->first();
-
-        $total_biaya = $layanan->harga_dasar + ($zona_biaya->biaya_zona ?? 15000);
-
+        $stats = [
+            'total_pengirimanDenganFeedback' => Pengiriman::where('id_pengirim', $userId)
+                ->where('status', 'DITERIMA')
+                ->whereDoesntHave('feedback')
+                ->count(),
+        ];
         return response()->json([
-            'success' => true,
-            'total_biaya' => $total_biaya,
-            'formatted_biaya' => 'Rp ' . number_format($total_biaya, 0, ',', '.')
+            'stats' => $stats,
         ]);
     }
+
+
 }

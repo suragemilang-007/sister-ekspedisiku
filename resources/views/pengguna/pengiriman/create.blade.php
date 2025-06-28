@@ -82,7 +82,7 @@
                                     <select class="form-select form-select-lg border-0 shadow-sm" id="id_alamat_penjemputan" name="id_alamat_penjemputan">
                                         <option value="">Pilih alamat penjemputan...</option>
                                         @foreach($alamatPenjemputan as $alamat)
-                                        <option value="{{ $alamat->id_alamat_penjemputan }}" data-kecamatan="{{ $alamat->kecamatan }}">
+                                        <option value="{{ $alamat->uid }}" data-kecamatan="{{ $alamat->kecamatan }}">
                                             {{ $alamat->nama_pengirim }} - {{ $alamat->kecamatan }}
                                         </option>
                                         @endforeach
@@ -174,7 +174,7 @@
                                     <select class="form-select form-select-lg border-0 shadow-sm" id="id_alamat_tujuan" name="id_alamat_tujuan">
                                         <option value="">Pilih alamat tujuan...</option>
                                         @foreach($alamatTujuan as $alamat)
-                                        <option value="{{ $alamat->id_alamat_tujuan }}" data-kecamatan="{{ $alamat->kecamatan }}">
+                                        <option value="{{ $alamat->uid }}" data-kecamatan="{{ $alamat->kecamatan }}">
                                             {{ $alamat->nama_penerima }} - {{ $alamat->kecamatan }}
                                         </option>
                                         @endforeach

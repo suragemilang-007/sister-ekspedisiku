@@ -130,7 +130,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-filter"></i>
                             </button>
-                            <a href="{{ route('dashboard.history') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('dashboard.history.pengiriman') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-undo"></i>
                             </a>
                         </div>
@@ -197,7 +197,7 @@
                                         <div class="btn-group" role="group">
                                                                                
                                             <button class="btn btn-sm btn-outline-secondary" 
-                                                    onclick="showDetailModal({{ $shipment->id_pengiriman }})"
+                                                    onclick="showDetailModal('{{ $shipment->nomor_resi }}')"
                                                     data-bs-toggle="tooltip" 
                                                     title="Detail Pengiriman">
                                                 <i class="fas fa-eye"></i>
@@ -239,7 +239,7 @@
                     </p>
                     <div class="d-flex gap-2 justify-content-center">
                         @if(request('search') || request('status') != 'all' || request('date_from') || request('date_to'))
-                            <a href="{{ route('dashboard.pengirim.history') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('dashboard.history.pengiriman') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-undo me-2"></i> Reset Filter
                             </a>
                         @endif
@@ -257,31 +257,7 @@
 @push('scripts')
 
 <script>
-function showDetailModal(id) {
-    $.get("{{ route('dashboard.pengirim.detail', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id), function(response) {
-        if (response.status === "success") {
-            const data = response.data.pengiriman;
-            const datalayanan = response.data.layanan;
-            $("#resi").text(data.nomor_resi);
-            $("#nama_layanan").text(datalayanan.nama_layanan);
-            $("#deskripsi").text(datalayanan.deskripsi);
-            $("#status").text(data.status);
-            $("#catatan").text(data.catatan_opsional || '-');
-
-            $("#alamat").text(data.alamat_tujuan?.alamat_lengkap ?? '-');
-            $("#nama_penerima").text(data.alamat_tujuan?.nama_penerima ?? '-');
-            $("#nohp_penerima").text(data.alamat_tujuan?.no_hp ?? '-');
-
-            
-            $("#kurir").text(data.kurir?.nama ?? 'Belum ditugaskan');
-
-            $("#modalDetailPengiriman").modal('show');
-        }
-    });
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-submit form when filters change
     const filterForm = document.getElementById('filterForm');
     const statusSelect = filterForm.querySelector('select[name="status"]');
     const dateInputs = filterForm.querySelectorAll('input[type="date"]');
@@ -295,8 +271,6 @@ document.addEventListener('DOMContentLoaded', function() {
             filterForm.submit();
         });
     });
-    
-    // Search with delay
     const searchInput = filterForm.querySelector('input[name="search"]');
     let searchTimeout;
     
@@ -304,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             filterForm.submit();
-        }, 500); // 500ms delay
+        }, 500);
     });
     
 

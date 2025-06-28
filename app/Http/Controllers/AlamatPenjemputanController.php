@@ -8,6 +8,7 @@ use App\Models\ZonaPengiriman;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Str;
 
 class AlamatPenjemputanController extends Controller
 {
@@ -16,7 +17,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function index()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -34,7 +35,7 @@ class AlamatPenjemputanController extends Controller
      */
     public function create()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
         $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -56,9 +57,12 @@ class AlamatPenjemputanController extends Controller
             'kode_pos' => 'required|string|max:10',
             'keterangan_alamat' => 'nullable|string|max:255'
         ]);
+        $userId = Session::get('user_id');
+        $uid = 'ALT' . date('Ymd') . $userId . strtoupper(Str::random(5));
 
         Http::post('http://localhost:3001/alamat-penjemputan', [
-            'id_pengirim' => Session::get('user_id'),
+            'uid' => $uid,
+            'id_pengirim' => Session::get('user_uid'),
             'nama_pengirim' => $request->nama_pengirim,
             'no_hp' => $request->no_hp,
             'alamat_lengkap' => $request->alamat_lengkap,
@@ -75,13 +79,14 @@ class AlamatPenjemputanController extends Controller
      */
     public function show($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $alamatPenjemputan = AlamatPenjemputan::where('id_alamat_penjemputan', $id)
+
+        $alamatPenjemputan = AlamatPenjemputan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 
@@ -90,7 +95,7 @@ class AlamatPenjemputanController extends Controller
                 ->with('error', 'Alamat penjemputan tidak ditemukan');
         }
 
-        return view('alamat-penjemputan.show', compact('alamatPenjemputan'));
+        return view('pengguna.alamat-penjemputan.show', compact('alamatPenjemputan'));
     }
 
     /**
@@ -98,22 +103,22 @@ class AlamatPenjemputanController extends Controller
      */
     public function edit($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $data = AlamatPenjemputan::where('id_alamat_penjemputan', $id)
+        $data = AlamatPenjemputan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
-
+        $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         if (!$data) {
             return redirect()->route('alamat-penjemputan.index')
                 ->with('error', 'Alamat penjemputan tidak ditemukan');
         }
 
-        return view('alamat-penjemputan.edit', compact('data'));
+        return view('pengguna.alamat-penjemputan.edit', compact('data', 'kecamatanAsal'));
     }
 
     /**
@@ -131,7 +136,7 @@ class AlamatPenjemputanController extends Controller
         ]);
 
         Http::post('http://localhost:3001/alamat-penjemputan-edit', [
-            'id_alamat_penjemputan' => $id,
+            'uid' => $id,
             'nama_pengirim' => $request->nama_pengirim,
             'no_hp' => $request->no_hp,
             'alamat_lengkap' => $request->alamat_lengkap,
@@ -150,7 +155,7 @@ class AlamatPenjemputanController extends Controller
     public function destroy($id)
     {
         Http::post('http://localhost:3001/alamat-penjemputan-delete', [
-            'id_alamat_penjemputan' => $id
+            'uid' => $id
         ]);
 
         return response()->json(['status' => 'ok']);
@@ -161,11 +166,9 @@ class AlamatPenjemputanController extends Controller
      */
     public function getAlamatPenjemputan()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
-        if (!$userId) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+
 
         $alamatPenjemputan = AlamatPenjemputan::where('id_pengirim', $userId)
             ->select('id_alamat_penjemputan', 'nama_pengirim', 'alamat_lengkap', 'kecamatan', 'no_hp')
@@ -180,13 +183,13 @@ class AlamatPenjemputanController extends Controller
      */
     public function getAlamatPenjemputanDetail($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $alamatPenjemputan = AlamatPenjemputan::where('id_alamat_penjemputan', $id)
+        $alamatPenjemputan = AlamatPenjemputan::where('uid', $id)
             ->where('id_pengirim', $userId)
             ->first();
 

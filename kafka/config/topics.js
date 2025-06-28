@@ -5,10 +5,18 @@ export const TOPICS = {
     ALAMAT_TAMBAH: "alamat-tujuan-topic",
     ALAMAT_EDIT: "alamat-tujuan-edit",
     ALAMAT_DELETE: "alamat-tujuan-delete",
+    PENJEMPUTAN_TAMBAH: "alamat-penjemputan-topic",
+    PENJEMPUTAN_EDIT: "alamat-penjemputan-edit",
+    PENJEMPUTAN_DELETE: "alamat-penjemputan-delete",
     DELETE_USER: "pengguna-delete",
     ADD_USER: "pengguna-add",
     ADD_PENGIRIMAN: "pengiriman-add",
     ADD_ZONA: "zona-add",
     UPDATE_ZONA: "zona-update",
     DELETE_ZONA: "zona-delete",
+    ADD_LAYANAN: "layanan-add",
+    UPDATE_LAYANAN: "layanan-update",
+    DELETE_LAYANAN: "layanan-delete",
+
+    PENGIRIMAN_UPDATE_STATUS: "pengiriman-update-status",
 };

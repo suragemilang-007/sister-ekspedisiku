@@ -1,5 +1,7 @@
 import { createKafka } from "../config/kafka.js";
 import { TOPICS } from "../config/topics.js";
+import { Server } from "socket.io";
+import http from "http";
 
 import { updateInfoHandler } from "../handlers/updateInfo.js";
 import { updatePasswordHandler } from "../handlers/updatePassword.js";
@@ -8,11 +10,18 @@ import { feedbackHandler } from "../handlers/feedback.js";
 import { alamatTambahHandler } from "../handlers/alamatTambah.js";
 import { alamatEditHandler } from "../handlers/alamatEdit.js";
 import { alamatDeleteHandler } from "../handlers/alamatDelete.js";
+import { alamatPenjemputanTambahHandler } from "../handlers/alamatPenjemputanTambah.js";
+import { alamatPenjemputanEditHandler } from "../handlers/alamatPenjemputanEdit.js";
+import { alamatPenjemputanDeleteHandler } from "../handlers/alamatPenjemputanDelete.js";
 import { penggunaTambahHandler } from "../handlers/penggunaAdd.js";
 import { addPengirimanHandler } from "../handlers/addPengiriman.js";
 import { zonaCreateHandler } from "../handlers/zonaAdd.js";
 import { updateZonaHandler } from "../handlers/updateZona.js";
 import { zonaDeleteHandler } from "../handlers/zonaDelete.js";
+import { layananCreateHandler } from "../handlers/layananAdd.js";
+import { updateLayananHandler } from "../handlers/updateLayanan.js";
+import { layananDeleteHandler } from "../handlers/layananDelete.js";
+import { handlePengirimanUpdateStatus } from "../handlers/pengirimanUpdateStatus.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -26,13 +35,46 @@ await Promise.all([
     consumer.subscribe({ topic: TOPICS.ALAMAT_TAMBAH, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ALAMAT_EDIT, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ALAMAT_DELETE, fromBeginning: false }),
-    consumer.subscribe({ topic: TOPICS.DELETE_USER, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.PENJEMPUTAN_TAMBAH,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.PENJEMPUTAN_EDIT,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.PENJEMPUTAN_DELETE,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.DELETE_USER,
+        fromBeginning: false,
+    }),
     consumer.subscribe({ topic: TOPICS.ADD_USER, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ADD_PENGIRIMAN, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.ADD_ZONA, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.UPDATE_ZONA, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.DELETE_ZONA, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.ADD_LAYANAN, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.UPDATE_LAYANAN, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.DELETE_LAYANAN, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.PENGIRIMAN_UPDATE_STATUS,
+        fromBeginning: false,
+    }),
 ]);
+
+const httpServer = http.createServer();
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*",
+    },
+});
+
+io.on("connection", (socket) => {
+    console.log("🔗 Client terhubung ke WebSocket");
+});
 
 await consumer.run({
     eachMessage: async ({ topic, message }) => {
@@ -48,6 +90,7 @@ await consumer.run({
                     break;
                 case TOPICS.FEEDBACK:
                     await feedbackHandler(data);
+                    io.emit("update-sidebar", data);
                     break;
                 case TOPICS.ALAMAT_TAMBAH:
                     await alamatTambahHandler(data);
@@ -58,6 +101,15 @@ await consumer.run({
                 case TOPICS.ALAMAT_DELETE:
                     await alamatDeleteHandler(data);
                     break;
+                case TOPICS.PENJEMPUTAN_TAMBAH:
+                    await alamatPenjemputanTambahHandler(data);
+                    break;
+                case TOPICS.PENJEMPUTAN_EDIT:
+                    await alamatPenjemputanEditHandler(data);
+                    break;
+                case TOPICS.PENJEMPUTAN_DELETE:
+                    await alamatPenjemputanDeleteHandler(data);
+                    break;
                 case TOPICS.ADD_USER:
                     await penggunaTambahHandler(data);
                     break;
@@ -66,6 +118,8 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
+
+                    io.emit("update-data-pengiriman1", data);
                     break;
                 case TOPICS.ADD_ZONA:
                     await zonaCreateHandler(data);
@@ -76,6 +130,22 @@ await consumer.run({
                 case TOPICS.DELETE_ZONA:
                     await zonaDeleteHandler(data);
                     break;
+                case TOPICS.ADD_LAYANAN:
+                    await layananCreateHandler(data);
+                    break;
+                case TOPICS.UPDATE_LAYANAN:
+                    await updateLayananHandler(data);
+                    break;
+                case TOPICS.DELETE_LAYANAN:
+                    await layananDeleteHandler(data);
+                    break;
+                case TOPICS.PENGIRIMAN_UPDATE_STATUS:
+                    await handlePengirimanUpdateStatus(data);
+                    if (io) {
+                        io.emit("update-data-pengiriman", data);
+                        io.emit("update-data-pengiriman1", data);
+                    }
+                    break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);
             }
@@ -83,4 +153,9 @@ await consumer.run({
             console.error(`❌ Gagal memproses pesan dari topik ${topic}:`, err);
         }
     },
+});
+
+const PORT = 4000;
+httpServer.listen(PORT, () => {
+    console.log(`🚀 WebSocket server berjalan di http://localhost:${PORT}`);
 });

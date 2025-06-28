@@ -138,7 +138,7 @@
                                                 </small>
                                             </div>
                                             <div class="d-grid gap-2">
-                                                <a href="{{ route('pengguna.createFeedback', $pengiriman->id_pengiriman) }}" class="btn btn-primary">
+                                                <a href="{{ route('pengguna.createFeedback', $pengiriman->nomor_resi) }}" class="btn btn-primary">
                                                     <i class="fas fa-star me-2"></i>Beri Penilaian
                                                 </a>
                                             </div>

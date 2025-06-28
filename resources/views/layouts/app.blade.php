@@ -486,10 +486,23 @@
                     <i class="fas fa-shipping-fast"></i>
                 </div>
                 <div class="brand-text">
+                    @if(Session::get('user_role') === 'pelanggan')
                     <a href="{{ url('/dashboard/pengirim') }}" class="text-decoration-none text-white fw-bold">
-                Ekspedisiku
-            </a>
-                    
+                        Ekspedisiku
+                    </a>
+                    @elseif(Session::get('user_role') === 'admin')
+                    <a href="{{ url('/admin/dashboard') }}" class="text-decoration-none text-white fw-bold">
+                        Ekspedisiku
+                    </a>
+                    @elseif(Session::get('user_role') === 'kurir')
+                    <a href="{{ url('/kurir/dashboard') }}" class="text-decoration-none text-white fw-bold">
+                        Ekspedisiku
+                    </a>
+                    @else
+                    <a href="{{ url('/') }}" class="text-decoration-none text-white fw-bold">
+                        Ekspedisiku
+                    </a>
+                    @endif
                 </div>
             </div>
             <button class="sidebar-toggle" id="sidebarToggle" data-bs-toggle="tooltip" data-bs-placement="right" title="Toggle Sidebar">
@@ -501,11 +514,19 @@
         <div class="sidebar-nav">
             <div class="nav-section-title">Menu Utama</div>
             
+            @if(Session::get('user_role') === 'pelanggan')
             <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="javascript:void(0);" class="nav-link {{ Request::is('dashboard/pengirim/feedbacka*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Lacak Paket" onclick="showLacakModal()">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="nav-text">Lacak Paket</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="/dashboard/pengirim/feedback" class="nav-link {{ Request::is('dashboard/pengirim/feedback*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Feedback Rating">
                         <i class="fas fa-star"></i>
                         <span class="nav-text">Feedback Rating</span>
+                        <span class="nav-text" id="feedbackCount">0</span>
                     </a>
                 </li>
                 
@@ -525,8 +546,6 @@
                         <span class="nav-text">Pengiriman Baru</span>
                     </a>
                 </li>
-                
-                
             </ul>
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -538,12 +557,21 @@
             </ul>
             <ul class="nav flex-column">
                 <li class="nav-item">
+                    <a href="/alamat-penjemputan" class="nav-link {{ Request::is('/alamat-penjemputan*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Form Pengiriman Baru">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span class="nav-text">Alamat Penjemputan</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav flex-column">
+                <li class="nav-item">
                     <a href="/pengguna/edit" class="nav-link {{ Request::is('pengguna/edit*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Pengaturan Akun">
                         <i class="fas fa-user-cog"></i>
                         <span class="nav-text">Pengaturan Akun</span>
                     </a>
                 </li>
             </ul>
+            @endif
         </div>
 
         <!-- Sidebar Footer -->
@@ -554,7 +582,17 @@
                 </div>
                 <div class="user-info">
                     <div class="user-name fw-semibold">{{ Session::get('user_name') ?? 'User' }}</div>
-                    <div class="user-role" style="font-size: 0.85rem;">Pengirim</div>
+                    <div class="user-role" style="font-size: 0.85rem;">
+                        @if(Session::get('user_role') === 'pelanggan')
+                            Pengirim
+                        @elseif(Session::get('user_role') === 'admin')
+                            Admin
+                        @elseif(Session::get('user_role') === 'kurir')
+                            Kurir
+                        @else
+                            User
+                        @endif
+                    </div>
                 </div>
                 <div>
                 <form action="{{ route('logout') }}" method="get">
@@ -580,9 +618,40 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
     <!-- Custom JS -->
     <script>
+        const socket = io("http://localhost:4000");
+
+        socket.on("update-sidebar", function (data) {
+            loadSidebar(); 
+        });
+
+         function loadSidebar() {
+            $.ajax({
+                url: "{{ route('dashboard.history.feedbackCount') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    if (res.stats.total_pengirimanDenganFeedback === 0) {
+                        $('#feedbackCount').text('');
+                    } else {
+                        $('#feedbackCount').text(res.stats.total_pengirimanDenganFeedback);
+                    }
+                    // $('#feedbackCount').text(res.stats.total_pengirimanDenganFeedback);
+                    
+                }});
+            }
+            $(document).ready(function () {
+                
+
+                loadSidebar(); 
+            });
+
+
+
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
             const sidebarToggle = document.getElementById('sidebarToggle');
@@ -595,6 +664,9 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
+           
+            
+            
             // Desktop sidebar toggle
             if (sidebarToggle) {
                 sidebarToggle.addEventListener('click', function() {
@@ -707,4 +779,5 @@
     @stack('scripts')
     @yield('scripts')
 </body>
+@include('dashboard_pengirim.modal_lacakpaket')
 </html>

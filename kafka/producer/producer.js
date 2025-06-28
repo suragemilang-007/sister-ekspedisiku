@@ -45,6 +45,18 @@ app.post("/alamat-tujuan-delete", (req, res) =>
     sendToKafka(producer, TOPICS.ALAMAT_DELETE, req.body, res)
 );
 
+app.post("/alamat-penjemputan", (req, res) =>
+    sendToKafka(producer, TOPICS.PENJEMPUTAN_TAMBAH, req.body, res)
+);
+
+app.post("/alamat-penjemputan-edit", (req, res) =>
+    sendToKafka(producer, TOPICS.PENJEMPUTAN_EDIT, req.body, res)
+);
+
+app.post("/alamat-penjemputan-delete", (req, res) =>
+    sendToKafka(producer, TOPICS.PENJEMPUTAN_DELETE, req.body, res)
+);
+
 app.post("/pengiriman_add", (req, res) =>
     sendToKafka(producer, TOPICS.ADD_PENGIRIMAN, req.body, res)
 );
@@ -60,6 +72,21 @@ app.post("/zona/update", (req, res) =>
 app.post("/zona/delete", (req, res) =>
     sendToKafka(producer, TOPICS.DELETE_ZONA, req.body, res)
 );
+
+app.post("/layanan/add", (req, res) =>
+    sendToKafka(producer, TOPICS.ADD_LAYANAN, req.body, res)
+);
+
+app.post("/layanan/update", (req, res) =>
+    sendToKafka(producer, TOPICS.UPDATE_LAYANAN, req.body, res)
+);
+
+app.post("/layanan/delete", (req, res) =>
+    sendToKafka(producer, TOPICS.DELETE_LAYANAN, req.body, res)
+);
+app.post("/pengiriman/update-status_pengiriman", (req, res) => {
+    sendToKafka(producer, TOPICS.PENGIRIMAN_UPDATE_STATUS, req.body, res);
+});
 
 process.on("SIGINT", async () => {
     console.log("⛔ Menutup koneksi Kafka...");

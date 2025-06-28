@@ -8,7 +8,7 @@
             @csrf
             <div class="mb-3">
                 <label>Nama Penerima</label>
-                <input type="text" class="form-control" name="nama_penerima" required>
+                <input type="text" class="form-control" name="nama_pengirim" required>
             </div>
             <div class="mb-3">
                 <label>No HP</label>

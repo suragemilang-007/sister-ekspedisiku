@@ -9,7 +9,9 @@ return new class extends Migration {
     {
         Schema::create('alamat_tujuan', function (Blueprint $table) {
             $table->id('id_alamat_tujuan');
-            $table->foreignId('id_pengirim')->constrained('pengguna', 'id_pengguna');
+            $table->uuid('uid')->unique();
+            $table->uuid('id_pengirim');
+            $table->foreign('id_pengirim')->references('uid')->on('pengguna')->onDelete('cascade');
             $table->string('nama_penerima');
             $table->string('no_hp');
             $table->text('alamat_lengkap');

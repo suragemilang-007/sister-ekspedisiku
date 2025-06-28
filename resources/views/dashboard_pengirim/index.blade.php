@@ -23,7 +23,7 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="fw-medium mb-1">Total Pengiriman</h6>
-                        <h3 class="fw-bold mb-0">{{ $stats['total_pengiriman'] ?? 0 }}</h3>
+                        <h3 class="fw-bold mb-0" id="total-pengiriman">0</h3>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="fw-medium mb-1">Pengiriman Aktif</h6>
-                        <h3 class="fw-bold mb-0">{{ $stats['pengiriman_aktif'] ?? 0 }}</h3>
+                        <h3 class="fw-bold mb-0" id="pengiriman-aktif">0</h3>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="fw-medium mb-1">Pengiriman Selesai</h6>
-                        <h3 class="fw-bold mb-0">{{ $stats['pengiriman_selesai'] ?? 0 }}</h3>
+                        <h3 class="fw-bold mb-0" id="pengiriman-selesai">0</h3>
                     </div>
                 </div>
             </div>
@@ -82,48 +82,118 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach($recent_shipments as $shipment)
-                                <tr class="text-dark">
-                                    <td class="fw-medium">{{ $shipment->nomor_resi }}</td>
-                                    <td class="text-dark">{{ $shipment->alamatTujuan->alamat_lengkap ?? '-' }},
-                                        {{ $shipment->alamatTujuan->kecamatan ?? '' }},
-                                        {{ $shipment->alamatTujuan->kode_pos ?? '' }}
-                                    </td>
-                                    <td class="text-dark">
-                                        {{ $shipment->alamatTujuan->nama_penerima ?? '-' }},
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ $shipment->status_color }} text-dark rounded-pill">
-                                            {{ $shipment->status }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $shipment->created_at->format('d M Y') }}</td>
-                                    <td>
-                                        <a href="/dashboard/pengirim/detail/{{ $shipment->id }}" 
-                                           class="btn btn-sm btn-outline-secondary"
-                                           data-bs-toggle="tooltip"
-                                           title="Detail Pengiriman">
-                                            <i class="fas fa-eye"></i>
-                                        
-                                    </td>
-                                </tr>
-                            @endforeach
+                        <tbody id="recent-shipments-body">
+                            
                         </tbody>
                     </table>
                 </div>
             @else
-                <div class="empty-state">
-                    <i class="fas fa-box-open mb-3"></i>
-                    <h5 class="fw-medium">Belum Ada Pengiriman</h5>
-                    <p class="text-muted mb-3">Anda belum memiliki riwayat pengiriman. Mulai kirim paket sekarang!</p>
-                    <a href="/dashboard/pengirim/kirim" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i> Kirim Paket
-                    </a>
-                </div>
+                
             @endif
         </div>
     </div>
 
 </div>
+@endsection
+@include('dashboard_pengirim.modal_detail')
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+<script>
+
+    socket.on("update-data-pengiriman", function (data) {
+        console.log('update');
+        const modalEl = document.getElementById('modalDetailPengiriman');
+        const bsModal = bootstrap.Modal.getInstance(modalEl);
+    setTimeout(() => {
+        loadDashboard();
+    }, 300);
+    });
+    function loadDashboard() {
+            $.ajax({
+                url: "{{ route('dashboard.pengirim') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    
+                    $('#total-pengiriman').text(res.stats.total_pengiriman);
+                    $('#pengiriman-aktif').text(res.stats.pengiriman_aktif);
+                    $('#pengiriman-selesai').text(res.stats.pengiriman_selesai);
+
+                    // Update table recent shipments
+                    let tbody = '';
+                    if (res.recent_shipments.length > 0) {
+                        function getStatusColor(status) {
+                            switch (status) {
+                                case 'MENUNGGU KONFIRMASI':
+                                    return 'warning';
+                                case 'DIPROSES':
+                                    return 'primary';
+                                case 'DIBAYAR':
+                                    return 'info';
+                                case 'DIKIRIM':
+                                    return 'success';
+                                case 'DITERIMA':
+                                    return 'primary';
+                                case 'DIBATALKAN':
+                                    return 'danger';
+                                default:
+                                    return 'secondary';
+                            }
+                        }
+                        res.recent_shipments.forEach(function (item) {
+                            // console.log(item);
+                            const statusColor = getStatusColor(item.status);
+                            tbody += `
+                                <tr class="text-dark">
+                                    <td class="fw-medium">${item.nomor_resi}</td>
+                                    <td>${item.alamat_tujuan.alamat_lengkap ?? '-'}, ${item.alamat_tujuan.kecamatan ?? ''}, ${item.alamat_tujuan.kode_pos ?? ''}</td>
+                                    <td>${item.alamat_tujuan.nama_penerima ?? '-'}</td>
+                                    <td>
+                                        <span class="badge bg-${statusColor} text-dark rounded-pill">
+                                            ${item.status}
+                                        </span>
+                                    </td>
+                                    <td>${new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary" 
+        onclick="showDetailModal('${item.nomor_resi}')"
+        data-bs-toggle="tooltip" 
+        title="Detail Pengiriman">
+    <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        tbody = `
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    <div class="empty-state">
+                                        <i class="fas fa-box-open mb-3" style="font-size:2rem;"></i>
+                                        <h5 class="fw-medium">Belum Ada Pengiriman</h5>
+                                        <p class="text-muted mb-3">Anda belum memiliki riwayat pengiriman. Mulai kirim paket sekarang!</p>
+                                        <a href="/dashboard/pengirim/kirim" class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i> Kirim Paket
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }
+
+                    $('#recent-shipments-body').html(tbody);
+                },
+                error: function () {
+                    alert("Gagal mengambil data dashboard.");
+                }
+            });
+        }
+    $(document).ready(function () {
+        loadDashboard(); 
+    });
+
+    
+</script>
 @endsection

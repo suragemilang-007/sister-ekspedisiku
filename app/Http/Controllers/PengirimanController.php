@@ -8,10 +8,12 @@ use App\Models\AlamatPenjemputan;
 use App\Models\LayananPaket;
 use App\Models\ZonaPengiriman;
 use App\Models\Pengguna;
+use App\Models\PenugasanKurir;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+
 
 class PengirimanController extends Controller
 {
@@ -22,7 +24,7 @@ class PengirimanController extends Controller
      */
     public function create()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -44,7 +46,7 @@ class PengirimanController extends Controller
         $kecamatanAsal = ZonaPengiriman::distinct()->pluck('kecamatan_asal');
         $kecamatanTujuan = ZonaPengiriman::distinct()->pluck('kecamatan_tujuan');
 
-        return view('pengiriman.create', compact(
+        return view('pengguna.pengiriman.create', compact(
             'alamatPenjemputan',
             'alamatTujuan',
             'layananPaket',
@@ -58,7 +60,7 @@ class PengirimanController extends Controller
      */
     public function store(Request $request)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -77,7 +79,7 @@ class PengirimanController extends Controller
         // Validasi alamat penjemputan
         if ($request->alamat_penjemputan_type === 'existing') {
             $request->validate([
-                'id_alamat_penjemputan' => 'required|exists:alamat_penjemputan,id_alamat_penjemputan'
+                'id_alamat_penjemputan' => 'required|exists:alamat_penjemputan,uid'
             ]);
             $idAlamatPenjemputan = $request->id_alamat_penjemputan;
         } else {
@@ -90,7 +92,7 @@ class PengirimanController extends Controller
         // Validasi alamat tujuan
         if ($request->alamat_tujuan_type === 'existing') {
             $request->validate([
-                'id_alamat_tujuan' => 'required|exists:alamat_tujuan,id_alamat_tujuan'
+                'id_alamat_tujuan' => 'required|exists:alamat_tujuan,uid'
             ]);
             $idAlamatTujuan = $request->id_alamat_tujuan;
         } else {
@@ -114,7 +116,7 @@ class PengirimanController extends Controller
         }
 
         // Generate nomor resi
-        $nomorResi = 'EXP' . date('Ymd') . strtoupper(Str::random(6));
+        $nomorResi = 'RESI' . date('Ymd') . strtoupper(Str::random(6));
 
         // Calculate total biaya
         $totalBiaya = $zonaPengiriman->biaya_tambahan + $zonaPengiriman->layananPaket->harga_dasar;
@@ -153,7 +155,7 @@ class PengirimanController extends Controller
      */
     public function show($id)
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('user_uid');
 
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
@@ -359,5 +361,54 @@ class PengirimanController extends Controller
         }
 
         return view('pengiriman.track', compact('pengiriman'));
+    }
+
+
+    public function editStatus($id)
+    {
+
+        $pengiriman = \DB::table('pengiriman')->where('id_pengiriman', $id)->first();
+        return view('pengguna.test_websoket.edit', compact('pengiriman'));
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $data = [
+            'id_pengiriman' => $request->id_pengiriman,
+            'status' => $request->status,
+            'keterangan_batal' => $request->status === 'DIBATALKAN' ? $request->keterangan_batal : null,
+        ];
+
+        Http::post('http://localhost:3001/pengiriman/update-status_pengiriman', $data);
+        return response()->json(['status' => 'ok']);
+    }
+
+
+    public function pesananBaru(Request $request)
+    {
+        // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
+        $statusList = ['DIBAYAR', 'MENUNGGU KONFIRMASI', 'DIPROSES'];
+        $pesananBaru = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])
+            ->whereIn('status', $statusList)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('admin.pesanan.index', compact('pesananBaru'));
+    }
+
+    public function semuaPesanan()
+    {
+        // Get all pengiriman with kurir data
+        $semuaPesanan = Pengiriman::with([
+            'pengguna',
+            'alamatPenjemputan',
+            'alamatTujuan',
+            'layananPaket',
+            'pelacakan' // include kurir data
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('admin.pesanan.semua', compact('semuaPesanan'));
     }
 }

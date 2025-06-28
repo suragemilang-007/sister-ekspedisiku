@@ -9,17 +9,20 @@ return new class extends Migration {
     {
         Schema::create('pengiriman', function (Blueprint $table) {
             $table->id('id_pengiriman');
-            $table->foreignId('id_pengirim')->constrained('pengguna', 'id_pengguna');
-            $table->foreignId('id_alamat_tujuan')->constrained('alamat_tujuan', 'id_alamat_tujuan');
-            $table->foreignId('id_alamat_penjemputan')->constrained('alamat_penjemputan', 'id_alamat_penjemputan');
+            $table->uuid('id_pengirim');
+            $table->foreign('id_pengirim')->references('uid')->on('pengguna')->onDelete('cascade');
+            $table->uuid('id_alamat_tujuan');
+            $table->foreign('id_alamat_tujuan')->references('uid')->on('alamat_tujuan')->onDelete('cascade');
+            $table->uuid('id_alamat_penjemputan');
+            $table->foreign('id_alamat_penjemputan')->references('uid')->on('alamat_penjemputan')->onDelete('cascade');
             $table->decimal('total_biaya', 12, 2);
             $table->foreignId('id_zona')->constrained('zona_pengiriman', 'id_zona');
             $table->enum('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
             $table->string('nomor_resi')->unique();
             $table->text('catatan_opsional')->nullable();
             $table->text('keterangan_batal')->nullable();
-            $table->string('foto_barang')->nullable();
-            $table->string('foto_bukti_sampai')->nullable();
+            $table->longText('foto_barang')->nullable();
+            $table->longText('foto_bukti_sampai')->nullable();
             $table->timestamp('tanggal_sampai')->nullable();
             $table->timestamp('created_at');
         });

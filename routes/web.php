@@ -13,6 +13,8 @@ use App\Http\Controllers\adminController;
 use App\Http\Controllers\pengaturanAkunController;
 use App\Http\Controllers\ZonaPengirimanController;
 use App\Http\Controllers\KurirController;
+use App\Http\Controllers\LayananController;
+use Illuminate\Support\Facades\Session;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,18 +27,16 @@ Route::get('/logout', [loginController::class, 'logout'])->name('logout');
 
 // Route untuk admin
 Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(function () {
-    // Dashboard utama untuk pengirim
+    // Dashboard utama untuk admin
     Route::get('/dashboard', [adminController::class, 'index'])->name('dashboard.admin');
-    // Riwayat pengiriman
     Route::get('/history', [adminController::class, 'history'])->name('dashboard.history');
-    // Form pengiriman baru
     Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
     Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
-
     Route::get('/edit', [pengaturanAkunController::class, 'edit'])->name('pengaturan.edit');
     Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
     Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
 
+    // Route untuk mengelola Pengguna
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
     Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
     Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
@@ -54,31 +54,49 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/zona/edit/{id}', [ZonaPengirimanController::class, 'edit'])->name('admin.zona.edit');
     Route::post('/zona/update/{id}', [ZonaPengirimanController::class, 'update'])->name('admin.zona.update');
     Route::delete('/zona/{id}', [ZonaPengirimanController::class, 'deleteZona'])->name('admin.zona.delete');
+
+    // Route untuk menglola layanan
+    Route::get('/layanan', [LayananController::class, 'index'])->name('admin.layanan.index');
+    Route::get('/layanan/create', [LayananController::class, 'create'])->name('admin.layanan.create');
+    Route::post('/layanan/store', [LayananController::class, 'storeLayanan'])->name('admin.layanan.store');
+    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('admin.layanan.edit');
+    Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
+    Route::delete('/layanan/{id}', [LayananController::class, 'deleteLayanan'])->name('admin.layanan.delete');
+
+    // Route untuk mengelola pengiriman
+    Route::get('/pesanan/baru', [PengirimanController::class, 'pesananBaru'])->name('admin.pesanan.baru.index');
+    Route::get('pesanan/baru/penugasan/{id_pengiriman}', [PengirimanController::class, 'penugasan'])->name('admin.pesanan.baru.penugasan');
+    Route::get('/pesanan/list', [PengirimanController::class, 'semuaPesanan'])->name('admin.pesanan.list');
 });
 
 // Route untuk pengirim
 Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session'])->group(function () {
     // Dashboard utama untuk pengirim
     Route::get('/', [penggunaController::class, 'index'])->name('dashboard.pengirim');
-    // Tracking
-    Route::get('/tracking', [penggunaController::class, 'tracking'])->name('dashboard.tracking');
-    Route::get('/tracking/{id}', [penggunaController::class, 'trackingDetail'])->name('dashboard.tracking.detail');
     // Riwayat pengiriman
-    Route::get('/history', [penggunaController::class, 'history'])->name('dashboard.history');
-    // Form pengiriman baru
-    Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
-    Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
-    // Feedback
-    Route::get('/feedback', [penggunaController::class, 'feedback'])->name('dashboard.feedback');
-    Route::post('/feedback/{id}', [penggunaController::class, 'submitFeedback'])->name('dashboard.submit.feedback');
-    // Hitung biaya pengiriman (AJAX)
-    Route::post('/calculate-cost', [penggunaController::class, 'calculateCost'])->name('dashboard.calculate.cost');
+    Route::get('/history', [penggunaController::class, 'history'])->name('dashboard.history.pengiriman');
+    Route::get('/feedbackCount', [penggunaController::class, 'feedbackSidebar'])->name('dashboard.history.feedbackCount');
+
     Route::get("/dashboard/pengirim/detail/{id}", [penggunaController::class, 'showDetail'])->name('dashboard.pengirim.detail');
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
     Route::get('/alamat-tujuan', [AlamatTujuanController::class, 'index'])->name('alamattujuan.index');
 });
 
+// Route untuk redirect kurir yang mencoba akses dashboard pengirim
+Route::get('/dashboard/pengirim', function () {
+    if (Session::get('user_role') === 'kurir') {
+        return redirect('/kurir/dashboard')->with('warning', 'Anda diarahkan ke dashboard kurir.');
+    }
+    return redirect('/login');
+})->middleware('auth.session');
 
+// Route untuk redirect kurir yang mencoba akses dashboard admin
+Route::get('/admin/dashboard', function () {
+    if (Session::get('user_role') === 'kurir') {
+        return redirect('/kurir/dashboard')->with('warning', 'Anda diarahkan ke dashboard kurir.');
+    }
+    return redirect('/login');
+})->middleware('auth.session');
 
 // Untuk pelanggan (pelanggan)
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
@@ -99,6 +117,18 @@ Route::middleware(['role:admin', 'auth.session'])->group(callback: function () {
 Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(function () {
     // Dashboard kurir
     Route::get('/dashboard', [KurirController::class, 'dashboard'])->name('kurir.dashboard');
+    // Tugas pengiriman
+    Route::get('/tugas', [KurirController::class, 'tugas'])->name('kurir.tugas');
+    // Riwayat pengiriman
+    Route::get('/riwayat', [KurirController::class, 'riwayat'])->name('kurir.riwayat');
+    // Feedback
+    Route::get('/feedback', [KurirController::class, 'feedback'])->name('kurir.feedback');
+    // Pengaturan
+    Route::get('/pengaturan', [KurirController::class, 'pengaturan'])->name('kurir.pengaturan');
+    // Update informasi kurir
+    Route::post('/update-info', [KurirController::class, 'updateInfo'])->name('kurir.update.info');
+    // Update password kurir
+    Route::post('/update-password', [KurirController::class, 'updatePassword'])->name('kurir.update.password');
     // Detail tugas kurir
     Route::get('/detail/{id_penugasan}', [KurirController::class, 'detail'])->name('kurir.detail');
     // Update status pengiriman
@@ -107,7 +137,7 @@ Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(functi
     Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
 });
 
-// Group routes untuk feedback (memerlukan autentikasi)
+// Group routes untuk feedback 
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     // Halaman utama feedback
     Route::get('dashboard/pengirim/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
@@ -155,6 +185,24 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
 
     // Alamat Penjemputan routes
     Route::resource('alamat-penjemputan', AlamatPenjemputanController::class);
-    Route::get('/api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatPenjemputan']);
-    Route::get('/api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getAlamatPenjemputanDetail']);
+
+});
+
+Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
+    Route::resource('alamat-penjemputan', AlamatPenjemputanController::class);
+    Route::get('api/alamat-penjemputan', [AlamatPenjemputanController::class, 'getAlamatPenjemputan']);
+    Route::get('api/alamat-penjemputan/{id}', [AlamatPenjemputanController::class, 'getAlamatPenjemputanDetail']);
+    Route::post('/alamat-penjemputan/store', [AlamatPenjemputanController::class, 'store'])->name('alamat-penjemputan.store');
+    Route::get('/alamat-penjemputan', [AlamatPenjemputanController::class, 'index'])->name('alamat-penjemputan.index');
+    Route::get('/alamat-penjemputan/edit/{id}', [AlamatPenjemputanController::class, 'edit'])->name('alamat-penjemputan.edit');
+    Route::post('/alamat-penjemputan/update/{id}', [AlamatPenjemputanController::class, 'update'])->name('alamat-penjemputan.update');
+    Route::delete('/alamat-penjemputan/delete/{id}', [AlamatPenjemputanController::class, 'destroy'])->name('alamat-penjemputan.destroy');
+});
+
+
+
+//buat testing
+Route::prefix('dashboard/pengiriman')->group(function () {
+    Route::get('/edit-status/{id}', [PengirimanController::class, 'editStatus'])->name('pengiriman.editStatus');
+    Route::post('/update-status', [PengirimanController::class, 'updateStatus'])->name('pengiriman.updateStatus');
 });

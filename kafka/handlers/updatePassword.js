@@ -7,10 +7,10 @@ export async function updatePasswordHandler(data) {
 
     await db.execute(
         `
-        UPDATE pengguna SET sandi_hash=? WHERE id_pengguna=?
+        UPDATE pengguna SET sandi_hash=? WHERE uid=?
     `,
-        [forcedHash, data.id_pengguna]
+        [forcedHash, data.uid]
     );
 
-    console.log("🔐 Password pengguna diperbarui:", data.id_pengguna);
+    console.log("🔐 Password pengguna diperbarui:", data.uid);
 }

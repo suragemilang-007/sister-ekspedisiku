@@ -29,7 +29,7 @@ class loginController extends Controller
                     ->with('success', 'Selamat datang Kurir ' . $name);
             }
         }
-        return view('login_pengguna.login');
+        return view('pengguna.login_pengguna.login');
     }
 
 
@@ -51,6 +51,7 @@ class loginController extends Controller
             Session::put('user_id', $pengguna->id_pengguna);
             Session::put('user_name', $pengguna->nama);
             Session::put('user_role', $pengguna->peran);
+            Session::put('user_uid', $pengguna->uid);
 
             // Redirect sesuai peran
             switch ($pengguna->peran) {
