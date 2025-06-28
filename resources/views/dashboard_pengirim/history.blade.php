@@ -257,31 +257,7 @@
 @push('scripts')
 
 <script>
-function showDetailModal(id) {
-    $.get("{{ route('dashboard.pengirim.detail', ['id' => 'ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', id), function(response) {
-        if (response.status === "success") {
-            const data = response.data.pengiriman;
-            const datalayanan = response.data.layanan;
-            $("#resi").text(data.nomor_resi);
-            $("#nama_layanan").text(datalayanan.nama_layanan);
-            $("#deskripsi").text(datalayanan.deskripsi);
-            $("#status").text(data.status);
-            $("#catatan").text(data.catatan_opsional || '-');
-
-            $("#alamat").text(data.alamat_tujuan?.alamat_lengkap ?? '-');
-            $("#nama_penerima").text(data.alamat_tujuan?.nama_penerima ?? '-');
-            $("#nohp_penerima").text(data.alamat_tujuan?.no_hp ?? '-');
-
-            
-            $("#kurir").text(data.kurir?.nama ?? 'Belum ditugaskan');
-
-            $("#modalDetailPengiriman").modal('show');
-        }
-    });
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-submit form when filters change
     const filterForm = document.getElementById('filterForm');
     const statusSelect = filterForm.querySelector('select[name="status"]');
     const dateInputs = filterForm.querySelectorAll('input[type="date"]');
@@ -295,8 +271,6 @@ document.addEventListener('DOMContentLoaded', function() {
             filterForm.submit();
         });
     });
-    
-    // Search with delay
     const searchInput = filterForm.querySelector('input[name="search"]');
     let searchTimeout;
     
@@ -304,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             filterForm.submit();
-        }, 500); // 500ms delay
+        }, 500);
     });
     
 

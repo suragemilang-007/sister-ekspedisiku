@@ -132,14 +132,8 @@
     });
   function showDetailModal(id) {
     console.log("ID Pengiriman:", id);
-    
-    // Set ID ke modal
     $('#modalDetailPengiriman').data('id', id);
-    
-    // Panggil showData dengan ID yang benar
     showData(id);
-    
-    // Tampilkan modal
     $("#modalDetailPengiriman").modal('show');
 }
   function showData(id) {
