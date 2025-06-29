@@ -15,6 +15,7 @@ use App\Http\Controllers\ZonaPengirimanController;
 use App\Http\Controllers\KurirController;
 use App\Http\Controllers\LayananController;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\AdminPenugasanKurirController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -67,6 +68,18 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/pesanan/baru', [PengirimanController::class, 'pesananBaru'])->name('admin.pesanan.baru.index');
     Route::get('pesanan/baru/penugasan/{id_pengiriman}', [PengirimanController::class, 'penugasan'])->name('admin.pesanan.baru.penugasan');
     Route::get('/pesanan/list', [PengirimanController::class, 'semuaPesanan'])->name('admin.pesanan.list');
+
+    // Route Penugasan
+    Route::resource('penugasan-kurir', AdminPenugasanKurirController::class);
+    Route::post('penugasan-kurir/{id}/cancel', [AdminPenugasanKurirController::class, 'cancel'])->name('admin.penugasan-kurir.cancel');
+
+    // AJAX Routes
+    Route::get('api/pengiriman-list', [AdminPenugasanKurirController::class, 'getPengirimanList']);
+    Route::get('api/kurir-list', [AdminPenugasanKurirController::class, 'getKurirList']);
+    Route::get('api/pengiriman-detail/{id}', [AdminPenugasanKurirController::class, 'getPengirimanDetail']);
+    Route::get('api/kurir-detail/{id}', [AdminPenugasanKurirController::class, 'getKurirDetail']);
+    Route::get('api/assignment-history/{id}', [AdminPenugasanKurirController::class, 'getAssignmentHistory']);
+
 });
 
 // Route untuk pengirim
