@@ -370,7 +370,7 @@
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold section-title">Tentang EkspedisiKu</h2>
-                <p class="text-muted">Mengenal lebih dekat layanan pengiriman terdepan di Indonesia</p>
+                <p class="text-muted">Mengenal lebih dekat layanan pengiriman terdepan di Banyumas & Purbalingga</p>
             </div>
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0">
@@ -386,7 +386,7 @@
                                 <li>Memberikan layanan pengiriman berkualitas tinggi</li>
                                 <li>Menggunakan teknologi terdepan untuk tracking real-time</li>
                                 <li>Membangun kepercayaan melalui transparansi dan kehandalan</li>
-                                <li>Mendukung pertumbuhan ekonomi digital Indonesia</li>
+                                <li>Mendukung pertumbuhan ekonomi digital Banyumas</li>
                             </ul>
                         </div>
                     </div>
@@ -399,8 +399,8 @@
                                 <div class="d-flex align-items-start">
                                     <i class="fas fa-check-circle text-success me-3 mt-1"></i>
                                     <div>
-                                        <h6>Pengalaman 10+ Tahun</h6>
-                                        <p class="text-muted small mb-2">Berpengalaman melayani jutaan pengiriman di seluruh Indonesia</p>
+                                        <h6>Pengalaman 1+ Hari</h6>
+                                        <p class="text-muted small mb-2">Berpengalaman melayani jutaan pengiriman di seluruh Banyumas Purbalingga</p>
                                     </div>
                                 </div>
                             </div>
@@ -409,7 +409,7 @@
                                     <i class="fas fa-check-circle text-success me-3 mt-1"></i>
                                     <div>
                                         <h6>Jaringan Luas</h6>
-                                        <p class="text-muted small mb-2">Mencakup 34 provinsi dengan 1000+ kota dan kabupaten</p>
+                                        <p class="text-muted small mb-2">Mencakup 2 kabupaten dengan 2+ kecamatan</p>
                                     </div>
                                 </div>
                             </div>
@@ -418,7 +418,7 @@
                                     <i class="fas fa-check-circle text-success me-3 mt-1"></i>
                                     <div>
                                         <h6>Teknologi Modern</h6>
-                                        <p class="text-muted small mb-2">Sistem tracking canggih dan aplikasi mobile yang user-friendly</p>
+                                        <p class="text-muted small mb-2">Sistem tracking canggih dan aplikasi mobile yang user-friendly-fire</p>
                                     </div>
                                 </div>
                             </div>
@@ -427,7 +427,7 @@
                                     <i class="fas fa-check-circle text-success me-3 mt-1"></i>
                                     <div>
                                         <h6>Harga Kompetitif</h6>
-                                        <p class="text-muted small mb-2">Tarif terjangkau dengan kualitas layanan premium</p>
+                                        <p class="text-muted small mb-2">Tarif premium dengan kualitas layanan ekonomis</p>
                                     </div>
                                 </div>
                             </div>
@@ -532,17 +532,17 @@
                         
                         <h6 class="mb-3">Ikuti Kami</h6>
                         <div class="d-flex gap-3">
-                            <a href="#" class="text-decoration-none">
-                                <i class="fab fa-facebook-f" style="color: var(--accent-blue); font-size: 1.5rem;"></i>
+                            <a href="https://www.tiktok.com/@ajiceperrrrr/video/7506907066309676293?lang=en" class="text-decoration-none" target="_blank">
+                                <i class="fab fa-tiktok" style="color: var(--accent-blue); font-size: 1.5rem;"></i>
                             </a>
-                            <a href="#" class="text-decoration-none">
+                            <a href="https://x.com/ro_sabilla/status/1916759361977987437?t=ml_xLkl8Vus0IpRznjwolg&s=08 " target="_blank" class="text-decoration-none">
                                 <i class="fab fa-twitter" style="color: var(--accent-blue); font-size: 1.5rem;"></i>
                             </a>
-                            <a href="#" class="text-decoration-none">
+                            <a href="https://www.instagram.com/reel/DID8r4MO0WT/?igsh=NGs2MTJhaTdsbzE2 " class="text-decoration-none" target="_blank">
                                 <i class="fab fa-instagram" style="color: var(--accent-blue); font-size: 1.5rem;"></i>
                             </a>
-                            <a href="#" class="text-decoration-none">
-                                <i class="fab fa-linkedin-in" style="color: var(--accent-blue); font-size: 1.5rem;"></i>
+                            <a href="https://www.youtube.com/watch?v=xs_OxX5TEW8&list=RDxs_OxX5TEW8&start_radio=1" class="text-decoration-none" target="_blank" rel="noopener">
+                                <i class="fab fa-youtube" style="color: var(--accent-blue); font-size: 1.5rem;"></i>
                             </a>
                         </div>
                     </div>
