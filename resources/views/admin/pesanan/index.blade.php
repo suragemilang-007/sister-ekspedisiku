@@ -22,8 +22,7 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <input type="text" class="form-control" name="search"
-                                    placeholder="Cari Nama Layanan, Deskripsi...."
-                                    value="{{ request('search') }}">
+                                    placeholder="Cari Nama Layanan, Deskripsi...." value="{{ request('search') }}">
                             </div>
                         </div>
 
@@ -57,10 +56,12 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'id_pengiriman', 'sort_order' => 'desc']) }}">Pengiriman Terbaru</a></li>
-                                        </a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'id_pengiriman', 'sort_order' => 'desc']) }}">Pengiriman
+                                        Terbaru</a></li>
+                                </a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'status', 'sort_order' => 'asc']) }}">Status</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'status', 'sort_order' => 'asc']) }}">Status</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -70,9 +71,10 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Nama Pengirim</th>
-                                    <th>Alamat Penjemputan</th>
-                                    <th>Alamat Tujuan</th>
+                                    <th>Nama Penerima</th>
+                                    <th>Jenis Layanan</th>
                                     <th>Total Biaya</th>
+                                    <th>Kurir</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -80,14 +82,20 @@
                             <tbody>
                                 @foreach ($pesananBaru as $baru)
                                     <tr class="text-dark">
-                                        <td class="fw-medium">{{ $baru->alamatPenjemputan->nama_pengirim ?? '-' }}</td>
+                                        <td class="fw-medium">
+                                            <strong>{{ $baru->alamatPenjemputan->nama_pengirim ?? '-' }}</strong>
+                                            <p class="mb-0 text-muted">{{ $baru->alamatPenjemputan->alamat_lengkap ?? '-' }}
+                                            </p>
+                                        </td>
                                         <td class="text-dark">
-                                            {{ $baru->alamatPenjemputan->alamat_lengkap ?? '-' }}</td>
-                                        <td class="text-dark">
-                                            {{ $baru->alamatTujuan->alamat_lengkap ?? '' }}</td>
+                                            <strong>{{ $baru->alamatTujuan->nama_penerima ?? '-' }}</strong>
+                                            <p class="mb-0 text-muted">{{ $baru->alamatTujuan->alamat_lengkap ?? '-' }}
+                                            </p></td>
+                                           <td class="text-dark"> {{ $baru->zonaPengiriman->layananPaket->nama_layanan ?? '-'}}</td> 
                                         <td class="text-dark">
                                             {{ $baru->total_biaya ? 'Rp ' . number_format($baru->total_biaya, 0, ',', '.') : '-' }}
                                         </td>
+                                        <td class="text-dark">{{ $baru->penugasanKurir->kurir->nama ?? '-' }}</td>
                                         <td>
                                             <span class="badge bg-{{ $baru->status_color }} text-dark rounded-pill">
                                                 {{ $baru->status }}
@@ -199,7 +207,8 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.delete('{{ route('admin.layanan.delete', 'idLayanan') }}'.replace('idLayanan', idLayanan))
+                        axios.delete('{{ route('admin.layanan.delete', 'idLayanan') }}'.replace('idLayanan',
+                                idLayanan))
                             .then(res => {
                                 Swal.fire({
                                     icon: 'success',
