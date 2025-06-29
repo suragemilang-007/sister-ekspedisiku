@@ -30,7 +30,7 @@ class adminController extends Controller
         $stats = [
             //['MENUNGGU KONFIRMASI','MENUNGGU_PEMBAYARAN', 'DIBAYAR', 'DIPROSES', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN'];
             'total_pengiriman' => Pengiriman::where('id_pengirim', $userId)->count(),
-            'pengiriman_baru' => Pengiriman::where('status', 'DIBAYAR')->count(),
+            'pengiriman_baru' => Pengiriman::where('status', 'MENUNGGU KONFIRMASI')->count(),
             'total_kurir' => Kurir::count(),
             'pengiriman_selesai' => Pengiriman::where('status', 'DITERIMA')->count(),
             'jumlah_admin' => Pengguna::where('peran', 'admin')->count(),
