@@ -180,7 +180,7 @@ class KurirController extends Controller
 
         // Mengambil feedback untuk pengiriman yang ditangani kurir
         $feedback = \App\Models\Feedback::with(['pengiriman.alamatTujuan'])
-            ->whereHas('pengiriman.penugasanKurir', function($query) use ($id_kurir) {
+            ->whereHas('pengiriman.penugasanKurir', function ($query) use ($id_kurir) {
                 $query->where('id_kurir', $id_kurir);
             })
             ->orderBy('created_at', 'desc')
@@ -280,5 +280,55 @@ class KurirController extends Controller
             Log::error('Error updating kurir password: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    public function listKurir(Request $request)
+    {
+        $query = Kurir::query();
+
+        // SEARCH
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('nohp', 'like', "%$search%")
+                    ->orWhere('alamat', 'like', "%$search%");
+            });
+        }
+
+        // SORTING
+        $allowedSorts = ['nama', 'email', 'status']; // kolom yang boleh disort
+        $sortBy = in_array($request->get('sort_by'), $allowedSorts) ? $request->get('sort_by') : 'id_kurir';
+        $sortOrder = in_array($request->get('sort_order'), ['asc', 'desc']) ? $request->get('sort_order') : 'desc';
+
+        $kurirs = $query->orderBy($sortBy, $sortOrder)->paginate(10);
+
+        return view('admin.kurir.index', compact('kurirs'));
+    }
+
+    public function edit($id)
+    {
+        $kurir = Kurir::findOrFail($id);
+        return view('admin.kurir.edit', compact('kurir'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $data = $request->only(['id_kurir', 'nama', 'email', 'nohp', 'alamat', 'status']);
+
+        Http::post('http://localhost:3001/kurir/update-profile', $data);
+        return response()->json(['status' => 'ok']);
+    }
+
+    public function passwordChange(Request $request)
+    {
+        $data = [
+            'id_kurir' => $request->id_kurir,
+            'password' => $request->password
+        ];
+
+        Http::post('http://localhost:3001/kurir/update-password', $data);
+        return response()->json(['status' => 'ok']);
     }
 }

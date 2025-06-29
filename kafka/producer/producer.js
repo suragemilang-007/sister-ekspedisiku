@@ -90,6 +90,12 @@ app.post("/pengiriman/update-status_pengiriman", (req, res) => {
 app.post("/assign/add", (req, res) => {
     sendToKafka(producer, TOPICS.ADD_ASSIGN_KURIR, req.body, res)
 });
+app.post("/kurir/update-profile", (req, res) => {
+    sendToKafka(producer, TOPICS.KURIR_UPDATE_INFO, req.body, res);
+});
+app.post("/kurir/update-password", (req, res) => {
+    sendToKafka(producer, TOPICS.KURIR_UPDATE_PASSWORD, req.body, res);
+});
 
 process.on("SIGINT", async () => {
     console.log("⛔ Menutup koneksi Kafka...");

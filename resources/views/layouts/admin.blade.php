@@ -532,7 +532,7 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a href="/dashboard/admin/kurir" class="nav-link {{ Request::is('dashboard/admin/kurir*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Kurir">
+                    <a href="/admin/kurir" class="nav-link {{ Request::is('admin/kurir*') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Kurir">
                         <i class="fas fa-id-card"></i>
                         <span class="nav-text">Manajemen Kurir</span>
                     </a>
