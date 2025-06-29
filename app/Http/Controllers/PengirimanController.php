@@ -388,33 +388,88 @@ class PengirimanController extends Controller
 
     public function pesananBaru(Request $request)
     {
-        // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
         $kurirs = Kurir::where('status', 'AKTIF')->get();
         $statusList = ['MENUNGGU KONFIRMASI'];
-        $pesananBaru = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])
-            ->whereIn('status', $statusList)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+
+        $query = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])
+            ->whereIn('status', $statusList);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('alamatPenjemputan', function ($sub) use ($search) {
+                    $sub->where('nama_pengirim', 'like', "%$search%");
+                })->orWhereHas('alamatTujuan', function ($sub) use ($search) {
+                    $sub->where('nama_penerima', 'like', "%$search%");
+                })->orWhereHas('penugasanKurir.kurir', function ($sub) use ($search) {
+                    $sub->where('nama', 'like', '%' . $search . '%');
+                })->orWhere('status', 'like', "%$search%");
+            });
+        }
+
+        // Sorting logic
+        $sortBy = $request->get('sort_by', 'id_pengiriman');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        if ($sortBy === 'status') {
+            $query->orderBy('status', $sortOrder);
+        } else {
+            $query->orderBy('id_pengiriman', 'desc'); // default or sort_by=id_pengiriman
+        }
+
+        $pesananBaru = $query->paginate(10)->withQueryString();
 
         return view('admin.pesanan.index', compact('pesananBaru', 'kurirs'));
     }
 
-    public function semuaPesanan()
+
+    public function semuaPesanan(Request $request)
     {
         // Get all pengiriman with kurir data
-        $semuaPesanan = Pengiriman::with([
-            'pengguna',
-            'alamatPenjemputan',
-            'alamatTujuan',
-            'layananPaket',
-            'pelacakan',
-            'zonaPengiriman',
-            'penugasanKurir' // include kurir data
-        ])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = Pengiriman::with(['alamatPenjemputan', 'alamatTujuan', 'penugasanKurir.kurir']);
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('alamatPenjemputan', function ($sub) use ($search) {
+                    $sub->where('nama_pengirim', 'like', '%' . $search . '%');
+                })->orWhereHas('alamatTujuan', function ($sub) use ($search) {
+                    $sub->where('nama_penerima', 'like', '%' . $search . '%');
+                })->orWhereHas('penugasanKurir.kurir', function ($sub) use ($search) {
+                    $sub->where('nama', 'like', '%' . $search . '%');
+                });
+            });
+        }
+
+        $sortOrder = $request->get('sort_order', 'asc');
+        $sortBy = $request->get('sort_by');
+
+        if ($sortBy === 'nama_pengirim') {
+            $query->join('alamat_penjemputan', 'pengiriman.id_alamat_penjemputan', '=', 'alamat_penjemputan.uid')
+                ->orderBy('alamat_penjemputan.nama_pengirim', $sortOrder)
+                ->select('pengiriman.*');
+        } elseif ($sortBy === 'nama_penerima') {
+            $query->join('alamat_tujuan', 'pengiriman.id_alamat_tujuan', '=', 'alamat_tujuan.uid')
+                ->orderBy('alamat_tujuan.nama_penerima', $sortOrder)
+                ->select('pengiriman.*');
+        } elseif ($sortBy === 'nama') {
+            $query->leftJoin('penugasan_kurir', 'pengiriman.id_pengiriman', '=', 'penugasan_kurir.id_pengiriman')
+                ->leftJoin('kurir', 'penugasan_kurir.id_kurir', '=', 'kurir.id_kurir')
+                ->orderBy('nama', $sortOrder)
+                ->select('pengiriman.*');
+        } elseif ($sortBy === 'status') {
+            $query->orderBy('pengiriman.status', $sortOrder);
+        } else {
+            $query->orderBy('pengiriman.id_pengiriman', 'desc');
+        }
+
+        $semuaPesanan = $query->paginate(10);
 
         return view('admin.pesanan.semua', compact('semuaPesanan'));
+
     }
 
     public function assignKurir(Request $request)

@@ -22,7 +22,7 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <input type="text" class="form-control" name="search"
-                                    placeholder="Cari Nama Layanan, Deskripsi...." value="{{ request('search') }}">
+                                    placeholder="Cari Nama Pengirim, Nama Penerima...." value="{{ request('search') }}">
                             </div>
                         </div>
 
