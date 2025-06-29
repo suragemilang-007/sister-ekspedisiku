@@ -9,6 +9,7 @@ use App\Models\LayananPaket;
 use App\Models\ZonaPengiriman;
 use App\Models\Pengguna;
 use App\Models\PenugasanKurir;
+use App\Models\Kurir;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -387,13 +388,14 @@ class PengirimanController extends Controller
     public function pesananBaru(Request $request)
     {
         // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
+        $kurirs = Kurir::where('status', 'AKTIF')->get();
         $statusList = ['MENUNGGU KONFIRMASI'];
         $pesananBaru = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])
             ->whereIn('status', $statusList)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('admin.pesanan.index', compact('pesananBaru'));
+        return view('admin.pesanan.index', compact('pesananBaru', 'kurirs'));
     }
 
     public function semuaPesanan()
@@ -413,4 +415,69 @@ class PengirimanController extends Controller
 
         return view('admin.pesanan.semua', compact('semuaPesanan'));
     }
+
+    public function assignKurir(Request $request)
+    {
+        try {
+            $request->validate([
+                'id_pengiriman' => 'required|exists:pengiriman,id_pengiriman',
+                'id_kurir' => 'required|exists:kurir,id_kurir',
+            ]);
+
+            // Simpan ke database (via Kafka)
+            $data = [
+                'id_pengiriman' => $request->id_pengiriman,
+                'id_kurir' => $request->id_kurir,
+                'status' => 'MENUJU PENGIRIM',
+                'timestamp' => now()->timestamp,
+                'action_type' => 'assign_kurir'
+            ];
+
+            $response = Http::timeout(5)->post('http://localhost:3001/assign/add', $data);
+
+            if ($response->successful()) {
+                return response()->json(['success' => true, 'message' => 'Penugasan kurir berhasil dikirim ke Kafka.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Gagal mengirim ke Kafka.']);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Assign Kurir Error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Kesalahan server.']);
+        }
+    }
+
+    public function dibatalkan($id)
+    {
+        try {
+            $pengiriman = Pengiriman::findOrFail($id);
+
+            if ($pengiriman->status === 'DIBATALKAN') {
+                return back()->with('warning', 'Pengiriman sudah dibatalkan.');
+            }
+
+            // Kirim ke Kafka
+            $data = [
+                'id_pengiriman' => $pengiriman->id_pengiriman,
+                'status' => 'DIBATALKAN',
+                'timestamp' => now()->timestamp,
+                'action_type' => 'cancel_pengiriman'
+            ];
+
+            $response = Http::timeout(5)->post('http://localhost:3001//pengiriman/update-status_pengiriman', $data);
+
+            if ($response->successful()) {
+                return back()->with('success', 'Permintaan pembatalan dikirim ke Kafka.');
+            } else {
+                Log::error("❌ Kafka error saat pembatalan: " . $response->body());
+                return back()->with('error', 'Gagal mengirim ke Kafka.');
+            }
+
+        } catch (\Exception $e) {
+            Log::error("❌ Exception saat batalkan pengiriman: " . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat membatalkan pengiriman.');
+        }
+    }
+
+
 }

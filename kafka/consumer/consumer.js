@@ -22,6 +22,7 @@ import { layananCreateHandler } from "../handlers/layananAdd.js";
 import { updateLayananHandler } from "../handlers/updateLayanan.js";
 import { layananDeleteHandler } from "../handlers/layananDelete.js";
 import { handlePengirimanUpdateStatus } from "../handlers/pengirimanUpdateStatus.js";
+import { addAssignKurirHandler } from "../handlers/addAssignKurir.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -63,6 +64,7 @@ await Promise.all([
         topic: TOPICS.PENGIRIMAN_UPDATE_STATUS,
         fromBeginning: false,
     }),
+    consumer.subscribe({ topic: TOPICS.ADD_ASSIGN_KURIR, fromBeginning: false }),
 ]);
 
 const httpServer = http.createServer();
@@ -118,7 +120,6 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
-
                     io.emit("update-data-pengiriman1", data);
                     break;
                 case TOPICS.ADD_ZONA:
@@ -145,6 +146,9 @@ await consumer.run({
                         io.emit("update-data-pengiriman", data);
                         io.emit("update-data-pengiriman1", data);
                     }
+                    break;
+                case TOPICS.ADD_ASSIGN_KURIR:
+                    await addAssignKurirHandler(data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

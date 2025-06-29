@@ -17,6 +17,6 @@ export const TOPICS = {
     ADD_LAYANAN: "layanan-add",
     UPDATE_LAYANAN: "layanan-update",
     DELETE_LAYANAN: "layanan-delete",
-
+    ADD_ASSIGN_KURIR: "assign-kurir-add",
     PENGIRIMAN_UPDATE_STATUS: "pengiriman-update-status",
 };
