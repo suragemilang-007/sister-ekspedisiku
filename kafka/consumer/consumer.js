@@ -64,7 +64,10 @@ await Promise.all([
         topic: TOPICS.PENGIRIMAN_UPDATE_STATUS,
         fromBeginning: false,
     }),
-    consumer.subscribe({ topic: TOPICS.ADD_ASSIGN_KURIR, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.ADD_ASSIGN_KURIR,
+        fromBeginning: false,
+    }),
 ]);
 
 const httpServer = http.createServer();
@@ -120,7 +123,7 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_PENGIRIMAN:
                     await addPengirimanHandler(data);
-                    io.emit("update-data-pengiriman1", data);
+                    io.emit("update-data-pengiriman", data);
                     break;
                 case TOPICS.ADD_ZONA:
                     await zonaCreateHandler(data);
@@ -149,6 +152,9 @@ await consumer.run({
                     break;
                 case TOPICS.ADD_ASSIGN_KURIR:
                     await addAssignKurirHandler(data);
+                    if (io) {
+                        io.emit("update-data-pengiriman", data);
+                    }
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

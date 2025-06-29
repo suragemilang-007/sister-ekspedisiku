@@ -241,7 +241,14 @@
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
         <script>
+            const socket = io("http://localhost:4000");
+            socket.on("update-data-pengiriman", function (data) {
+            setTimeout(() => {
+                location.reload();
+            }, 300);
+            });
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form when filters change
                 const filterForm = document.getElementById('filterForm');
