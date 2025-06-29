@@ -90,8 +90,10 @@
                                         <td class="text-dark">
                                             <strong>{{ $baru->alamatTujuan->nama_penerima ?? '-' }}</strong>
                                             <p class="mb-0 text-muted">{{ $baru->alamatTujuan->alamat_lengkap ?? '-' }}
-                                            </p></td>
-                                           <td class="text-dark"> {{ $baru->zonaPengiriman->layananPaket->nama_layanan ?? '-'}}</td> 
+                                            </p>
+                                        </td>
+                                        <td class="text-dark">
+                                            {{ $baru->zonaPengiriman->layananPaket->nama_layanan ?? '-' }}</td>
                                         <td class="text-dark">
                                             {{ $baru->total_biaya ? 'Rp ' . number_format($baru->total_biaya, 0, ',', '.') : '-' }}
                                         </td>
@@ -104,17 +106,31 @@
                                         <td>
                                             <div class="btn-group" role="group">
                                                 {{-- Tombol Edit/Detail --}}
-                                                <a href="{{ route('admin.pesanan.baru.penugasan', $baru->id_pengiriman) }}"
-                                                    class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip"
-                                                    title="Edit Pengiriman">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                                @if ($baru->penugasanKurir && $baru->penugasanKurir->kurir)
+                                                    <button class="btn btn-sm btn-secondary" disabled
+                                                        data-bs-toggle="tooltip" title="Kurir sudah ditugaskan">
+                                                        <i class="fas fa-user-check"></i>
+                                                    </button>
+                                                @else
+                                                    <button class="btn btn-sm btn-outline-primary assign-kurir-btn"
+                                                        data-id="{{ $baru->id_pengiriman }}" data-bs-toggle="tooltip"
+                                                        title="Assign Kurir">
+                                                        <i class="fas fa-user-plus"></i>
+                                                    </button>
+                                                @endif
                                                 {{-- Tombol Delete --}}
-                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    onclick="Delete({{ $baru->id_pengiriman }})" data-bs-toggle="tooltip"
-                                                    title="Hapus Pengiriman">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
+                                                @if ($baru->status !== 'DIBATALKAN')
+                                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        data-bs-toggle="modal" data-bs-target="#modalBatal"
+                                                        data-id="{{ $baru->id_pengiriman }}">
+                                                        <i class="fas fa-times-circle"></i>
+                                                    </button>
+                                                @else
+                                                    <button class="btn btn-sm btn-secondary" disabled
+                                                        title="Sudah dibatalkan">
+                                                        <i class="fas fa-ban"></i>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -160,6 +176,65 @@
                     </div>
                 @endif
             </div>
+        </div>
+    </div>
+    <!-- Modal Pilih Kurir -->
+    <div class="modal fade" id="modalAssignKurir" tabindex="-1" aria-labelledby="assignKurirLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-assign-kurir">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="assignKurirLabel">Assign Kurir</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id_pengiriman" id="input-id-pengiriman">
+                        <div class="mb-3">
+                            <label for="id_kurir" class="form-label">Pilih Kurir</label>
+                            <select name="id_kurir" id="select-kurir" class="form-select" required>
+                                <option value="" disabled selected>-- Pilih Kurir Aktif --</option>
+                                @foreach ($kurirs as $kurir)
+                                    @if ($kurir->status === 'AKTIF')
+                                        <option value="{{ $kurir->id_kurir }}">{{ $kurir->nama }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan Penugasan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Pembatalan -->
+    <div class="modal fade" id="modalBatal" tabindex="-1" aria-labelledby="modalBatalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-batal-pengiriman">
+                @csrf
+                <input type="hidden" name="id_pengiriman" id="id_pengiriman_batal">
+                <input type="hidden" name="status" value="DIBATALKAN">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="modalBatalLabel">Batalkan Pengiriman</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="keterangan_batal" class="form-label">Alasan Pembatalan</label>
+                            <textarea class="form-control" name="keterangan_batal" id="keterangan_batal" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Konfirmasi Batalkan</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -234,6 +309,73 @@
                     }
                 });
             }
+
+            // Script penugasan Kurir
+            document.querySelectorAll('.assign-kurir-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const pengirimanId = button.getAttribute('data-id');
+                    document.getElementById('input-id-pengiriman').value = pengirimanId;
+                    new bootstrap.Modal(document.getElementById('modalAssignKurir')).show();
+                });
+            });
+
+            document.getElementById('form-assign-kurir').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                fetch("{{ route('admin.assign.kurir') }}", {
+                        method: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Berhasil!", data.message, "success").then(() => location.reload());
+                        } else {
+                            Swal.fire("Gagal!", data.message, "error");
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire("Error", "Terjadi kesalahan sistem", "error");
+                    });
+            });
+
+            // Script Batal
+            document.querySelectorAll('[data-bs-target="#modalBatal"]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    document.getElementById('id_pengiriman_batal').value = id;
+                });
+            });
+
+            document.getElementById('form-batal-pengiriman').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const form = e.target;
+                const formData = new FormData(form);
+
+                fetch("{{ route('admin.pesanan.update.status') }}", {
+                        method: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'ok') {
+                            Swal.fire('Berhasil!', 'Pengiriman telah dibatalkan.', 'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Gagal', 'Terjadi kesalahan saat membatalkan.', 'error');
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire('Error', 'Gagal menghubungi server.', 'error');
+                    });
+            });
         </script>
     @endpush
 @endsection

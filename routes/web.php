@@ -66,8 +66,11 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
 
     // Route untuk mengelola pengiriman
     Route::get('/pesanan/baru', [PengirimanController::class, 'pesananBaru'])->name('admin.pesanan.baru.index');
-    Route::get('pesanan/baru/penugasan/{id_pengiriman}', [PengirimanController::class, 'penugasan'])->name('admin.pesanan.baru.penugasan');
+    Route::post('/pesanan/update-status', [PengirimanController::class, 'updateStatus'])
+        ->name('admin.pesanan.update.status');
     Route::get('/pesanan/list', [PengirimanController::class, 'semuaPesanan'])->name('admin.pesanan.list');
+    Route::post('/pesanan/assign-kurir', [PengirimanController::class, 'assignKurir'])->name('admin.assign.kurir');
+
 
     // Route Penugasan
     Route::resource('penugasan-kurir', AdminPenugasanKurirController::class);
