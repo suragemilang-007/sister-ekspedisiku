@@ -387,7 +387,7 @@ class PengirimanController extends Controller
     public function pesananBaru(Request $request)
     {
         // Get all pengiriman with status "DIBAYAR", "MENUNGGU KONFIRMASI", or "DIPROSES"
-        $statusList = ['DIBAYAR', 'MENUNGGU KONFIRMASI', 'DIPROSES'];
+        $statusList = ['MENUNGGU KONFIRMASI'];
         $pesananBaru = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])
             ->whereIn('status', $statusList)
             ->orderBy('created_at', 'desc')
@@ -404,7 +404,9 @@ class PengirimanController extends Controller
             'alamatPenjemputan',
             'alamatTujuan',
             'layananPaket',
-            'pelacakan' // include kurir data
+            'pelacakan',
+            'zonaPengiriman',
+            'penugasanKurir' // include kurir data
         ])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
