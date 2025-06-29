@@ -22,8 +22,7 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <input type="text" class="form-control" name="search"
-                                    placeholder="Cari Nama Pengirim, Nama Penerima, Kurir"
-                                    value="{{ request('search') }}">
+                                    placeholder="Cari Nama Pengirim, Nama Penerima, Kurir" value="{{ request('search') }}">
                             </div>
                         </div>
 
@@ -57,13 +56,17 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_pengirim', 'sort_order' => 'asc']) }}">Nama Pengirim</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_pengirim', 'sort_order' => 'asc']) }}">Nama
+                                        Pengirim</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_penerima', 'sort_order' => 'asc']) }}">Nama Penerima</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_penerima', 'sort_order' => 'asc']) }}">Nama
+                                        Penerima</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'kurir', 'sort_order' => 'asc']) }}">Nama Kurir</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'kurir', 'sort_order' => 'asc']) }}">Nama
+                                        Kurir</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'status', 'sort_order' => 'asc']) }}">Status</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'status', 'sort_order' => 'asc']) }}">Status</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -73,22 +76,27 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>No Resi</th>
-                                    <th>Nama Pengirim</th>
-                                    <th>Nama Penerima</th>
+                                    <th>Pengirim</th>
+                                    <th>Penerima</th>
                                     <th>Kurir</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($semuaPesanan as $semua)
-                                    <tr class="text-dark">
-                                         <td class="text-dark">
+                                    <tr class="text-medium">
+                                        <td class="text-dark">
                                             {{ $semua->nomor_resi ?? '-' }}</td>
-                                        <td class="fw-medium">{{ $semua->alamatPenjemputan->nama_pengirim ?? '-' }}</td>
+                                        <td class="fw-dark">
+                                            <strong>{{ $semua->alamatPenjemputan->nama_pengirim ?? '-' }}</strong>
+                                            <p>{{ $semua->alamatPenjemputan->alamat_lengkap ?? '-' }}</p>
+                                        </td>
                                         <td class="text-dark">
-                                            {{ $semua->alamatTujuan->nama_penerima ?? '-' }}</td>
+                                            <strong>{{ $semua->alamatTujuan->nama_penerima ?? '-' }}</strong>
+                                            <p>{{ $semua->alamatTujuan->alamat_lengkap ?? '-' }}</p>
+                                        </td>
                                         <td class="text-dark">
-                                            {{ $semua->kurir->nama ?? '' }}</td>
+                                            {{ $semua->kurir->nama ?? '-' }}</td>
                                         <td>
                                             <span class="badge bg-{{ $semua->status_color }} text-dark rounded-pill">
                                                 {{ $semua->status }}
