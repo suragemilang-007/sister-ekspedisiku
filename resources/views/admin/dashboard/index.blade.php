@@ -107,10 +107,12 @@
                                         <td class="fw-medium">{{ $shipment->nomor_resi }}</td>
                                         <td class="text-dark">{{ $shipment->created_at->format('d M Y') }}</td>
                                         <td class="text-dark">
-                                            {{ $shipment->alamatPenjemputan->nama_pengirim ?? '-' }}
+                                            <strong>{{ $shipment->alamatPenjemputan->nama_pengirim ?? '-' }}</strong>
+                                            <p>{{ $shipment->alamatPenjemputan->alamat_lengkap ?? '-' }}</p>
                                         </td>
                                         <td class="text-dark">
-                                            {{ $shipment->alamatTujuan->nama_penerima ?? '-' }}
+                                            <strong>{{ $shipment->alamatTujuan->nama_penerima ?? '-' }}</strong>
+                                            <p>{{ $shipment->alamatTujuan->alamat_lengkap ?? '-' }}</p>
                                         </td>
                                         <td class="text-dark">
                                             {{ $shipment->kurir->nama ?? '-' }}
