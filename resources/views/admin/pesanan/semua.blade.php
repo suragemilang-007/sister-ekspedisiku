@@ -62,7 +62,7 @@
                                         href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama_penerima', 'sort_order' => 'asc']) }}">Nama
                                         Penerima</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'kurir', 'sort_order' => 'asc']) }}">Nama
+                                        href="{{ request()->fullUrlWithQuery(['sort_by' => 'nama', 'sort_order' => 'asc']) }}">Nama
                                         Kurir</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ request()->fullUrlWithQuery(['sort_by' => 'status', 'sort_order' => 'asc']) }}">Status</a>
