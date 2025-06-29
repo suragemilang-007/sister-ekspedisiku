@@ -121,8 +121,8 @@
                                                 {{-- Tombol Delete --}}
                                                 @if ($baru->status !== 'DIBATALKAN')
                                                     <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        data-bs-toggle="modal" data-bs-target="#modalBatal"
-                                                        data-id="{{ $baru->id_pengiriman }}">
+                                                        data-bs-toggle="tooltip" data-bs-target="#modalBatal"
+                                                        data-id="{{ $baru->id_pengiriman }}" title="Batalkan Pesanan">
                                                         <i class="fas fa-times-circle"></i>
                                                     </button>
                                                 @else
