@@ -23,6 +23,8 @@ import { updateLayananHandler } from "../handlers/updateLayanan.js";
 import { layananDeleteHandler } from "../handlers/layananDelete.js";
 import { handlePengirimanUpdateStatus } from "../handlers/pengirimanUpdateStatus.js";
 import { addAssignKurirHandler } from "../handlers/addAssignKurir.js";
+import { kurirUpdateInfoHandler } from "../handlers/kurirUpdateInfo.js";
+import { kurirUpdatePasswordHandler } from "../handlers/kurirUpdatePassword.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -68,6 +70,8 @@ await Promise.all([
         topic: TOPICS.ADD_ASSIGN_KURIR,
         fromBeginning: false,
     }),
+    consumer.subscribe({ topic: TOPICS.KURIR_UPDATE_INFO, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.KURIR_UPDATE_PASSWORD, fromBeginning: false }),
 ]);
 
 const httpServer = http.createServer();
@@ -155,6 +159,12 @@ await consumer.run({
                     if (io) {
                         io.emit("update-data-pengiriman", data);
                     }
+                    break;
+                case TOPICS.KURIR_UPDATE_INFO:
+                    await kurirUpdateInfoHandler(data);
+                    break;
+                case TOPICS.KURIR_UPDATE_PASSWORD:
+                    await kurirUpdatePasswordHandler(data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

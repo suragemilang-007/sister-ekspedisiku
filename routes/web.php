@@ -83,6 +83,14 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('api/kurir-detail/{id}', [AdminPenugasanKurirController::class, 'getKurirDetail']);
     Route::get('api/assignment-history/{id}', [AdminPenugasanKurirController::class, 'getAssignmentHistory']);
 
+    // Route untuk Manajemen Kurir
+    Route::get('/kurir', [KurirController::class, 'listKurir'])->name('admin.kurir.index');
+    Route::get('/kurir/create', [KurirController::class,'createKurir'])->name('admin.kurir.create');
+    Route::get('/kurir/edit/{id}', [KurirController::class,'edit'])->name('admin.kurir.edit');
+    Route::post('/kurir/update-info', [KurirController::class,'profileUpdate'])->name('admin.kurir.update.info');
+    Route::post('/kurir/update-password', [KurirController::class,'passwordChange'])->name('admin.kurir.update.password');
+    Route::get('/kurir/{id}', [KurirController::class,''])->name('admin.kurir.destroy');
+
 });
 
 // Route untuk pengirim
