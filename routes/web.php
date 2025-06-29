@@ -82,22 +82,6 @@ Route::prefix('dashboard/pengirim')->middleware(['role:pelanggan', 'auth.session
     Route::get('/alamat-tujuan', [AlamatTujuanController::class, 'index'])->name('alamattujuan.index');
 });
 
-// Route untuk redirect kurir yang mencoba akses dashboard pengirim
-Route::get('/dashboard/pengirim', function () {
-    if (Session::get('user_role') === 'kurir') {
-        return redirect('/kurir/dashboard')->with('warning', 'Anda diarahkan ke dashboard kurir.');
-    }
-    return redirect('/login');
-})->middleware('auth.session');
-
-// Route untuk redirect kurir yang mencoba akses dashboard admin
-Route::get('/admin/dashboard', function () {
-    if (Session::get('user_role') === 'kurir') {
-        return redirect('/kurir/dashboard')->with('warning', 'Anda diarahkan ke dashboard kurir.');
-    }
-    return redirect('/login');
-})->middleware('auth.session');
-
 // Untuk pelanggan (pelanggan)
 Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
     Route::get('/pengguna/edit', [pengaturanPenggunaController::class, 'edit'])->name('pengaturan.edit');
