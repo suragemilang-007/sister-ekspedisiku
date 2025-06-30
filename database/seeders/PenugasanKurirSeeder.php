@@ -25,7 +25,7 @@ class PenugasanKurirSeeder extends Seeder
             [
                 'id_pengiriman' => 2,
                 'id_kurir' => 3,
-                'status' => 'DITERIMA KURIRI',
+                'status' => 'DITERIMA KURIR',
                 'catatan' => 'Siap diambil dari pengirim',
                 'created_at' => $now,
                 'updated_at' => null,
@@ -57,7 +57,7 @@ class PenugasanKurirSeeder extends Seeder
             [
                 'id_pengiriman' => 9,
                 'id_kurir' => 8,
-                'status' => 'DITERIMA KURIRI',
+                'status' => 'DITERIMA KURIR',
                 'catatan' => 'Pengiriman di luar kota',
                 'created_at' => $now,
                 'updated_at' => null,

@@ -111,11 +111,12 @@
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select" id="status" name="status" required>
                                 <option value="" disabled selected>Pilih Status</option>
-                                <option value="MENUJU PENGIRIM" {{ $penugasan->status == 'MENUJU PENGIRIM' ? 'selected' : '' }}>Menuju Pengirim</option>
-                                <option value="DITERIMA KURIRI" {{ $penugasan->status == 'DITERIMA KURIRI' ? 'selected' : '' }}>Diterima Kurir</option>
-                                <option value="DIANTAR" {{ $penugasan->status == 'DIANTAR' ? 'selected' : '' }}>Sedang Diantar</option>
-                                <option value="SELESAI" {{ $penugasan->status == 'SELESAI' ? 'selected' : '' }}>Selesai</option>
-                                <option value="DIBATALKAN" {{ $penugasan->status == 'DIBATALKAN' ? 'selected' : '' }}>Dibatalkan</option>
+                                <option value="MENUNGGU KONFIRMASI" {{ $penugasan->status == 'MENUNGGU KONFIRMASI' ? 'selected' : '' }}>MENUNGGU KONFIRMASI</option>
+                                <option value="DIPROSES" {{ $penugasan->status == 'DIPROSES' ? 'selected' : '' }}>DIPROSES</option>
+                                <option value="DIBAYAR" {{ $penugasan->status == 'DIBAYAR' ? 'selected' : '' }}>DIBAYAR</option>
+                                <option value="DIKIRIM" {{ $penugasan->status == 'DIKIRIM' ? 'selected' : '' }}>DIKIRIM</option>
+                                <option value="DITERIMA" {{ $penugasan->status == 'DITERIMA' ? 'selected' : '' }}>DITERIMA</option>
+                                <option value="DIBATALKAN" {{ $penugasan->status == 'DIBATALKAN' ? 'selected' : '' }}>DIBATALKAN</option>
                             </select>
                         </div>
 
@@ -143,7 +144,13 @@
                             <div class="timeline-marker"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-0">{{ $pelacakan->status }}</h6>
-                                <p class="text-muted mb-0 small">{{ $pelacakan->created_at->format('d M Y H:i') }}</p>
+                                <p class="text-muted mb-0 small">
+                                    @if($pelacakan->created_at instanceof \Carbon\Carbon)
+                                        {{ $pelacakan->created_at->format('d M Y H:i') }}
+                                    @else
+                                        {{ \Carbon\Carbon::parse($pelacakan->created_at)->format('d M Y H:i') }}
+                                    @endif
+                                </p>
                                 <p class="mb-0">{{ $pelacakan->keterangan }}</p>
                             </div>
                         </div>

@@ -18,6 +18,9 @@ class Pelacakan extends Model
         'id_pengiriman',
         'status',
         'lokasi',
+        'keterangan',
+        'id_pengguna',
+        'created_at',
         'updated_by',
         'updated_at'
     ];

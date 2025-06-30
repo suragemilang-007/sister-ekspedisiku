@@ -8,6 +8,7 @@ use App\Models\Pengiriman;
 use App\Models\PenugasanKurir;
 use App\Models\Kurir;
 use App\Models\Pelacakan;
+use App\Services\KafkaProducerService;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -15,6 +16,13 @@ use Illuminate\Support\Facades\Hash;
 
 class KurirController extends Controller
 {
+    private KafkaProducerService $kafkaProducer;
+
+    public function __construct(KafkaProducerService $kafkaProducer)
+    {
+        $this->kafkaProducer = $kafkaProducer;
+    }
+
     public function dashboard()
     {
         // Pastikan user yang login adalah kurir
@@ -28,7 +36,7 @@ class KurirController extends Controller
         $stats = [
             'total_tugas' => PenugasanKurir::where('id_kurir', $id_kurir)->count(),
             'sedang_dikirim' => PenugasanKurir::where('id_kurir', $id_kurir)
-                ->whereIn('status', ['MENUJU PENGIRIM', 'DITERIMA KURIRI', 'DIANTAR'])
+                ->whereIn('status', ['MENUJU PENGIRIM', 'DITERIMA KURIR', 'DIANTAR'])
                 ->count(),
             'selesai' => PenugasanKurir::where('id_kurir', $id_kurir)
                 ->where('status', 'SELESAI')
@@ -72,6 +80,29 @@ class KurirController extends Controller
         return view('kurir.detail', compact('penugasan'));
     }
 
+    public function showUpdateForm($id_penugasan)
+    {
+        // Pastikan user yang login adalah kurir
+        if (Session::get('user_role') !== 'kurir') {
+            return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini');
+        }
+
+        $id_kurir = Session::get('user_id');
+
+        // Mengambil data penugasan dengan relasi
+        $penugasan = PenugasanKurir::with([
+            'pengiriman.alamatTujuan',
+            'pengiriman.pelacakan' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }
+        ])
+            ->where('id_penugasan', $id_penugasan)
+            ->where('id_kurir', $id_kurir)
+            ->firstOrFail();
+
+        return view('kurir.update', compact('penugasan'));
+    }
+
     public function updateStatus(Request $request)
     {
         try {
@@ -83,23 +114,81 @@ class KurirController extends Controller
             // Validasi input
             $request->validate([
                 'id_penugasan' => 'required|numeric',
-                'status' => 'required|string',
-                'catatan' => 'nullable|string',
+                'status' => 'required|string|in:MENUNGGU KONFIRMASI,DIPROSES,DIBAYAR,DIKIRIM,DITERIMA,DIBATALKAN',
+                'catatan' => 'nullable|string|max:500',
             ]);
 
-            // Kirim data ke Kafka Producer
-            $response = Http::post(env('KAFKA_PRODUCER_URL') . '/kurir/update-status', [
-                'id_penugasan' => $request->id_penugasan,
-                'status' => $request->status,
-                'catatan' => $request->catatan,
-                'id_kurir' => Session::get('user_id'),
-            ]);
+            $id_kurir = Session::get('user_id');
 
-            if ($response->successful()) {
-                return response()->json(['success' => true, 'message' => 'Status berhasil diperbarui']);
-            } else {
-                return response()->json(['success' => false, 'message' => 'Gagal memperbarui status'], 500);
+            // Ambil data penugasan
+            $penugasan = PenugasanKurir::with(['pengiriman.pengguna'])
+                ->where('id_penugasan', $request->id_penugasan)
+                ->where('id_kurir', $id_kurir)
+                ->first();
+
+            if (!$penugasan) {
+                return response()->json(['success' => false, 'message' => 'Penugasan tidak ditemukan'], 404);
             }
+
+            // Update status di database
+            DB::beginTransaction();
+            try {
+                // Update status penugasan
+                $penugasan->update([
+                    'status' => $request->status,
+                    'catatan' => $request->catatan,
+                    'updated_at' => now()
+                ]);
+
+                // Update status pengiriman
+                $penugasan->pengiriman->update([
+                    'status' => $request->status,
+                    'updated_at' => now()
+                ]);
+
+                // Tambah record pelacakan
+                Pelacakan::create([
+                    'id_pengiriman' => $penugasan->pengiriman->id_pengiriman,
+                    'status' => $request->status,
+                    'lokasi' => 'Dalam pengiriman',
+                    'keterangan' => $request->catatan ?? 'Status diperbarui oleh kurir',
+                    'id_pengguna' => $id_kurir, // gunakan id kurir (integer) yang sedang login
+                    'created_at' => now()
+                ]);
+
+                DB::commit();
+
+                // Kirim ke Kafka
+                $success = $this->kafkaProducer->sendStatusUpdate(
+                    $penugasan->pengiriman->nomor_resi,
+                    $request->status,
+                    now()->format('Y-m-d'),
+                    $request->catatan
+                );
+
+                if (!$success) {
+                    Log::warning('Failed to send status update to Kafka', [
+                        'id_penugasan' => $request->id_penugasan,
+                        'status' => $request->status
+                    ]);
+                }
+
+                return response()->json([
+                    'success' => true, 
+                    'message' => 'Status berhasil diperbarui',
+                    'data' => [
+                        'id_penugasan' => $penugasan->id_penugasan,
+                        'nomor_resi' => $penugasan->pengiriman->nomor_resi,
+                        'status' => $request->status,
+                        'tanggal' => now()->format('Y-m-d')
+                    ]
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();
+                throw $e;
+            }
+
         } catch (\Exception $e) {
             Log::error('Error updating kurir status: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
@@ -119,7 +208,7 @@ class KurirController extends Controller
         $stats = [
             'total_tugas' => PenugasanKurir::where('id_kurir', $id_kurir)->count(),
             'sedang_dikirim' => PenugasanKurir::where('id_kurir', $id_kurir)
-                ->whereIn('status', ['MENUJU PENGIRIM', 'DITERIMA KURIRI', 'DIANTAR'])
+                ->whereIn('status', ['MENUJU PENGIRIM', 'DITERIMA KURIR', 'DIANTAR'])
                 ->count(),
             'selesai' => PenugasanKurir::where('id_kurir', $id_kurir)
                 ->where('status', 'SELESAI')
