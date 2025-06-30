@@ -343,12 +343,7 @@
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, ubah!',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'btn btn-warning',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Show loading state

@@ -96,6 +96,12 @@ app.post("/kurir/update-profile", (req, res) => {
 app.post("/kurir/update-password", (req, res) => {
     sendToKafka(producer, TOPICS.KURIR_UPDATE_PASSWORD, req.body, res);
 });
+app.post("/kurir/add", (req, res) => {
+    sendToKafka(producer, TOPICS.ADD_KURIR, req.body, res);
+});
+app.post("/kurir/delete", (req, res) => {
+    sendToKafka(producer, TOPICS.DELETE_KURIR, req.body, res);
+});
 
 process.on("SIGINT", async () => {
     console.log("⛔ Menutup koneksi Kafka...");
