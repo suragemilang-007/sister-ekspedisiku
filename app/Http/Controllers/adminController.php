@@ -19,12 +19,13 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class adminController extends Controller
 {
     public function index()
     {
-        $userId = Session::get('user_id');
+        $userId = Session::get('uid');
 
         // Dashboard statistics
         $stats = [
@@ -49,14 +50,14 @@ class adminController extends Controller
     }
     public function editAdmin($id)
     {
-        $pengguna = \DB::table('pengguna')->where('id_pengguna', $id)->first();
+        $pengguna = \DB::table('pengguna')->where('uid', $id)->first();
         return view('admin.pengguna.edit', compact('pengguna'));
     }
 
     public function edit()
     {
-        $userId = Session::get('user_id');
-        $pengguna = \DB::table('pengguna')->where('id_pengguna', $userId)->first();
+        $userId = Session::get('uid');
+        $pengguna = \DB::table('pengguna')->where('uid', $userId)->first();
         return view('admin.edit', compact('pengguna'));
     }
 
@@ -107,8 +108,9 @@ class adminController extends Controller
             // Hash password di sisi Laravel sebelum dikirim ke Kafka
             // Ini untuk memastikan password yang sampai ke consumer sudah ter-hash
             $hashedPassword = Hash::make($request->password);
-
+            $uid = 'USER' . date('Ymd') . strtoupper(Str::random(6));
             $dataToProducer = [
+                'uid' => $uid,
                 'nama' => $request->nama,
                 'email' => $request->email,
                 'sandi_hash' => $hashedPassword, // Menggunakan sandi_hash
@@ -140,7 +142,7 @@ class adminController extends Controller
 
     public function updateUserInfo(Request $request)
     {
-        $data = $request->only(['id_pengguna', 'nama', 'email', 'tgl_lahir', 'nohp', 'alamat', 'kelamin']);
+        $data = $request->only(['uid', 'nama', 'email', 'tgl_lahir', 'nohp', 'alamat', 'kelamin']);
 
         Http::post('http://localhost:3001/pengguna/update-info', $data);
         return response()->json(['status' => 'ok']);
@@ -149,7 +151,7 @@ class adminController extends Controller
     public function updateUserPassword(Request $request)
     {
         $data = [
-            'id_pengguna' => $request->id_pengguna,
+            'uid' => $request->uid,
             'password' => $request->password
         ];
 
@@ -157,31 +159,30 @@ class adminController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
-    public function deleteUser($id)
+    public function deleteUser($uid)
     {
-        // Validasi jika pengguna tidak bisa menghapus dirinya sendiri
-        $currentUserId = Session::get('user_id');
-        if ($id == $currentUserId) {
+        // Cegah pengguna menghapus dirinya sendiri
+        $currentUserId = Session::get('user_uid');
+        if ($uid == $currentUserId) {
             return response()->json(['message' => 'Anda tidak bisa menghapus akun sendiri.'], 403);
         }
 
         try {
             $dataToProducer = [
-                'id_pengguna' => (int)$id, // ID pengguna yang akan dihapus
-                'action_type' => 'delete_user', // Indikator untuk consumer bahwa ini adalah operasi delete user
+                'uid' => $uid, // UID pengguna yang akan dihapus
+                'action_type' => 'delete_user', // Aksi untuk Kafka consumer
                 'timestamp' => now()->timestamp,
-                'deleted_by_id' => (int)$currentUserId, // Siapa yang melakukan penghapusan
+                'deleted_by_id' => $currentUserId, // UID penghapus
             ];
 
-            // Kirim data ke JS Producer endpoint /pengguna/delete
-            // Producer Anda berjalan di port 3001
+            // Kirim ke JS Producer di port 3001
             $response = Http::timeout(5)->post('http://localhost:3001/pengguna/delete', $dataToProducer);
 
             if ($response->successful()) {
-                Log::info("Permintaan penghapusan pengguna dikirim ke JS Producer untuk ID: {$id}");
+                Log::info("Permintaan penghapusan pengguna dikirim ke JS Producer untuk UID: {$uid}");
                 return response()->json(['message' => 'Permintaan penghapusan berhasil dikirim.']);
             } else {
-                Log::error("Gagal mengirim permintaan penghapusan pengguna ke JS Producer: " . $response->body() . " Status: " . $response->status());
+                Log::error("Gagal mengirim permintaan penghapusan ke JS Producer: " . $response->body() . " Status: " . $response->status());
                 return response()->json(['message' => 'Gagal memproses permintaan penghapusan. Silakan coba lagi nanti.'], 500);
             }
         } catch (\Exception $e) {
@@ -189,4 +190,5 @@ class adminController extends Controller
             return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
         }
     }
+
 }

@@ -173,8 +173,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="hidden" name="id_pengguna" class="form-control" id="id_pengguna"
-                                            placeholder="Username" value="{{ $pengguna->id_pengguna }}" required>
+                                        <input type="hidden" name="uid" class="form-control" id="uid"
+                                            placeholder="uid" value="{{ $pengguna->uid }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -210,8 +210,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="hidden" name="id_pengguna" class="form-control" id="id_pengguna"
-                                            placeholder="Username" value="{{ $pengguna->id_pengguna }}" required>
+                                        <input type="hidden" name="uid" class="form-control" id="uid"
+                                            placeholder="uid" value="{{ $pengguna->uid }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -291,7 +291,7 @@
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post('/admin/pengguna/update/${id_pengguna}', new FormData(e.target))
+                    axios.post('/admin/pengguna/update/${uid}', new FormData(e.target))
                         .then(res => {
                             Swal.fire({
                                 icon: 'success',
@@ -350,7 +350,7 @@
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post('{{ route('admin.pengguna.update.password', $pengguna->id_pengguna) }}',
+                    axios.post('{{ route('admin.pengguna.update.password', $pengguna->uid) }}',
                             new FormData(e.target))
                         .then(res => {
                             Swal.fire({

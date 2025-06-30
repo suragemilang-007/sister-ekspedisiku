@@ -90,16 +90,16 @@
                                         <td>
                                             <div class="btn-group" role="group">
                                                 {{-- Tombol Edit/Detail --}}
-                                                <a href="{{ route('admin.pengguna.edit', $admin->id_pengguna) }}"
+                                                <a href="{{ route('admin.pengguna.edit', $admin->uid) }}"
                                                     class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip"
                                                     title="Edit Admin">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 {{-- Tombol Delete --}}
                                                 {{-- Penting: Pastikan admin tidak bisa menghapus dirinya sendiri --}}
-                                                @if ($admin->id_pengguna != Session::get('user_id'))
+                                                @if ($admin->uid != Session::get('user_uid'))
                                                     <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        onclick="deleteUser({{ $admin->id_pengguna }})"
+                                                        onclick="deleteUser('{{ $admin->uid }}')"
                                                         data-bs-toggle="tooltip" title="Hapus Admin">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
@@ -195,7 +195,7 @@
 
             });
 
-            function deleteUser(userId) {
+            function deleteUser(uid) {
                 Swal.fire({
                     title: 'Hapus Pengguna Ini?',
                     text: "Anda tidak akan dapat mengembalikan ini! Permintaan akan dikirim dan diproses secara asinkron.",
@@ -208,7 +208,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Panggil route DELETE di Laravel
-                        axios.delete('{{ route('admin.pengguna.delete', 'userId') }}'.replace('userId', userId))
+                        axios.delete('{{ route('admin.pengguna.delete', 'uid') }}'.replace('uid', uid))
                             .then(res => {
                                 Swal.fire({
                                     icon: 'success',
