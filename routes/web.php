@@ -64,10 +64,9 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
     Route::delete('/layanan/{id}', [LayananController::class, 'deleteLayanan'])->name('admin.layanan.delete');
 
-    // Route untuk mengelola pengiriman
+    // Route untuk mengelola pengiriman 
     Route::get('/pesanan/baru', [PengirimanController::class, 'pesananBaru'])->name('admin.pesanan.baru.index');
-    Route::post('/pesanan/update-status', [PengirimanController::class, 'updateStatus'])
-        ->name('admin.pesanan.update.status');
+    Route::post('/pesanan/update-status/{id}', [PengirimanController::class, 'dibatalkan'])->name('admin.pesanan.update.status');
     Route::get('/pesanan/list', [PengirimanController::class, 'semuaPesanan'])->name('admin.pesanan.list');
     Route::post('/pesanan/assign-kurir', [PengirimanController::class, 'assignKurir'])->name('admin.assign.kurir');
 

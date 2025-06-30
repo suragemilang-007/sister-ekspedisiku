@@ -118,12 +118,11 @@
                                                         <i class="fas fa-user-plus"></i>
                                                     </button>
                                                 @endif
-                                                {{-- Tombol Delete --}}
                                                 @if ($baru->status !== 'DIBATALKAN')
-                                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        data-bs-toggle="tooltip" data-bs-target="#modalBatal"
-                                                        data-id="{{ $baru->id_pengiriman }}" title="Batalkan Pesanan">
-                                                        <i class="fas fa-times-circle"></i>
+                                                    <button class="btn btn-sm btn-outline-danger"
+                                                        onclick="formBatalkanPesanan({{ $baru->id_pengiriman }})"
+                                                        data-bs-toggle="tooltip" title="Batalkan Pesanan">
+                                                        <i class="fas fa-times-circle me-1"></i>
                                                     </button>
                                                 @else
                                                     <button class="btn btn-sm btn-secondary" disabled
@@ -224,32 +223,6 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Pembatalan -->
-    <div class="modal fade" id="modalBatal" tabindex="-1" aria-labelledby="modalBatalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form id="form-batal-pengiriman">
-                @csrf
-                <input type="hidden" name="id_pengiriman" id="id_pengiriman_batal">
-                <input type="hidden" name="status" value="DIBATALKAN">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="modalBatalLabel">Batalkan Pengiriman</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="keterangan_batal" class="form-label">Alasan Pembatalan</label>
-                            <textarea class="form-control" name="keterangan_batal" id="keterangan_batal" rows="3" required></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger">Konfirmasi Batalkan</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -265,7 +238,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form when filters change
                 const filterForm = document.getElementById('filterForm');
-                
+
                 // Search with delay
                 const searchInput = filterForm.querySelector('input[name="search"]');
                 let searchTimeout;
@@ -317,42 +290,41 @@
                     });
             });
 
-            // Script Batal
-            const modal = document.getElementById('modalBatal');
-
-            modal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const id = button.getAttribute('data-id');
-
-                document.getElementById('id_pengiriman_batal').value = id;
-            });
-
-            document.getElementById('form-batal-pengiriman').addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const form = e.target;
-                const formData = new FormData(form);
-
-                fetch("{{ route('admin.pesanan.update.status') }}", {
-                        method: "POST",
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: formData
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.status === 'ok') {
-                            Swal.fire('Berhasil!', 'Pengiriman telah dibatalkan.', 'success')
-                                .then(() => location.reload());
-                        } else {
-                            Swal.fire('Gagal', 'Terjadi kesalahan saat membatalkan.', 'error');
+            function formBatalkanPesanan(id) {
+                Swal.fire({
+                    title: 'Batalkan Pesanan',
+                    html: `
+                <textarea id="keterangan_batal" class="swal2-textarea" placeholder="Alasan pembatalan..." rows="4"></textarea>
+            `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Kirim Pembatalan',
+                    cancelButtonText: 'Batal',
+                    preConfirm: () => {
+                        const alasan = document.getElementById('keterangan_batal').value;
+                        if (!alasan) {
+                            Swal.showValidationMessage('Keterangan pembatalan wajib diisi');
                         }
-                    })
-                    .catch(err => {
-                        Swal.fire('Error', 'Gagal menghubungi server.', 'error');
-                    });
-            });
+                        return alasan;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const alasan = result.value;
+                        axios.post(`/admin/pesanan/update-status/${id}`, {
+                                id_pengiriman: id,
+                                keterangan_batal: alasan
+                            })
+                            .then(res => {
+                                Swal.fire('Berhasil!', res.data.message, 'success')
+                                    .then(() => window.location.reload());
+                            })
+                            .catch(err => {
+                                Swal.fire('Gagal!', err.response?.data?.message ||
+                                    'Terjadi kesalahan saat membatalkan.', 'error');
+                            });
+                    }
+                });
+            };
         </script>
     @endpush
 @endsection
