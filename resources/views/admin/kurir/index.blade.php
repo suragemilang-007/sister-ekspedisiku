@@ -133,11 +133,8 @@
                     text: "Data kurir akan dihapus melalui Kafka secara asinkron!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, hapus!',
+                    confirmButtonText: 'Ya, Hapus!',
                     cancelButtonText: 'Batal',
-                    buttonsStyling: false
                 }).then((result) => {
                     if (result.isConfirmed) {
                         axios.delete(`/admin/kurir/${id}`)

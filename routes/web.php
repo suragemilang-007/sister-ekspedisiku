@@ -86,10 +86,11 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     // Route untuk Manajemen Kurir
     Route::get('/kurir', [KurirController::class, 'listKurir'])->name('admin.kurir.index');
     Route::get('/kurir/create', [KurirController::class,'createKurir'])->name('admin.kurir.create');
+    Route::post('/kurir/store', [KurirController::class,'storeKurir'])->name('admin.kurir.store');
     Route::get('/kurir/edit/{id}', [KurirController::class,'edit'])->name('admin.kurir.edit');
     Route::post('/kurir/update-info', [KurirController::class,'profileUpdate'])->name('admin.kurir.update.info');
     Route::post('/kurir/update-password', [KurirController::class,'passwordChange'])->name('admin.kurir.update.password');
-    Route::get('/kurir/{id}', [KurirController::class,''])->name('admin.kurir.destroy');
+    Route::delete('/kurir/{id}', [KurirController::class,'deleteKurir'])->name('admin.kurir.delete');
 
 });
 

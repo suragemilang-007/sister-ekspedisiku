@@ -232,12 +232,7 @@ document.getElementById('form-update').addEventListener('submit', function (e) {
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Ya, simpan!',
-        cancelButtonText: 'Batal',
-        customClass: {
-            confirmButton: 'btn btn-primary',
-            cancelButton: 'btn btn-secondary'
-        },
-        buttonsStyling: false
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading state
@@ -293,12 +288,7 @@ document.getElementById('form-password').addEventListener('submit', function (e)
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya, ubah!',
-        cancelButtonText: 'Batal',
-        customClass: {
-            confirmButton: 'btn btn-warning',
-            cancelButton: 'btn btn-secondary'
-        },
-        buttonsStyling: false
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading state

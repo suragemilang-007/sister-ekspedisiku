@@ -317,7 +317,7 @@ class KurirController extends Controller
     {
         $data = $request->only(['id_kurir', 'nama', 'email', 'nohp', 'alamat', 'status']);
 
-        Http::post('http://localhost:3001/kurir/update-profile', $data);
+        Http::timeout(5)->post('http://localhost:3001/kurir/update-profile', $data);
         return response()->json(['status' => 'ok']);
     }
 
@@ -328,7 +328,65 @@ class KurirController extends Controller
             'password' => $request->password
         ];
 
-        Http::post('http://localhost:3001/kurir/update-password', $data);
+        Http::timeout(5)->post('http://localhost:3001/kurir/update-password', $data);
         return response()->json(['status' => 'ok']);
     }
+
+    public function createKurir()
+    {
+        return view('admin.kurir.create');
+    }
+
+    public function storeKurir(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:kurir,email',
+            'password' => 'required|string|min:8|confirmed',
+            'nohp' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'status' => 'required|in:AKTIF,NONAKTIF',
+        ]);
+
+        $data = [
+            'nama' => $validated['nama'],
+            'email' => $validated['email'],
+            'nohp' => $validated['nohp'],
+            'alamat' => $validated['alamat'],
+            'status' => $validated['status'],
+            'sandi_hash' => bcrypt($validated['password']),
+        ];
+
+        // Kirim ke Kafka melalui API Node.js
+        Http::timeout(5)->post('http://localhost:3001/kurir/add', $data);
+
+        return response()->json(['message' => 'Data kurir berhasil dikirim.']);
+    }
+
+    public function deleteKurir($id)
+    {
+        // Validasi dan ambil data kurir yang akan dihapus
+        $kurir = Kurir::findOrFail($id);
+
+        try {
+            $data = [
+                'id_kurir' => $kurir->id_kurir,
+                'action_type' => 'delete_kurir',
+            ];
+
+            $response = Http::timeout(5)->post('http://localhost:3001/kurir/delete', $data);
+
+            if ($response->successful()) {
+                Log::info('✅ Permintaan penghapusan kurir berhasil dikirim ke Kafka untuk ID: ' . $kurir->id_kurir);
+                return response()->json(['message' => 'Permintaan penghapusan kurir telah dikirim. Kurir akan segera dihapus.'], 200);
+            } else {
+                Log::error('❌ Gagal mengirim permintaan penghapusan kurir ke Kafka: ' . $response->body());
+                return response()->json(['message' => 'Gagal menghapus kurir.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('❌ Error saat menghapus kurir: ' . $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan saat menghapus kurir.'], 500);
+        }
+    }
+
 }
