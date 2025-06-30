@@ -388,7 +388,11 @@ class PengirimanController extends Controller
 
     public function pesananBaru(Request $request)
     {
-        $kurirs = Kurir::where('status', 'AKTIF')->get();
+        $kurirs = Kurir::where('status', 'AKTIF')
+            ->whereDoesntHave('penugasan', function ($query) {
+                $query->whereNotIn('status', ['SELESAI', 'DIBATALKAN']);
+            })
+            ->get();
         $statusList = ['MENUNGGU KONFIRMASI'];
 
         $query = Pengiriman::with(['pengguna', 'alamatPenjemputan', 'alamatTujuan', 'layananPaket'])

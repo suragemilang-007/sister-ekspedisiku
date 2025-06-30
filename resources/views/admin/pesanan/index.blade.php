@@ -193,14 +193,27 @@
                         <input type="hidden" name="id_pengiriman" id="input-id-pengiriman">
                         <div class="mb-3">
                             <label for="id_kurir" class="form-label">Pilih Kurir</label>
-                            <select name="id_kurir" id="select-kurir" class="form-select" required>
-                                <option value="" disabled selected>-- Pilih Kurir Aktif --</option>
-                                @foreach ($kurirs as $kurir)
-                                    @if ($kurir->status === 'AKTIF')
-                                        <option value="{{ $kurir->id_kurir }}">{{ $kurir->nama }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary w-100 text-start dropdown-toggle" type="button"
+                                    id="dropdownKurirBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    -- Pilih Kurir Aktif --
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="dropdownKurirBtn"
+                                    style="max-height: 200px; overflow-y: auto;">
+                                    @forelse ($kurirs->where('status', 'AKTIF') as $kurir)
+                                        <li>
+                                            <a href="#" class="dropdown-item"
+                                                onclick="selectKurir('{{ $kurir->id_kurir }}', '{{ $kurir->nama }}')">
+                                                <strong>{{ $kurir->nama }}</strong><br>
+                                                <small class="text-muted">{{ $kurir->alamat }}</small>
+                                            </a>
+                                        </li>
+                                    @empty
+                                        <li><span class="dropdown-item text-muted">Tidak ada kurir tersedia</span></li>
+                                    @endforelse
+                                </ul>
+                            </div>
+                            <input type="hidden" name="id_kurir" id="selected-kurir-id" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -244,10 +257,10 @@
         <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
         <script>
             const socket = io("http://localhost:4000");
-            socket.on("update-data-pengiriman", function (data) {
-            setTimeout(() => {
-                location.reload();
-            }, 300);
+            socket.on("update-data-pengiriman", function(data) {
+                setTimeout(() => {
+                    location.reload();
+                }, 300);
             });
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form when filters change
@@ -279,42 +292,9 @@
 
             });
 
-            function Delete(idLayanan) {
-                Swal.fire({
-                    title: 'Hapus Layanan Paket',
-                    text: "Apakah Anda yakin ingin menghapus layanan paket ini?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        axios.delete('{{ route('admin.layanan.delete', 'idLayanan') }}'.replace('idLayanan',
-                                idLayanan))
-                            .then(res => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Permintaan Dikirim!',
-                                    text: res.data.message ||
-                                        'Permintaan penghapusan layanan paket telah dikirim. Layanan Paket akan segera dihapus.',
-                                    timer: 3000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    // Setelah request berhasil dikirim, reload halaman untuk melihat perubahan
-                                    // (setelah consumer selesai memproses dan menghapus dari DB)
-                                    location.reload();
-                                });
-                            })
-                            .catch(err => {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal!',
-                                    text: err.response?.data?.message ||
-                                        'Gagal mengirim permintaan penghapusan.',
-                                });
-                            });
-                    }
-                });
+            function selectKurir(id, nama) {
+                document.getElementById('selected-kurir-id').value = id;
+                document.getElementById('dropdownKurirBtn').innerText = nama;
             }
 
             // Script penugasan Kurir
@@ -350,11 +330,13 @@
             });
 
             // Script Batal
-            document.querySelectorAll('[data-bs-target="#modalBatal"]').forEach(button => {
-                button.addEventListener('click', () => {
-                    const id = button.getAttribute('data-id');
-                    document.getElementById('id_pengiriman_batal').value = id;
-                });
+            const modal = document.getElementById('modalBatal');
+
+            modal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id');
+
+                document.getElementById('id_pengiriman_batal').value = id;
             });
 
             document.getElementById('form-batal-pengiriman').addEventListener('submit', function(e) {
