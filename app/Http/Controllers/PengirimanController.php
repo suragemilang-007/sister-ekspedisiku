@@ -507,35 +507,32 @@ class PengirimanController extends Controller
         }
     }
 
-    public function dibatalkan($id)
+    public function dibatalkan(Request $request, $id)
     {
+        $request->validate([
+            'keterangan_batal' => 'required|string|max:255'
+        ]);
+
         try {
-            $pengiriman = Pengiriman::findOrFail($id);
-
-            if ($pengiriman->status === 'DIBATALKAN') {
-                return back()->with('warning', 'Pengiriman sudah dibatalkan.');
-            }
-
-            // Kirim ke Kafka
-            $data = [
-                'id_pengiriman' => $pengiriman->id_pengiriman,
+            $dataToKafka = [
+                'id_pengiriman' => $id,
                 'status' => 'DIBATALKAN',
-                'timestamp' => now()->timestamp,
-                'action_type' => 'cancel_pengiriman'
+                'keterangan_batal' => $request->keterangan_batal,
+                'action_type' => 'batalkan_pengiriman'
             ];
 
-            $response = Http::timeout(5)->post('http://localhost:3001//pengiriman/update-status_pengiriman', $data);
+            $response = Http::timeout(5)->post('http://localhost:3001/pengiriman/update-status-pengiriman', $dataToKafka);
 
             if ($response->successful()) {
-                return back()->with('success', 'Permintaan pembatalan dikirim ke Kafka.');
+                Log::info("Permintaan pembatalan pengiriman ID $id berhasil dikirim ke Kafka");
+                return response()->json(['message' => 'Pesanan berhasil dibatalkan dan dikirim ke sistem.']);
             } else {
-                Log::error("❌ Kafka error saat pembatalan: " . $response->body());
-                return back()->with('error', 'Gagal mengirim ke Kafka.');
+                Log::error("Gagal mengirim pembatalan pengiriman ke Kafka: " . $response->body());
+                return response()->json(['message' => 'Gagal mengirim permintaan pembatalan.'], 500);
             }
-
         } catch (\Exception $e) {
-            Log::error("❌ Exception saat batalkan pengiriman: " . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat membatalkan pengiriman.');
+            Log::error('Exception saat membatalkan pengiriman: ' . $e->getMessage());
+            return response()->json(['message' => 'Terjadi kesalahan internal.'], 500);
         }
     }
 
