@@ -1,6 +1,7 @@
-const { Kafka } = require('kafkajs');
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+import { Kafka } from 'kafkajs';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Konfigurasi Kafka
 const kafka = new Kafka({
