@@ -27,10 +27,11 @@ export async function penggunaTambahHandler(data) {
         await db.execute(
             `
             INSERT INTO pengguna (
-                nama, email, sandi_hash, tgl_lahir, nohp, alamat, kelamin, peran, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                uid, nama, email, sandi_hash, tgl_lahir, nohp, alamat, kelamin, peran, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `,
             [
+                data.uid,
                 data.nama,
                 data.email,
                 data.sandi_hash, // Gunakan sandi_hash yang sudah di-hash dari Laravel
@@ -42,7 +43,7 @@ export async function penggunaTambahHandler(data) {
                 now,
             ]
         );
-        console.log(`👤 Pengguna (Admin) baru ditambahkan: ${data.email}`);
+        console.log(`👤 Pengguna (Admin) baru ditambahkan: ${data.uid}`);
     } catch (error) {
         // Tangani error jika ada duplikasi email atau masalah DB lainnya
         if (error.code === 'ER_DUP_ENTRY') { // Contoh MySQL duplicate entry error code
