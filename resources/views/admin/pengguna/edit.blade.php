@@ -179,9 +179,12 @@
                                 </div>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <button type="submit" class="btn btn-primary" id="btn-update">
+                                <a href="{{ route('admin.pengguna.list') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Batal
+                                </a>
+                                <button type="submit" class="btn btn-primary" id="btn-simpan">
                                     <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
-                                    <i class="fas fa-save me-2"></i>Simpan Perubahan
+                                    <i class="fas fa-save me-2"></i> Simpan Perubahan
                                 </button>
                             </div>
                         </form>
@@ -216,6 +219,9 @@
                                 </div>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="{{ route('admin.pengguna.list') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Batal
+                                </a>
                                 <button type="submit" class="btn btn-warning" id="btn-password">
                                     <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
                                     <i class="fas fa-key me-2"></i>Update Password
@@ -279,12 +285,7 @@
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, simpan!',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'btn btn-primary',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Show loading state
