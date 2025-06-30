@@ -157,6 +157,7 @@ Route::prefix('kurir')->middleware(['role:kurir', 'auth.session'])->group(functi
     // Detail tugas kurir
     Route::get('/detail/{id_penugasan}', [KurirController::class, 'detail'])->name('kurir.detail');
     // Update status pengiriman
+    Route::get('/update/{id_penugasan}', [KurirController::class, 'showUpdateForm'])->name('kurir.update.form');
     Route::post('/update-status', [KurirController::class, 'updateStatus'])->name('kurir.update.status');
     // API untuk data dashboard (opsional untuk refresh data)
     Route::get('/dashboard-data', [KurirController::class, 'dashboardData'])->name('kurir.dashboard.data');
