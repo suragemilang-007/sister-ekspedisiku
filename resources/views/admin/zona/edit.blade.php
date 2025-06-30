@@ -143,12 +143,7 @@
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, simpan!',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'btn btn-primary',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
                     btn.disabled = true;
