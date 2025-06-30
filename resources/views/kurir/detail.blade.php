@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.kurir')
 
 @section('title', 'Detail Tugas Kurir')
 
