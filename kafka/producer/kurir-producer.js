@@ -1,7 +1,7 @@
-const express = require('express');
-const { Kafka } = require('kafkajs');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import express from 'express';
+import { Kafka } from 'kafkajs';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 3003;
