@@ -11,6 +11,7 @@ class ZonaPengirimanSeeder extends Seeder
     public function run(): void
     {
         $kecamatans = [
+            // Banyumas
             'Purwokerto Utara',
             'Purwokerto Timur',
             'Purwokerto Selatan',
@@ -25,6 +26,20 @@ class ZonaPengirimanSeeder extends Seeder
             'Karanglewas',
             'Kebasen',
             'Kedungbanteng',
+            'Kembaran',
+            'Sokaraja',
+            'Sumbang',
+            'Sumpiuh',
+            'Tambak',
+            'Patikraja',
+            'Rawalo',
+            'Somagede',
+            'Lumbir',
+            'Pekuncen',
+            'Wangon',
+            'Purwojati',
+
+            // Purbalingga
             'Bobotsari',
             'Bojongsari',
             'Bukateja',
@@ -34,7 +49,12 @@ class ZonaPengirimanSeeder extends Seeder
             'Karangjambu',
             'Karangmoncol',
             'Karangreja',
-            'Kejobong'
+            'Kejobong',
+            'Mrebet',
+            'Padamara',
+            'Pengadegan',
+            'Rembang',
+            'Purbalingga',
         ];
 
         $data = [];
@@ -48,7 +68,7 @@ class ZonaPengirimanSeeder extends Seeder
                     // Tentukan rentang biaya berdasarkan id_layanan
                     switch ($idLayanan) {
                         case 1:
-                            $minBiaya = 5000;
+                            $minBiaya = 8000;
                             $maxBiaya = 15000;
                             break;
                         case 2:

@@ -16,7 +16,7 @@ class AlamatPenjemputanSeeder extends Seeder
         DB::table('alamat_penjemputan')->insert([
             [
                 'uid' => '00000000-0000-0000-0000-000000000001',
-                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
+                'id_pengirim' => 'USR00000-0000-0000-0000-000000000008',
                 'nama_pengirim' => 'Budi Santoso',
                 'no_hp' => '081234567890',
                 'alamat_lengkap' => 'Jl. Melati No. 12, Jakarta Selatan',
@@ -27,7 +27,7 @@ class AlamatPenjemputanSeeder extends Seeder
             ],
             [
                 'uid' => '00000000-0000-0000-0000-000000000002',
-                'id_pengirim' => '00000000-0000-0000-0000-000000000008',
+                'id_pengirim' => 'USR00000-0000-0000-0000-000000000008',
                 'nama_pengirim' => 'Ani Lestari',
                 'no_hp' => '081987654321',
                 'alamat_lengkap' => 'Jl. Kenanga No. 45, Bandung',
@@ -38,7 +38,7 @@ class AlamatPenjemputanSeeder extends Seeder
             ],
             [
                 'uid' => '00000000-0000-0000-0000-000000000003',
-                'id_pengirim' => '00000000-0000-0000-0000-000000000007',
+                'id_pengirim' => 'USR00000-0000-0000-0000-000000000007',
                 'nama_pengirim' => 'Dedi Kurniawan',
                 'no_hp' => '082233445566',
                 'alamat_lengkap' => 'Jl. Cempaka Raya No. 9, Surabaya',

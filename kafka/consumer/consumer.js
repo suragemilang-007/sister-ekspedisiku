@@ -72,8 +72,14 @@ await Promise.all([
         topic: TOPICS.ADD_ASSIGN_KURIR,
         fromBeginning: false,
     }),
-    consumer.subscribe({ topic: TOPICS.KURIR_UPDATE_INFO, fromBeginning: false }),
-    consumer.subscribe({ topic: TOPICS.KURIR_UPDATE_PASSWORD, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.KURIR_UPDATE_INFO,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.KURIR_UPDATE_PASSWORD,
+        fromBeginning: false,
+    }),
     consumer.subscribe({ topic: TOPICS.ADD_KURIR, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.DELETE_KURIR, fromBeginning: false }),
 ]);
@@ -92,7 +98,7 @@ io.on("connection", (socket) => {
 await consumer.run({
     eachMessage: async ({ topic, message }) => {
         const data = JSON.parse(message.value.toString());
-
+        console.log(`📬 Menerima pesan dari topik ${topic}:`, data);
         try {
             switch (topic) {
                 case TOPICS.UPDATE_INFO:
