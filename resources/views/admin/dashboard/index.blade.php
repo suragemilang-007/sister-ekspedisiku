@@ -106,45 +106,118 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>No Resi</th>
-                                <th>Tanggal</th>
-                                <th>Pengirim</th>
-                                <th>Penerima</th>
-                                <th>Kurir</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="shipmentsTableBody">
-                            @foreach ($recent_shipments as $shipment)
-                                <tr class="text-dark" data-resi="{{ $shipment->nomor_resi }}">
-                                    <td class="fw-medium">{{ $shipment->nomor_resi }}</td>
-                                    <td class="text-dark">{{ $shipment->created_at->format('d M Y') }}</td>
-                                    <td class="text-dark">
-                                        <strong>{{ $shipment->alamatPenjemputan->nama_pengirim ?? '-' }}</strong>
-                                        <p>{{ $shipment->alamatPenjemputan->alamat_lengkap ?? '-' }}</p>
-                                    </td>
-                                    <td class="text-dark">
-                                        <strong>{{ $shipment->alamatTujuan->nama_penerima ?? '-' }}</strong>
-                                        <p>{{ $shipment->alamatTujuan->alamat_lengkap ?? '-' }}</p>
-                                    </td>
-                                    <td class="text-dark">
-                                        {{ $shipment->kurir->nama ?? '-' }}
-                                    <td>
-                                        <span
-                                            class="badge bg-{{ $shipment->status_color }} text-dark rounded-pill status-badge"
-                                            data-resi="{{ $shipment->nomor_resi }}">
-                                            {{ $shipment->status }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="accordion" id="accordionPengiriman">
+                    @foreach ($recent_shipments as $shipment)
+                        @php
+                            $resi = $shipment->nomor_resi;
+                            $status = strtoupper($shipment->status);
+                            $statuses = ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA'];
+                            $progressIndex = $status === 'DIBATALKAN' ? -1 : array_search($status, $statuses);
+                            $segmentPercent = 100 / count($statuses);
+                        @endphp
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-{{ $resi }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse-{{ $resi }}" aria-expanded="false"
+                                    aria-controls="collapse-{{ $resi }}">
+                                    <div class="w-100 d-flex justify-content-between align-items-center">
+                                        <div><strong>{{ $resi }}</strong></div>
+                                        <!--    <span class="badge bg-{{ $shipment->status_color }}">{{ $status }}</span> -->
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapse-{{ $resi }}" class="accordion-collapse collapse"
+                                aria-labelledby="heading-{{ $resi }}" data-bs-parent="#accordionPengiriman">
+                                <div class="accordion-body">
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Tanggal:</strong>
+                                            {{ $shipment->created_at->format('d M Y') }}</div>
+                                        <div class="col-md-6"><strong>Kurir:</strong> {{ $shipment->kurir->nama ?? '-' }}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Pengirim:</strong>
+                                            <p class="mb-0">{{ $shipment->alamatPenjemputan->nama_pengirim ?? '-' }}
+                                                (<span
+                                                    class="text-muted">{{ $shipment->alamatPenjemputan->no_hp ?? '-' }}</span>)
+                                            </p>
+                                            <small>{{ $shipment->alamatPenjemputan->alamat_lengkap ?? '-' }}, </small>
+                                            <small>{{ $shipment->alamatPenjemputan->kecamatan ?? '-' }}
+                                                ({{ $shipment->alamatPenjemputan->kode_pos ?? '-' }})</small>
+                                            <strong class="d-block mt-2">Catatan:</strong>
+                                            <p class="mb-0">{{ $shipment->catatan_opsional ?? '-' }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Penerima:</strong>
+                                            <p class="mb-0">{{ $shipment->alamatTujuan->nama_penerima ?? '-' }} (<span
+                                                    class="text-muted">{{ $shipment->alamatTujuan->no_hp ?? '-' }}</span>)
+                                            </p>
+                                            <small>{{ $shipment->alamatTujuan->alamat_lengkap ?? '-' }}, </small>
+                                            <small>{{ $shipment->alamatTujuan->kecamatan ?? '-' }}
+                                                ({{ $shipment->alamatTujuan->kode_pos ?? '-' }})</small>
+                                        </div>
+                                    </div>
+
+                                    {{-- Step Progress Bar --}}
+                                    <div class="mt-4">
+                                        @if ($status === 'DIBATALKAN')
+                                            <div class="text-center text-danger fw-bold">
+                                                <i class="fas fa-times-circle me-2"></i> DIBATALKAN
+                                            </div>
+                                        @else
+                                            @php
+                                                $stepClasses = [
+                                                    'MENUNGGU KONFIRMASI',
+                                                    'DIPROSES',
+                                                    'DIBAYAR',
+                                                    'DIKIRIM',
+                                                    'DITERIMA',
+                                                ];
+                                            @endphp
+                                            <div class="d-flex justify-content-between align-items-center position-relative px-2"
+                                                style="margin: 30px 10px;">
+                                                @foreach ($stepClasses as $index => $step)
+                                                    @php
+                                                        $isCompleted = $index < $progressIndex;
+                                                        $isCurrent = $index === $progressIndex;
+                                                    @endphp
+                                                    <div class="text-center flex-fill position-relative">
+                                                        {{-- Titik / Circle --}}
+                                                        <div class="rounded-circle d-flex align-items-center justify-content-center 
+                        {{ $isCompleted ? 'bg-success text-white' : ($isCurrent ? 'bg-info text-white' : 'bg-secondary text-white') }}"
+                                                            style="width: 24px; height: 24px; margin: 0 auto; z-index: 2; position: relative;">
+                                                            @if ($isCompleted)
+                                                                <i class="fas fa-check"></i>
+                                                            @else
+                                                                {{ $index + 1 }}
+                                                            @endif
+                                                        </div>
+
+                                                        {{-- Label --}}
+                                                        <div class="small mt-2 {{ $isCurrent ? 'fw-bold text-dark' : 'text-muted' }}"
+                                                            style="font-size: 0.75rem;">
+                                                            {{ $step }}
+                                                        </div>
+
+                                                        {{-- Garis --}}
+                                                        @if ($index < count($stepClasses) - 1)
+                                                            <div class="position-absolute top-50 start-100 translate-middle-y"
+                                                                style="width: 100%; height: 3px; background-color: {{ $index < $progressIndex ? '#198754' : '#dee2e6' }}; z-index: 1;">
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
+
             </div>
         </div>
 
