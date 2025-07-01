@@ -173,15 +173,18 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="hidden" name="id_pengguna" class="form-control" id="id_pengguna"
-                                            placeholder="Username" value="{{ $pengguna->id_pengguna }}" required>
+                                        <input type="hidden" name="uid" class="form-control" id="uid"
+                                            placeholder="uid" value="{{ $pengguna->uid }}" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <button type="submit" class="btn btn-primary" id="btn-update">
+                                <a href="{{ route('admin.pengguna.list') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Batal
+                                </a>
+                                <button type="submit" class="btn btn-primary" id="btn-simpan">
                                     <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
-                                    <i class="fas fa-save me-2"></i>Simpan Perubahan
+                                    <i class="fas fa-save me-2"></i> Simpan Perubahan
                                 </button>
                             </div>
                         </form>
@@ -210,12 +213,15 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="hidden" name="id_pengguna" class="form-control" id="id_pengguna"
-                                            placeholder="Username" value="{{ $pengguna->id_pengguna }}" required>
+                                        <input type="hidden" name="uid" class="form-control" id="uid"
+                                            placeholder="uid" value="{{ $pengguna->uid }}" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="{{ route('admin.pengguna.list') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Batal
+                                </a>
                                 <button type="submit" class="btn btn-warning" id="btn-password">
                                     <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
                                     <i class="fas fa-key me-2"></i>Update Password
@@ -279,19 +285,14 @@
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, simpan!',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'btn btn-primary',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Show loading state
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post('/admin/pengguna/update/${id_pengguna}', new FormData(e.target))
+                    axios.post('/admin/pengguna/update/${uid}', new FormData(e.target))
                         .then(res => {
                             Swal.fire({
                                 icon: 'success',
@@ -343,19 +344,14 @@
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, ubah!',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'btn btn-warning',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Show loading state
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post('{{ route('admin.pengguna.update.password', $pengguna->id_pengguna) }}',
+                    axios.post('{{ route('admin.pengguna.update.password', $pengguna->uid) }}',
                             new FormData(e.target))
                         .then(res => {
                             Swal.fire({

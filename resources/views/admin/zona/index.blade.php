@@ -174,18 +174,6 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form when filters change
                 const filterForm = document.getElementById('filterForm');
-                const statusSelect = filterForm.querySelector('select[name="status"]');
-                const dateInputs = filterForm.querySelectorAll('input[type="date"]');
-
-                statusSelect.addEventListener('change', function() {
-                    filterForm.submit();
-                });
-
-                dateInputs.forEach(input => {
-                    input.addEventListener('change', function() {
-                        filterForm.submit();
-                    });
-                });
 
                 // Search with delay
                 const searchInput = filterForm.querySelector('input[name="search"]');

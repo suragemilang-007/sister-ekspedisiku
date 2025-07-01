@@ -25,6 +25,8 @@ import { handlePengirimanUpdateStatus } from "../handlers/pengirimanUpdateStatus
 import { addAssignKurirHandler } from "../handlers/addAssignKurir.js";
 import { kurirUpdateInfoHandler } from "../handlers/kurirUpdateInfo.js";
 import { kurirUpdatePasswordHandler } from "../handlers/kurirUpdatePassword.js";
+import { kurirCreateHandler } from "../handlers/kurirAdd.js";
+import { kurirDeleteHandler } from "../handlers/kurirDelete.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -70,8 +72,16 @@ await Promise.all([
         topic: TOPICS.ADD_ASSIGN_KURIR,
         fromBeginning: false,
     }),
-    consumer.subscribe({ topic: TOPICS.KURIR_UPDATE_INFO, fromBeginning: false }),
-    consumer.subscribe({ topic: TOPICS.KURIR_UPDATE_PASSWORD, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.KURIR_UPDATE_INFO,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
+        topic: TOPICS.KURIR_UPDATE_PASSWORD,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({ topic: TOPICS.ADD_KURIR, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.DELETE_KURIR, fromBeginning: false }),
 ]);
 
 const httpServer = http.createServer();
@@ -88,7 +98,7 @@ io.on("connection", (socket) => {
 await consumer.run({
     eachMessage: async ({ topic, message }) => {
         const data = JSON.parse(message.value.toString());
-
+        console.log(`📬 Menerima pesan dari topik ${topic}:`, data);
         try {
             switch (topic) {
                 case TOPICS.UPDATE_INFO:
@@ -165,6 +175,12 @@ await consumer.run({
                     break;
                 case TOPICS.KURIR_UPDATE_PASSWORD:
                     await kurirUpdatePasswordHandler(data);
+                    break;
+                case TOPICS.ADD_KURIR:
+                    await kurirCreateHandler(data);
+                    break;
+                case TOPICS.DELETE_KURIR:
+                    await kurirDeleteHandler(data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

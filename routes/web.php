@@ -42,7 +42,7 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
     Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
     Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
-    Route::delete('pengguna/{id}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
+    Route::delete('pengguna/{uid}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
     Route::post('/pengguna/update/{id}', [adminController::class, 'updateUserInfo'])->name('admin.pengguna.update');
     Route::post('/pengguna/update-password/{id}', [adminController::class, 'updateUserPassword'])->name('admin.pengguna.update.password');
 
@@ -64,10 +64,9 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/layanan/update/{id}', [LayananController::class, 'update'])->name('admin.layanan.update');
     Route::delete('/layanan/{id}', [LayananController::class, 'deleteLayanan'])->name('admin.layanan.delete');
 
-    // Route untuk mengelola pengiriman
+    // Route untuk mengelola pengiriman 
     Route::get('/pesanan/baru', [PengirimanController::class, 'pesananBaru'])->name('admin.pesanan.baru.index');
-    Route::post('/pesanan/update-status', [PengirimanController::class, 'updateStatus'])
-        ->name('admin.pesanan.update.status');
+    Route::post('/pesanan/update-status/{id}', [PengirimanController::class, 'dibatalkan'])->name('admin.pesanan.update.status');
     Route::get('/pesanan/list', [PengirimanController::class, 'semuaPesanan'])->name('admin.pesanan.list');
     Route::post('/pesanan/assign-kurir', [PengirimanController::class, 'assignKurir'])->name('admin.assign.kurir');
 
@@ -86,10 +85,11 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     // Route untuk Manajemen Kurir
     Route::get('/kurir', [KurirController::class, 'listKurir'])->name('admin.kurir.index');
     Route::get('/kurir/create', [KurirController::class,'createKurir'])->name('admin.kurir.create');
+    Route::post('/kurir/store', [KurirController::class,'storeKurir'])->name('admin.kurir.store');
     Route::get('/kurir/edit/{id}', [KurirController::class,'edit'])->name('admin.kurir.edit');
     Route::post('/kurir/update-info', [KurirController::class,'profileUpdate'])->name('admin.kurir.update.info');
     Route::post('/kurir/update-password', [KurirController::class,'passwordChange'])->name('admin.kurir.update.password');
-    Route::get('/kurir/{id}', [KurirController::class,''])->name('admin.kurir.destroy');
+    Route::delete('/kurir/{id}', [KurirController::class,'deleteKurir'])->name('admin.kurir.delete');
 
 });
 

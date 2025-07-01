@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Admin Baru')
+@section('title', 'Tambah Kurir Baru')
 
 @section('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -10,10 +10,10 @@
 <div class="container py-4">
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-header bg-white border-bottom-0 py-3">
-            <h5 class="mb-0">Tambah Admin Baru</h5>
+            <h5 class="mb-0">Tambah Kurir Baru</h5>
         </div>
         <div class="card-body">
-            <form id="form-add-admin" class="needs-validation" novalidate>
+            <form id="form-add-kurir" class="needs-validation" novalidate>
                 @csrf
                 <div class="row g-3">
                     <div class="col-md-6">
@@ -46,40 +46,34 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
-                            <input type="date" name="tgl_lahir" class="form-control" id="tgl_lahir">
-                            <label for="tgl_lahir">Tanggal Lahir (Opsional)</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
                             <input type="tel" name="nohp" class="form-control" id="nohp" placeholder="No HP">
-                            <label for="nohp">No HP (Opsional)</label>
+                            <label for="nohp">No HP</label>
                             <div class="invalid-feedback">No HP tidak valid</div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-floating mb-3">
                             <textarea name="alamat" class="form-control" id="alamat" placeholder="Alamat" style="height: 100px"></textarea>
-                            <label for="alamat">Alamat (Opsional)</label>
+                            <label for="alamat">Alamat</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
-                            <select name="kelamin" class="form-select" id="kelamin" required>
-                                <option value="">Pilih Jenis Kelamin</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
+                            <select name="status" class="form-select" id="status" required>
+                                <option value="">Pilih Status</option>
+                                <option value="AKTIF">AKTIF</option>
+                                <option value="NONAKTIF">NONAKTIF</option>
                             </select>
-                            <label for="kelamin">Jenis Kelamin</label>
-                            <div class="invalid-feedback">Pilih jenis kelamin</div>
+                            <label for="status">Status</label>
+                            <div class="invalid-feedback">Pilih status kurir</div>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <a href="{{ route('admin.pengguna.list') }}" class="btn btn-secondary me-2">Batal</a>
-                    <button type="submit" class="btn btn-primary" id="btn-add-admin">
+                    <a href="{{ route('admin.kurir.index') }}" class="btn btn-secondary me-2">Batal</a>
+                    <button type="submit" class="btn btn-primary" id="btn-add-kurir">
                         <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
-                        <i class="fas fa-plus-circle me-2"></i> Tambah Admin
+                        <i class="fas fa-plus-circle me-2"></i> Tambah Kurir
                     </button>
                 </div>
             </form>
@@ -93,8 +87,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Form validation
-        const form = document.getElementById('form-add-admin');
+        const form = document.getElementById('form-add-kurir');
+        const passwordField = document.getElementById('password');
+        const passwordConfirmationField = document.getElementById('password_confirmation');
+
         form.addEventListener('submit', function (event) {
             if (!form.checkValidity()) {
                 event.preventDefault();
@@ -103,40 +99,30 @@
             form.classList.add('was-validated');
         }, false);
 
-        // Password confirmation validation
-        const passwordField = document.getElementById('password');
-        const passwordConfirmationField = document.getElementById('password_confirmation');
         if (passwordConfirmationField) {
-            passwordConfirmationField.addEventListener('input', function() {
-                if (this.value !== passwordField.value) {
-                    this.setCustomValidity('Password tidak cocok');
-                } else {
-                    this.setCustomValidity('');
-                }
-            });
-            passwordField.addEventListener('input', function() { // Juga cek saat password utama berubah
-                 if (passwordConfirmationField.value !== this.value) {
-                    passwordConfirmationField.setCustomValidity('Password tidak cocok');
-                } else {
-                    passwordConfirmationField.setCustomValidity('');
-                }
-            });
+            passwordConfirmationField.addEventListener('input', validatePasswordMatch);
+            passwordField.addEventListener('input', validatePasswordMatch);
         }
 
-        // Handle form submission via Axios
+        function validatePasswordMatch() {
+            if (passwordConfirmationField.value !== passwordField.value) {
+                passwordConfirmationField.setCustomValidity('Password tidak cocok');
+            } else {
+                passwordConfirmationField.setCustomValidity('');
+            }
+        }
+
         form.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            if (!this.checkValidity()) {
-                return;
-            }
+            if (!this.checkValidity()) return;
 
-            const btn = document.getElementById('btn-add-admin');
+            const btn = document.getElementById('btn-add-kurir');
             const spinner = btn.querySelector('.spinner-border');
 
             Swal.fire({
-                title: 'Tambahkan Admin Ini?',
-                text: "Pastikan data yang diisi sudah benar. Permintaan akan dikirim dan diproses secara asinkron.",
+                title: 'Tambahkan Kurir Ini?',
+                text: "Pastikan data yang diisi sudah benar.",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Tambahkan!',
@@ -146,45 +132,23 @@
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post('{{ route('admin.pengguna.store') }}', new FormData(e.target))
+                    axios.post('{{ route('admin.kurir.store') }}', new FormData(e.target))
                         .then(res => {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Permintaan Dikirim!',
-                                text: res.data.message || 'Permintaan penambahan admin berhasil dikirim. Admin akan segera terdaftar.',
+                                title: 'Berhasil!',
+                                text: res.data.message || 'Kurir berhasil ditambahkan.',
                                 timer: 3000,
-                                showConfirmButton: false,
-                                customClass: {
-                                    popup: 'animate__animated animate__fadeInDown'
-                                }
+                                showConfirmButton: false
                             }).then(() => {
-                                window.location.href = '{{ route('admin.pengguna.list') }}'; // Redirect ke daftar admin
+                                window.location.href = '{{ route('admin.kurir.index') }}';
                             });
                         })
                         .catch(err => {
-                            let errorMessage = 'Gagal mengirim permintaan penambahan admin.';
-                            if (err.response && err.response.data && err.response.data.message) {
-                                errorMessage = err.response.data.message;
-                            } else if (err.response && err.response.data && err.response.data.errors) {
-                                // Tampilkan error validasi dari Laravel
-                                const errors = err.response.data.errors;
-                                errorMessage = "<ul>";
-                                for (const key in errors) {
-                                    if (errors.hasOwnProperty(key)) {
-                                        errors[key].forEach(errorMsg => {
-                                            errorMessage += `<li>${errorMsg}</li>`;
-                                        });
-                                    }
-                                }
-                                errorMessage += "</ul>";
-                            }
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Gagal!',
-                                html: errorMessage, // Gunakan html untuk menampilkan daftar error
-                                customClass: {
-                                    popup: 'animate__animated animate__shakeX'
-                                }
+                                text: err.response?.data?.message || 'Terjadi kesalahan saat menambahkan kurir.'
                             });
                         })
                         .finally(() => {

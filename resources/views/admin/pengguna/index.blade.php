@@ -90,16 +90,16 @@
                                         <td>
                                             <div class="btn-group" role="group">
                                                 {{-- Tombol Edit/Detail --}}
-                                                <a href="{{ route('admin.pengguna.edit', $admin->id_pengguna) }}"
+                                                <a href="{{ route('admin.pengguna.edit', $admin->uid) }}"
                                                     class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip"
                                                     title="Edit Admin">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 {{-- Tombol Delete --}}
                                                 {{-- Penting: Pastikan admin tidak bisa menghapus dirinya sendiri --}}
-                                                @if ($admin->id_pengguna != Session::get('user_id'))
+                                                @if ($admin->uid != Session::get('user_uid'))
                                                     <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        onclick="deleteUser({{ $admin->id_pengguna }})"
+                                                        onclick="deleteUser('{{ $admin->uid }}')"
                                                         data-bs-toggle="tooltip" title="Hapus Admin">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
@@ -168,18 +168,6 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form when filters change
                 const filterForm = document.getElementById('filterForm');
-                const statusSelect = filterForm.querySelector('select[name="status"]');
-                const dateInputs = filterForm.querySelectorAll('input[type="date"]');
-
-                statusSelect.addEventListener('change', function() {
-                    filterForm.submit();
-                });
-
-                dateInputs.forEach(input => {
-                    input.addEventListener('change', function() {
-                        filterForm.submit();
-                    });
-                });
 
                 // Search with delay
                 const searchInput = filterForm.querySelector('input[name="search"]');
@@ -195,7 +183,7 @@
 
             });
 
-            function deleteUser(userId) {
+            function deleteUser(uid) {
                 Swal.fire({
                     title: 'Hapus Pengguna Ini?',
                     text: "Anda tidak akan dapat mengembalikan ini! Permintaan akan dikirim dan diproses secara asinkron.",
@@ -204,16 +192,11 @@
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#6c757d',
                     confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal',
-                    customClass: {
-                        confirmButton: 'btn btn-danger',
-                        cancelButton: 'btn btn-secondary'
-                    },
-                    buttonsStyling: false
+                    cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Panggil route DELETE di Laravel
-                        axios.delete('{{ route('admin.pengguna.delete', 'userId') }}'.replace('userId', userId))
+                        axios.delete('{{ route('admin.pengguna.delete', 'uid') }}'.replace('uid', uid))
                             .then(res => {
                                 Swal.fire({
                                     icon: 'success',

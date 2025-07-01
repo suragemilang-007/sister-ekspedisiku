@@ -21,4 +21,6 @@ export const TOPICS = {
     PENGIRIMAN_UPDATE_STATUS: "pengiriman-update-status",
     KURIR_UPDATE_INFO: "kurir-update-info",
     KURIR_UPDATE_PASSWORD: "kurir-update-password",
+    ADD_KURIR: "kurir-add",
+    DELETE_KURIR: "kurir-delete",
 };
