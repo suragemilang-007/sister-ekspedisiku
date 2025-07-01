@@ -181,7 +181,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // WebSocket Connection
-    const socket = io('http://localhost:3001');
+    const socket = io('http://localhost:4000');
     const connectionStatus = document.getElementById('connectionStatus');
     const lastUpdate = document.getElementById('lastUpdate');
     const toast = new bootstrap.Toast(document.getElementById('statusUpdateToast'));
