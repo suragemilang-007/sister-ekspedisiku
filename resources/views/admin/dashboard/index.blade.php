@@ -106,55 +106,45 @@
                 </div>
             </div>
             <div class="card-body">
-                @if (isset($recent_shipments) && count($recent_shipments) > 0)
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th>No Resi</th>
-                                    <th>Tanggal</th>
-                                    <th>Pengirim</th>
-                                    <th>Penerima</th>
-                                    <th>Kurir</th>
-                                    <th>Status</th>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>No Resi</th>
+                                <th>Tanggal</th>
+                                <th>Pengirim</th>
+                                <th>Penerima</th>
+                                <th>Kurir</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shipmentsTableBody">
+                            @foreach ($recent_shipments as $shipment)
+                                <tr class="text-dark" data-resi="{{ $shipment->nomor_resi }}">
+                                    <td class="fw-medium">{{ $shipment->nomor_resi }}</td>
+                                    <td class="text-dark">{{ $shipment->created_at->format('d M Y') }}</td>
+                                    <td class="text-dark">
+                                        <strong>{{ $shipment->alamatPenjemputan->nama_pengirim ?? '-' }}</strong>
+                                        <p>{{ $shipment->alamatPenjemputan->alamat_lengkap ?? '-' }}</p>
+                                    </td>
+                                    <td class="text-dark">
+                                        <strong>{{ $shipment->alamatTujuan->nama_penerima ?? '-' }}</strong>
+                                        <p>{{ $shipment->alamatTujuan->alamat_lengkap ?? '-' }}</p>
+                                    </td>
+                                    <td class="text-dark">
+                                        {{ $shipment->kurir->nama ?? '-' }}
+                                    <td>
+                                        <span
+                                            class="badge bg-{{ $shipment->status_color }} text-dark rounded-pill status-badge"
+                                            data-resi="{{ $shipment->nomor_resi }}">
+                                            {{ $shipment->status }}
+                                        </span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody id="shipmentsTableBody">
-                                @foreach ($recent_shipments as $shipment)
-                                    <tr class="text-dark" data-resi="{{ $shipment->nomor_resi }}">
-                                        <td class="fw-medium">{{ $shipment->nomor_resi }}</td>
-                                        <td class="text-dark">{{ $shipment->created_at->format('d M Y') }}</td>
-                                        <td class="text-dark">
-                                            <strong>{{ $shipment->alamatPenjemputan->nama_pengirim ?? '-' }}</strong>
-                                            <p>{{ $shipment->alamatPenjemputan->alamat_lengkap ?? '-' }}</p>
-                                        </td>
-                                        <td class="text-dark">
-                                            <strong>{{ $shipment->alamatTujuan->nama_penerima ?? '-' }}</strong>
-                                            <p>{{ $shipment->alamatTujuan->alamat_lengkap ?? '-' }}</p>
-                                        </td>
-                                        <td class="text-dark">
-                                            {{ $shipment->kurir->nama ?? '-' }}
-                                        <td>
-                                            <span class="badge bg-{{ $shipment->status_color }} text-dark rounded-pill status-badge" 
-                                                  data-resi="{{ $shipment->nomor_resi }}">
-                                                {{ $shipment->status }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="empty-state">
-                        <i class="fas fa-box-open mb-3"></i>
-                        <h5 class="fw-medium">Belum Ada Pengiriman</h5>
-                        <p class="text-muted mb-3">Anda belum memiliki riwayat pengiriman. Mulai kirim paket sekarang!</p>
-                        <a href="/dashboard/admin/kirim" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i> Kirim Paket
-                        </a>
-                    </div>
-                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -177,101 +167,101 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // WebSocket Connection
-    const socket = io('http://localhost:4000');
-    const connectionStatus = document.getElementById('connectionStatus');
-    const lastUpdate = document.getElementById('lastUpdate');
-    const toast = new bootstrap.Toast(document.getElementById('statusUpdateToast'));
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // WebSocket Connection
+            const socket = io('http://localhost:4000');
+            const connectionStatus = document.getElementById('connectionStatus');
+            const lastUpdate = document.getElementById('lastUpdate');
+            const toast = new bootstrap.Toast(document.getElementById('statusUpdateToast'));
 
-    // Connection status handling
-    socket.on('connect', function() {
-        console.log('Connected to WebSocket server');
-        connectionStatus.className = 'badge bg-success';
-        connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Terhubung';
-        
-        // Join admin room
-        socket.emit('join-room', 'admin');
-    });
+            // Connection status handling
+            socket.on('connect', function() {
+                console.log('Connected to WebSocket server');
+                connectionStatus.className = 'badge bg-success';
+                connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Terhubung';
 
-    socket.on('disconnect', function() {
-        console.log('Disconnected from WebSocket server');
-        connectionStatus.className = 'badge bg-danger';
-        connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Terputus';
-    });
+                // Join admin room
+                socket.emit('join-room', 'admin');
+            });
 
-    socket.on('connect_error', function(error) {
-        console.log('Connection error:', error);
-        connectionStatus.className = 'badge bg-warning';
-        connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Error Koneksi';
-    });
+            socket.on('disconnect', function() {
+                console.log('Disconnected from WebSocket server');
+                connectionStatus.className = 'badge bg-danger';
+                connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Terputus';
+            });
 
-    // Listen for status updates
-    socket.on('update-status', function(data) {
-        console.log('Received status update:', data);
-        
-        // Update last update time
-        lastUpdate.textContent = 'Terakhir update: ' + new Date().toLocaleTimeString('id-ID');
-        
-        // Update status badge if exists
-        const statusBadge = document.querySelector(`[data-resi="${data.resi}"]`);
-        if (statusBadge) {
-            const oldStatus = statusBadge.textContent.trim();
-            statusBadge.textContent = data.status;
-            
-            // Update badge color based on status
-            statusBadge.className = 'badge rounded-pill status-badge';
-            switch(data.status) {
-                case 'DITERIMA_KURIR':
-                    statusBadge.classList.add('bg-info', 'text-dark');
-                    break;
-                case 'DALAM_PENGIRIMAN':
-                    statusBadge.classList.add('bg-warning', 'text-dark');
-                    break;
-                case 'SELESAI':
-                    statusBadge.classList.add('bg-success', 'text-dark');
-                    break;
-                case 'DIBATALKAN':
-                    statusBadge.classList.add('bg-danger', 'text-dark');
-                    break;
-                default:
-                    statusBadge.classList.add('bg-secondary', 'text-dark');
-            }
-            
-            // Show notification if status changed
-            if (oldStatus !== data.status) {
-                showStatusUpdateNotification(data);
-            }
-        }
-        
-        // Refresh dashboard stats
-        refreshDashboardStats();
-    });
+            socket.on('connect_error', function(error) {
+                console.log('Connection error:', error);
+                connectionStatus.className = 'badge bg-warning';
+                connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Error Koneksi';
+            });
 
-    function showStatusUpdateNotification(data) {
-        const toastMessage = document.getElementById('toastMessage');
-        const toastTime = document.getElementById('toastTime');
-        
-        toastMessage.innerHTML = `
+            // Listen for status updates
+            socket.on('update-status', function(data) {
+                console.log('Received status update:', data);
+
+                // Update last update time
+                lastUpdate.textContent = 'Terakhir update: ' + new Date().toLocaleTimeString('id-ID');
+
+                // Update status badge if exists
+                const statusBadge = document.querySelector(`[data-resi="${data.resi}"]`);
+                if (statusBadge) {
+                    const oldStatus = statusBadge.textContent.trim();
+                    statusBadge.textContent = data.status;
+
+                    // Update badge color based on status
+                    statusBadge.className = 'badge rounded-pill status-badge';
+                    switch (data.status) {
+                        case 'DITERIMA_KURIR':
+                            statusBadge.classList.add('bg-info', 'text-dark');
+                            break;
+                        case 'DALAM_PENGIRIMAN':
+                            statusBadge.classList.add('bg-warning', 'text-dark');
+                            break;
+                        case 'SELESAI':
+                            statusBadge.classList.add('bg-success', 'text-dark');
+                            break;
+                        case 'DIBATALKAN':
+                            statusBadge.classList.add('bg-danger', 'text-dark');
+                            break;
+                        default:
+                            statusBadge.classList.add('bg-secondary', 'text-dark');
+                    }
+
+                    // Show notification if status changed
+                    if (oldStatus !== data.status) {
+                        showStatusUpdateNotification(data);
+                    }
+                }
+
+                // Refresh dashboard stats
+                refreshDashboardStats();
+            });
+
+            function showStatusUpdateNotification(data) {
+                const toastMessage = document.getElementById('toastMessage');
+                const toastTime = document.getElementById('toastTime');
+
+                toastMessage.innerHTML = `
             <strong>Resi: ${data.resi}</strong><br>
             Status: <span class="badge bg-primary">${data.status}</span><br>
             ${data.catatan ? `Catatan: ${data.catatan}` : ''}
         `;
-        toastTime.textContent = new Date().toLocaleTimeString('id-ID');
-        
-        toast.show();
-    }
+                toastTime.textContent = new Date().toLocaleTimeString('id-ID');
 
-    function refreshDashboardStats() {
-        // You can implement AJAX call to refresh stats if needed
-        // For now, we'll just update the last update time
-        console.log('Dashboard stats refreshed');
-    }
+                toast.show();
+            }
 
-    // Auto-refresh every 30 seconds as fallback
-    setInterval(refreshDashboardStats, 30000);
-});
-</script>
+            function refreshDashboardStats() {
+                // You can implement AJAX call to refresh stats if needed
+                // For now, we'll just update the last update time
+                console.log('Dashboard stats refreshed');
+            }
+
+            // Auto-refresh every 30 seconds as fallback
+            setInterval(refreshDashboardStats, 30000);
+        });
+    </script>
 @endsection
