@@ -11,22 +11,20 @@
           <i class="fas fa-times text-white"></i>
         </button>
       </div>
-
-      <div class="modal-body">
+      
+     <div class="modal-body">
         <form id="formKonfirmasiSampai" enctype="multipart/form-data">
           <input type="hidden" id="konfirmasi_id_pengiriman" name="id_pengiriman">
-          <input type="hidden" id="status" name="status" value="DITERIMA">
-
+          <input type="hidden" id="status" name="status" value="SELESAI">
           <div class="alert alert-warning d-none" id="errorKonfirmasi"></div>
 
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-check-circle"></i> Konfirmasi Diterima
+            </button>
+          </div>
         </form>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-success" onclick="submitKonfirmasiSampai()">
-          <i class="fas fa-check-circle"></i> Konfirmasi Diterima
-        </button>
       </div>
 
     </div>
@@ -70,27 +68,27 @@ function showData(id) {
     });
   }
 
-function submitKonfirmasiSampai() {
-    const form = $('#formKonfirmasiSampai')[0];
-    const formData = new FormData(form);
-    
-    axios.post("{{ route('pengiriman.updateStatus') }}", formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    })
-    .then(function(response) {
-        if (response.data.status === 'success') {
-            $('#modalKonfirmasiSampai').modal('hide');
-            Swal.fire('Berhasil!', 'Pengiriman telah dikonfirmasi sampai.', 'success');
-            refreshTracking();
-        } else {
-            $('#errorKonfirmasi').removeClass('d-none').text(response.data.message || 'Terjadi kesalahan.');
-        }
-    })
-    .catch(function(error) {
-        let msg = error.response?.data?.message || 'Terjadi kesalahan saat mengirim data.';
-        $('#errorKonfirmasi').removeClass('d-none').text(msg);
-    });
-}
+// function submitKonfirmasiSampai() {
+//     const form = $('#formKonfirmasiSampai')[0];
+//     const formData = new FormData(form);
+//     try {
+//         await axios.post("{{ route('pengiriman.updateStatus') }}", formData);
+//         Swal.fire('Berhasil', 'Status berhasil diperbarui!', 'success');
+//     } catch (err) {
+//         Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
+//     }
+// }
+document.getElementById('formKonfirmasiSampai').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    console.log(formData);
+    try {
+      await axios.post("{{ route('pengiriman.updateStatus.seslai') }}", formData);
+      Swal.fire('Berhasil', 'Status berhasil diperbarui!', 'success');
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalKonfirmasiSampai'));
+      if (modal) modal.hide();
+    } catch (err) {
+      Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
+    }
+});
 </script>

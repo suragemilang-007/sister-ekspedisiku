@@ -624,7 +624,7 @@
     <script>
         const socket = io("http://localhost:4000");
 
-        socket.on("update-sidebar", function (data) {
+        socket.on("update-data-pengiriman", function (data) {
             loadSidebar(); 
         });
 

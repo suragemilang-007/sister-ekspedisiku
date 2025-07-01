@@ -22,6 +22,7 @@ import { layananCreateHandler } from "../handlers/layananAdd.js";
 import { updateLayananHandler } from "../handlers/updateLayanan.js";
 import { layananDeleteHandler } from "../handlers/layananDelete.js";
 import { handlePengirimanUpdateStatus } from "../handlers/pengirimanUpdateStatus.js";
+import { handlePengirimanUpdateStatusSelesai } from "../handlers/pengirimanUpdateStatusSelesai.js";
 import { addAssignKurirHandler } from "../handlers/addAssignKurir.js";
 import { kurirUpdateInfoHandler } from "../handlers/kurirUpdateInfo.js";
 import { kurirUpdatePasswordHandler } from "../handlers/kurirUpdatePassword.js";
@@ -70,6 +71,10 @@ await Promise.all([
         fromBeginning: false,
     }),
     consumer.subscribe({
+        topic: TOPICS.PENGIRIMAN_UPDATE_STATUS_selesai,
+        fromBeginning: false,
+    }),
+    consumer.subscribe({
         topic: TOPICS.ADD_ASSIGN_KURIR,
         fromBeginning: false,
     }),
@@ -114,7 +119,7 @@ await consumer.run({
                     break;
                 case TOPICS.FEEDBACK:
                     await feedbackHandler(data);
-                    io.emit("update-sidebar", data);
+                    io.emit("update-data-pengiriman", data);
                     break;
                 case TOPICS.ALAMAT_TAMBAH:
                     await alamatTambahHandler(data);
@@ -164,6 +169,13 @@ await consumer.run({
                     break;
                 case TOPICS.PENGIRIMAN_UPDATE_STATUS:
                     await handlePengirimanUpdateStatus(data);
+                    if (io) {
+                        io.emit("update-data-pengiriman", data);
+                        io.emit("update-data-pengiriman1", data);
+                    }
+                    break;
+                case TOPICS.PENGIRIMAN_UPDATE_STATUS_selesai:
+                    await handlePengirimanUpdateStatusSelesai(data);
                     if (io) {
                         io.emit("update-data-pengiriman", data);
                         io.emit("update-data-pengiriman1", data);

@@ -69,7 +69,7 @@
             <a href="/dashboard/pengirim/history" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
         </div>
         <div class="card-body">
-            @if(isset($recent_shipments) && count($recent_shipments) > 0)
+            
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead class="table-light">
@@ -87,9 +87,7 @@
                         </tbody>
                     </table>
                 </div>
-            @else
-                
-            @endif
+            
         </div>
     </div>
 

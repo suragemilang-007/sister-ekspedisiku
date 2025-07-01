@@ -235,6 +235,7 @@ Route::middleware(['role:pelanggan', 'auth.session'])->group(function () {
 Route::prefix('dashboard/pengiriman')->group(function () {
     Route::get('/edit-status/{id}', [PengirimanController::class, 'editStatus'])->name('pengiriman.editStatus');
     Route::post('/update-status', [PengirimanController::class, 'updateStatus'])->name('pengiriman.updateStatus');
+    Route::post('/update-status/seslai', [PengirimanController::class, 'updateStatusselsai'])->name('pengiriman.updateStatus.seslai');
 });
 
 // Route untuk update status pengiriman oleh kurir

@@ -384,7 +384,18 @@ class PengirimanController extends Controller
             'keterangan_batal' => $request->status === 'DIBATALKAN' ? $request->keterangan_batal : null,
         ];
 
-        Http::post('http://localhost:3001/pengiriman/update-status_pengiriman', $data);
+        Http::post('http://localhost:3001/pengiriman/update-status-pengiriman', $data);
+        return response()->json(['status' => 'ok']);
+    }
+    public function updateStatusselsai(Request $request)
+    {
+        $data = [
+            'nomor_resi' => $request->id_pengiriman,
+            'status' => $request->status,
+            'keterangan_batal' => $request->status === 'DIBATALKAN' ? $request->keterangan_batal : null,
+        ];
+
+        Http::post('http://localhost:3001/pengiriman/update-status-pengiriman-selesai', $data);
         return response()->json(['status' => 'ok']);
     }
 

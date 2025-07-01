@@ -1,13 +1,13 @@
 import db from "../config/db.js";
 
-export async function handlePengirimanUpdateStatus(data) {
+export async function handlePengirimanUpdateStatusSelesai(data) {
     await db.execute(
         `
       UPDATE pengiriman 
       SET status = ?, keterangan_batal = ?
-      WHERE id_pengiriman = ?
+      WHERE nomor_resi = ?
     `,
-        [data.status, data.keterangan_batal || null, data.id_pengiriman]
+        [data.status, data.keterangan_batal || null, data.nomor_resi]
     );
 
     console.log(
