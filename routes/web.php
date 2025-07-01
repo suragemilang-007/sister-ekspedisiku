@@ -93,6 +93,9 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/kurir/update-password', [KurirController::class, 'passwordChange'])->name('admin.kurir.update.password');
     Route::delete('/kurir/{id}', [KurirController::class, 'deleteKurir'])->name('admin.kurir.delete');
 
+    // Route untuk update status penugasan kurir oleh kurir
+    Route::post('/kurir/penugasan/update-status', [App\Http\Controllers\AdminPenugasanKurirController::class, 'updateStatusKurir'])->name('kurir.penugasan.updateStatus');
+
 });
 
 // Route untuk pengirim
@@ -233,3 +236,8 @@ Route::prefix('dashboard/pengiriman')->group(function () {
     Route::get('/edit-status/{id}', [PengirimanController::class, 'editStatus'])->name('pengiriman.editStatus');
     Route::post('/update-status', [PengirimanController::class, 'updateStatus'])->name('pengiriman.updateStatus');
 });
+
+// Route untuk update status pengiriman oleh kurir
+Route::post('/kurir/pengiriman/update-status', [App\Http\Controllers\PengirimanController::class, 'updateStatus'])->name('kurir.pengiriman.updateStatus');
+// Route untuk konfirmasi diterima oleh kurir (update tanggal_sampai, catatan_opsional, foto_bukti_sampai)
+Route::post('/kurir/pengiriman/konfirmasi-diterima', [App\Http\Controllers\KurirController::class, 'konfirmasiDiterima'])->name('kurir.pengiriman.konfirmasiDiterima');

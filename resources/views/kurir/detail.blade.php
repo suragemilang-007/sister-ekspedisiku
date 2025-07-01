@@ -37,11 +37,37 @@
                             </span>
                         </div>
                     </div>
+                    @php
+                        $statusPengiriman = $penugasan->pengiriman->status;
+                        if ($statusPengiriman === 'DIPROSES') {
+                            $statusTugas = 'MENUJU PENGIRIM';
+                        } elseif ($statusPengiriman === 'DIBAYAR') {
+                            $statusTugas = 'DITERIMA KURIR';
+                        } elseif ($statusPengiriman === 'DIKIRIM') {
+                            $statusTugas = 'DALAM_PENGIRIMAN';
+                        } elseif ($statusPengiriman === 'DITERIMA') {
+                            $statusTugas = 'DITERIMA';
+                        } elseif ($statusPengiriman === 'DIBATALKAN') {
+                            $statusTugas = 'DIBATALKAN';
+                        } else {
+                            $statusTugas = $penugasan->status;
+                        }
+                        function badgeColor($statusTugas) {
+                            switch ($statusTugas) {
+                                case 'MENUJU PENGIRIM': return 'warning';
+                                case 'DITERIMA KURIR': return 'info';
+                                case 'DALAM_PENGIRIMAN': return 'primary';
+                                case 'DITERIMA': return 'success';
+                                case 'DIBATALKAN': return 'danger';
+                                default: return 'secondary';
+                            }
+                        }
+                    @endphp
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Status Tugas</div>
                         <div class="col-md-8">
-                            <span class="badge bg-primary text-white rounded-pill">
-                                {{ $penugasan->status }}
+                            <span class="badge bg-{{ badgeColor($statusTugas) }} text-white rounded-pill">
+                                {{ $statusTugas }}
                             </span>
                         </div>
                     </div>
