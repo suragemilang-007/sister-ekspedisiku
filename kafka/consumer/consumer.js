@@ -27,6 +27,7 @@ import { kurirUpdateInfoHandler } from "../handlers/kurirUpdateInfo.js";
 import { kurirUpdatePasswordHandler } from "../handlers/kurirUpdatePassword.js";
 import { kurirCreateHandler } from "../handlers/kurirAdd.js";
 import { kurirDeleteHandler } from "../handlers/kurirDelete.js";
+import { penugasanKurirUpdateHandler } from "../handlers/penugasanKurirUpdate.js";
 
 const kafka = createKafka("producer-kirim-paket");
 const consumer = kafka.consumer({ groupId: "pengguna-group" });
@@ -82,6 +83,7 @@ await Promise.all([
     }),
     consumer.subscribe({ topic: TOPICS.ADD_KURIR, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.DELETE_KURIR, fromBeginning: false }),
+    consumer.subscribe({ topic: TOPICS.PENUGASAN_KURIR_UPDATE, fromBeginning: false }),
 ]);
 
 const httpServer = http.createServer();
@@ -171,16 +173,24 @@ await consumer.run({
                     }
                     break;
                 case TOPICS.KURIR_UPDATE_INFO:
+                    console.log("[KURIR] Update Info dipanggil:", data);
                     await kurirUpdateInfoHandler(data);
                     break;
                 case TOPICS.KURIR_UPDATE_PASSWORD:
+                    console.log("[KURIR] Update Password dipanggil:", data);
                     await kurirUpdatePasswordHandler(data);
                     break;
                 case TOPICS.ADD_KURIR:
+                    console.log("[KURIR] Tambah Kurir dipanggil:", data);
                     await kurirCreateHandler(data);
                     break;
                 case TOPICS.DELETE_KURIR:
+                    console.log("[KURIR] Hapus Kurir dipanggil:", data);
                     await kurirDeleteHandler(data);
+                    break;
+                case TOPICS.PENUGASAN_KURIR_UPDATE:
+                    console.log("[KURIR] Update Penugasan Kurir dipanggil:", data);
+                    await penugasanKurirUpdateHandler(data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);

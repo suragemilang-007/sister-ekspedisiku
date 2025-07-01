@@ -113,6 +113,22 @@
                     </thead>
                     <tbody id="tugasTableBody">
                         @foreach ($tugas_terbaru as $tugas)
+                        @php
+                            $statusPengiriman = $tugas->pengiriman->status;
+                            if ($statusPengiriman === 'DIPROSES') {
+                                $statusTugas = 'MENUJU PENGIRIM';
+                            } elseif ($statusPengiriman === 'DIBAYAR') {
+                                $statusTugas = 'DITERIMA KURIR';
+                            } elseif ($statusPengiriman === 'DIKIRIM') {
+                                $statusTugas = 'DALAM_PENGIRIMAN';
+                            } elseif ($statusPengiriman === 'DITERIMA') {
+                                $statusTugas = 'DITERIMA';
+                            } elseif ($statusPengiriman === 'DIBATALKAN') {
+                                $statusTugas = 'DIBATALKAN';
+                            } else {
+                                $statusTugas = $tugas->status;
+                            }
+                        @endphp
                         <tr class="text-dark" data-resi="{{ $tugas->pengiriman->nomor_resi }}">
                             <td class="fw-medium">{{ $tugas->id_penugasan }}</td>
                             <td class="text-dark">{{ $tugas->pengiriman->nomor_resi }}</td>
@@ -121,9 +137,8 @@
                             </td>
                             <td class="text-dark">{{ $tugas->created_at->format('d M Y') }}</td>
                             <td>
-                                <span class="badge bg-{{ $tugas->pengiriman->status_color }} text-dark rounded-pill status-badge" 
-                                      data-resi="{{ $tugas->pengiriman->nomor_resi }}">
-                                    {{ str_replace('KURIRI', 'KURIR', $tugas->status) }}
+                                <span class="badge bg-{{ badgeColor($statusTugas) }} text-dark rounded-pill status-badge" data-resi="{{ $tugas->pengiriman->nomor_resi }}">
+                                    {{ $statusTugas }}
                                 </span>
                             </td>
                             <td>
@@ -131,13 +146,7 @@
                                     class="btn btn-sm btn-outline-primary me-2"
                                     data-bs-toggle="tooltip"
                                     title="Detail Tugas">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="/kurir/update/{{ $tugas->id_penugasan }}"
-                                    class="btn btn-sm btn-outline-success"
-                                    data-bs-toggle="tooltip"
-                                    title="Update Status">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-pencil-alt"></i>
                                 </a>
                             </td>
                         </tr>
@@ -287,3 +296,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
+@php
+    function badgeColor($statusTugas) {
+        switch ($statusTugas) {
+            case 'MENUJU PENGIRIM': return 'warning';
+            case 'DITERIMA KURIR': return 'info';
+            case 'DALAM_PENGIRIMAN': return 'primary';
+            case 'DITERIMA': return 'success';
+            case 'DIBATALKAN': return 'danger';
+            default: return 'secondary';
+        }
+    }
+@endphp
