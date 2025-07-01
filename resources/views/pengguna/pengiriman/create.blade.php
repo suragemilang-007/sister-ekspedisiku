@@ -14,8 +14,6 @@
 </div>
 
 <div class="container-fluid px-4 animate__animated animate__fadeIn">
-    
-
     <div class="row">
         <div class="col-xl-8">
             <div class="card mb-4 shadow-sm border-0 rounded-3">
@@ -192,7 +190,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <!-- New Alamat Tujuan -->
                             <div id="new_tujuan" class="mt-3 animate__animated animate__fadeIn" style="{{ count($alamatTujuan) == 0 ? '' : 'display: none;' }}">
                                 <div class="card border-0 shadow-sm">
@@ -273,14 +270,14 @@
                                                     </div>
                                                 </label>
                                                 <select class="form-select form-select-lg border-0 shadow-sm" id="kecamatan_asal" required disabled>
-                                                    <option value="">Pilih kecamatan asal...</option>
+                                                    <option value="">kecamatan asal...</option>
                                                     @foreach($kecamatanAsal as $kecamatan)
                                                     <option value="{{ $kecamatan }}">{{ $kecamatan }}</option>
                                                     @endforeach
                                                 </select>
                                                 <input type="hidden" name="kecamatan_asal" id="kecamatan_asal_hidden">
                                                 <div class="invalid-feedback">
-                                                    Silakan pilih kecamatan asal
+                                                    kecamatan asal
                                                 </div>
                                             </div>
                                         </div>
@@ -294,12 +291,13 @@
                                                         <i class="fas fa-info-circle text-muted"></i>
                                                     </div>
                                                 </label>
-                                                <select class="form-select form-select-lg border-0 shadow-sm" id="kecamatan_tujuan" name="kecamatan_tujuan" required>
-                                                    <option value="">Pilih kecamatan tujuan...</option>
+                                                <select class="form-select form-select-lg border-0 shadow-sm" id="kecamatan_tujuan" name="kecamatan_tujuan" required disabled>
+                                                    <option value="">kecamatan tujuan...</option>
                                                     @foreach($kecamatanTujuan as $kecamatan)
                                                     <option value="{{ $kecamatan }}">{{ $kecamatan }}</option>
                                                     @endforeach
                                                 </select>
+                                                <input type="hidden" name="kecamatan_tujuan" id="kecamatan_tujuan_hidden">
                                                 
                                                 <div class="invalid-feedback">
                                                     Silakan pilih kecamatan tujuan
@@ -328,7 +326,7 @@
                                                 <i class="fas fa-info-circle text-muted"></i>
                                             </div>
                                         </label>
-                                        <textarea class="form-control border-0 shadow-sm" id="catatan_opsional" name="catatan_opsional" rows="3" placeholder="Contoh: Barang mudah pecah, harap ditangani dengan hati-hati"></textarea>
+                                        <textarea class="form-control border-0 shadow-sm" id="catatan_opsional" name="catatan_opsional" rows="3" placeholder="Contoh: Barang mudah pecah, harap ditangani dengan hati-hati" required></textarea>
                                         <small class="text-muted mt-2 d-block">Opsional - Tambahkan instruksi khusus untuk kurir</small>
                                     </div>
 
@@ -341,8 +339,8 @@
                                             </div>
                                         </label>
                                         <div class="custom-file-upload position-relative">
-                                            <input type="file" class="form-control form-control-lg border-0 shadow-sm" id="foto_barang" name="foto_barang" accept="image/*">
-                                            <div class="upload-icon position-absolute top-50 start-0 translate-middle-y ms-3">
+                                            <input type="file" class="form-control form-control-lg border-0 shadow-sm" id="foto_barang" name="foto_barang" accept="image/*" required>
+                                            <div class="upload-icon position-absolute top-50 start-0 translate-middle-y ms-3 " >
                                                 <i class="fas fa-cloud-upload-alt text-primary"></i>
                                             </div>
                                         </div>
@@ -372,7 +370,6 @@
 </div>
             </div>
         </div>
-
         <!-- Summary Card -->
         <div class="col-xl-4">
             <div class="card mb-4">
@@ -508,6 +505,7 @@ $(document).ready(function() {
         if (id) {
             // Set kecamatan tujuan
             $('#kecamatan_tujuan').val(kecamatan);
+            $('#kecamatan_tujuan_hidden').val(kecamatan);
             
             // Load detail alamat
             axios.get(`/api/alamat-tujuan/${id}`)
@@ -524,6 +522,7 @@ $(document).ready(function() {
         } else {
             $('#detail_tujuan').hide();
             $('#kecamatan_tujuan').val('');
+             $('#kecamatan_tujuan_hidden').val('');
         }
         
         calculateBiaya();
