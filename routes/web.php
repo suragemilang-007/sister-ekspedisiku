@@ -69,6 +69,8 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::post('/pesanan/update-status/{id}', [PengirimanController::class, 'dibatalkan'])->name('admin.pesanan.update.status');
     Route::get('/pesanan/list', [PengirimanController::class, 'semuaPesanan'])->name('admin.pesanan.list');
     Route::post('/pesanan/assign-kurir', [PengirimanController::class, 'assignKurir'])->name('admin.assign.kurir');
+    Route::get('/pesanan/{id}', [PengirimanController::class, 'detailPengiriman'])->name('admin.pesanan.detail');
+
 
 
     // Route Penugasan
@@ -84,12 +86,12 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
 
     // Route untuk Manajemen Kurir
     Route::get('/kurir', [KurirController::class, 'listKurir'])->name('admin.kurir.index');
-    Route::get('/kurir/create', [KurirController::class,'createKurir'])->name('admin.kurir.create');
-    Route::post('/kurir/store', [KurirController::class,'storeKurir'])->name('admin.kurir.store');
-    Route::get('/kurir/edit/{id}', [KurirController::class,'edit'])->name('admin.kurir.edit');
-    Route::post('/kurir/update-info', [KurirController::class,'profileUpdate'])->name('admin.kurir.update.info');
-    Route::post('/kurir/update-password', [KurirController::class,'passwordChange'])->name('admin.kurir.update.password');
-    Route::delete('/kurir/{id}', [KurirController::class,'deleteKurir'])->name('admin.kurir.delete');
+    Route::get('/kurir/create', [KurirController::class, 'createKurir'])->name('admin.kurir.create');
+    Route::post('/kurir/store', [KurirController::class, 'storeKurir'])->name('admin.kurir.store');
+    Route::get('/kurir/edit/{id}', [KurirController::class, 'edit'])->name('admin.kurir.edit');
+    Route::post('/kurir/update-info', [KurirController::class, 'profileUpdate'])->name('admin.kurir.update.info');
+    Route::post('/kurir/update-password', [KurirController::class, 'passwordChange'])->name('admin.kurir.update.password');
+    Route::delete('/kurir/{id}', [KurirController::class, 'deleteKurir'])->name('admin.kurir.delete');
 
     // Route untuk update status penugasan kurir oleh kurir
     Route::post('/kurir/penugasan/update-status', [App\Http\Controllers\AdminPenugasanKurirController::class, 'updateStatusKurir'])->name('kurir.penugasan.updateStatus');

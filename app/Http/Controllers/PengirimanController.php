@@ -536,5 +536,40 @@ class PengirimanController extends Controller
         }
     }
 
+    // PesananController.php
+    public function detailPengiriman($id)
+    {
+        $pesanan = Pengiriman::with(['alamatPenjemputan', 'alamatTujuan', 'kurir', 'layananPaket'])->findOrFail($id);
+
+        return response()->json([
+            'nomor_resi' => $pesanan->nomor_resi,
+            'status' => $pesanan->status,
+            'catatan' => $pesanan->catatan_opsional,
+            'pengirim' => [
+                'nama' => $pesanan->alamatPenjemputan->nama_pengirim ?? '-',
+                'no_hp' => $pesanan->alamatPenjemputan->no_hp ?? '-',
+                'alamat' => $pesanan->alamatPenjemputan->alamat_lengkap ?? '-',
+                'kecamatan' => $pesanan->alamatPenjemputan->kecamatan ?? '-',
+                'kode_pos' => $pesanan->alamatPenjemputan->kode_pos ?? '-',
+            ],
+            'penerima' => [
+                'nama' => $pesanan->alamatTujuan->nama_penerima ?? '-',
+                'no_hp' => $pesanan->alamatTujuan->no_hp ?? '-',
+                'alamat' => $pesanan->alamatTujuan->alamat_lengkap ?? '-',
+                'kecamatan' => $pesanan->alamatTujuan->kecamatan ?? '-',
+                'kode_pos' => $pesanan->alamatTujuan->kode_pos ?? '-',
+            ],
+            'kurir' => [
+                'nama' => $pesanan->kurir->nama ?? '-',
+                'no_hp' => $pesanan->kurir->no_hp ?? '-',
+            ],
+            'biaya_pengiriman' => $pesanan->total_biaya ? 'Rp ' . number_format($pesanan->total_biaya, 0, ',', '.') : '-',
+            'tanggal_pengiriman' => $pesanan->created_at->format('d F Y'),
+            'layanan' => $pesanan->zonaPengiriman->layananPaket->nama_layanan ?? '-',
+            
+        ]);
+    }
+
+
 
 }

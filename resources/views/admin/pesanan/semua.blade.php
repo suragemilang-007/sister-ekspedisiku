@@ -84,7 +84,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($semuaPesanan as $semua)
-                                    <tr class="text-medium">
+                                    <tr class="text-medium" style="cursor:pointer;" data-id="{{ $semua->id_pengiriman }}">
                                         <td class="text-dark">
                                             {{ $semua->nomor_resi ?? '-' }}</td>
                                         <td class="fw-dark">
@@ -147,7 +147,7 @@
             </div>
         </div>
     </div>
-    @include('dashboard_pengirim.modal_detail')
+    @include('admin.pesanan.modal')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

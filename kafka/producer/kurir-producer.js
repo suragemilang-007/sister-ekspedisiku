@@ -5,6 +5,7 @@ import cors from "cors";
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 import { createKafka } from "../config/kafka.js";
+import { createKafka } from "../config/kafka.js";// Assuming createKafka is defined in kafka.js
 
 dotenv.config();
 
