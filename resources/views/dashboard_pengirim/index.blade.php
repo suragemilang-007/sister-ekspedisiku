@@ -96,6 +96,7 @@
 </div>
 @endsection
 @include('dashboard_pengirim.modal_detail')
+@include('dashboard_pengirim.modal_konfirmasipaket')
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
@@ -160,6 +161,12 @@
         onclick="showDetailModal('${item.nomor_resi}')"
         data-bs-toggle="tooltip" 
         title="Detail Pengiriman">
+    <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary" 
+        onclick="showModalKonfirmasiSampai('${item.nomor_resi}')"
+        data-bs-toggle="tooltip" 
+        title="konfirmasi Pengiriman">
     <i class="fas fa-eye"></i>
                                         </button>
                                     </td>

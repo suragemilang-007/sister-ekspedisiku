@@ -30,7 +30,7 @@ class penggunaController extends Controller
                 ->whereIn('status', ['MENUNGGU KONFIRMASI', 'DIBAYAR', 'DIPROSES', 'DIKIRIM'])
                 ->count(),
             'pengiriman_selesai' => Pengiriman::where('id_pengirim', $userId)
-                ->where('status', 'DITERIMA')
+                ->where('status', 'SELESAI')
                 ->count(),
             'total_biaya' => Pengiriman::where('id_pengirim', $userId)->sum('total_biaya'),
 
@@ -39,39 +39,24 @@ class penggunaController extends Controller
         // Recent shipments
         $recent_shipments = Pengiriman::with(['alamatTujuan', 'layananPaket'])
             ->where('id_pengirim', $userId)
-            ->whereIn('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM'])
-            ->orderByRaw("FIELD(status, 'MENUNGGU KONFIRMASI','DIPROSES', 'DIBAYAR', 'DIKIRIM')")
+            ->whereIn('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIKIRIM', 'DITERIMA'])
+            ->orderByRaw("FIELD(status, 'DITERIMA','MENUNGGU KONFIRMASI','DIPROSES','DIKIRIM')")
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($item) {
-
-                return $item;
-            });
+            ->get();
         $pengiriman = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan'])
             ->where('id_pengirim', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
-
-        // Recent finished shipments in the last 3 days
-        $recent_finish_shipment_3days = Pengiriman::with(['alamatTujuan', 'layananPaket'])
-            ->where('id_pengirim', $userId)
-            ->where('status', 'DITERIMA')
-            ->where('created_at', '>=', Carbon::now()->subDays(3))
-            ->orderBy('created_at', 'desc')
-            ->get();
-
         if ($request->ajax()) {
             return response()->json([
                 'stats' => $stats,
                 'recent_shipments' => $recent_shipments,
-                'recent_finish_shipments' => $recent_finish_shipment_3days,
             ]);
         }
 
         return view('dashboard_pengirim.index', compact(
             'stats',
             'recent_shipments',
-            'recent_finish_shipment_3days'
         ));
     }
 

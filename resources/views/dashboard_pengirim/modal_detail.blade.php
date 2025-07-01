@@ -28,6 +28,28 @@
                     
                 </div>
 
+                <!-- Courier Info -->
+                <div class="info-section">
+                    <div class="info-section-header">
+                        <i class="fas fa-motorcycle"></i>
+                        Informasi Kurir
+                    </div>
+                    <div class="info-section-body">
+                        <div class="kurir-card" id="kurirCard">
+                            <div class="kurir-avatar">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="kurir-info flex-grow-1">
+                                <h6 id="kurir">Belum ditugaskan</h6>
+                                <div class="text-muted">Kurir Ekspedisiku</div>
+                            </div>
+                            <div id="kurirStatus">
+                                <i class="fas fa-clock text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 <!-- Service Info -->
                 <div class="info-section">
                     <div class="info-section-header">
@@ -90,28 +112,7 @@
                     </div>
                 </div>
 
-                <!-- Courier Info -->
-                <div class="info-section">
-                    <div class="info-section-header">
-                        <i class="fas fa-motorcycle"></i>
-                        Informasi Kurir
-                    </div>
-                    <div class="info-section-body">
-                        <div class="kurir-card" id="kurirCard">
-                            <div class="kurir-avatar">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <div class="kurir-info flex-grow-1">
-                                <h6 id="kurir">Belum ditugaskan</h6>
-                                <div class="text-muted">Kurir Ekspedisiku</div>
-                            </div>
-                            <div id="kurirStatus">
-                                <i class="fas fa-clock text-warning"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-track" onclick="refreshTracking()">
@@ -160,6 +161,7 @@
           $("#nohp_penerima").text(data.alamat_tujuan && data.alamat_tujuan.no_hp ? data.alamat_tujuan.no_hp : '-');
 
           $("#kurir").text(data.kurir && data.kurir.nama ? data.kurir.nama : 'Belum ditugaskan');
+
 
           
         }

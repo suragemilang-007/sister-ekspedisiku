@@ -167,15 +167,18 @@ class PengirimanController extends Controller
             ->where('id_pengirim', $userId)
             ->with([
                 'alamatTujuan',
+
                 'zonaPengiriman.layananPaket',
                 'pelacakan' => function ($query) {
                     $query->orderBy('created_at', 'desc');
                 },
                 'penugasanKurir.kurir',
                 'feedback',
-                'pembayaran'
+                'pembayaran',
+
             ])
             ->first();
+
 
         if (!$pengiriman) {
             return redirect()->route('pengiriman.index')
@@ -566,7 +569,7 @@ class PengirimanController extends Controller
             'biaya_pengiriman' => $pesanan->total_biaya ? 'Rp ' . number_format($pesanan->total_biaya, 0, ',', '.') : '-',
             'tanggal_pengiriman' => $pesanan->created_at->format('d F Y'),
             'layanan' => $pesanan->zonaPengiriman->layananPaket->nama_layanan ?? '-',
-            
+
         ]);
     }
 

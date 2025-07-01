@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreign('id_alamat_penjemputan')->references('uid')->on('alamat_penjemputan')->onDelete('cascade');
             $table->decimal('total_biaya', 12, 2);
             $table->foreignId('id_zona')->constrained('zona_pengiriman', 'id_zona');
-            $table->enum('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIBAYAR', 'DIKIRIM', 'DITERIMA', 'DIBATALKAN']);
+            $table->enum('status', ['MENUNGGU KONFIRMASI', 'DIPROSES', 'DIKIRIM', 'DITERIMA', 'SELESAI', 'DIBATALKAN']);
             $table->string('nomor_resi')->unique();
             $table->text('catatan_opsional')->nullable();
             $table->text('keterangan_batal')->nullable();
