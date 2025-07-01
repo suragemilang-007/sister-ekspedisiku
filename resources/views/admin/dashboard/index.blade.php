@@ -11,6 +11,9 @@
                 <p class="text-muted">Selamat datang kembali, {{ Session::get('user_name') }}!</p>
             </div>
             <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small" id="lastUpdate">Terakhir update: {{ now()->format('H:i:s') }}</span>
+                </div>
                 <div class="connection-status">
                     <span class="badge bg-secondary" id="connectionStatus">
                         <i class="fas fa-circle me-1"></i>Menghubungkan...
@@ -98,12 +101,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5>Pengiriman Terbaru</h5>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="text-muted small" id="lastUpdate">Terakhir update: {{ now()->format('H:i:s') }}</span>
-                    <a href="{{ url()->current() }}" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-sync-alt me-1"></i>Refresh
-                    </a>
-                </div>
+
             </div>
             <div class="card-body">
                 <div class="accordion" id="accordionPengiriman">
