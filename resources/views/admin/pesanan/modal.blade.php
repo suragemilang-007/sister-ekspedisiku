@@ -60,8 +60,8 @@
         <div class="mb-3">
             <strong>No Resi:</strong> ${data.nomor_resi}<br>
             <strong>Tanggal Pengiriman:</strong> ${data.tanggal_pengiriman}<br>
-            <strong>Status:</strong> ${data.status}<br>
-            <strong>Biaya Pengiriman:</strong>${data.biaya_pengiriman},-
+            <strong>Jenis Pengiriman:</strong> ${data.layanan}<br>
+            <strong>Biaya Pengiriman:</strong> ${data.biaya_pengiriman},-
             <br><br>
             
             <div class="row">

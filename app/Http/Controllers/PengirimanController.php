@@ -539,7 +539,7 @@ class PengirimanController extends Controller
     // PesananController.php
     public function detailPengiriman($id)
     {
-        $pesanan = Pengiriman::with(['alamatPenjemputan', 'alamatTujuan', 'kurir'])->findOrFail($id);
+        $pesanan = Pengiriman::with(['alamatPenjemputan', 'alamatTujuan', 'kurir', 'layananPaket'])->findOrFail($id);
 
         return response()->json([
             'nomor_resi' => $pesanan->nomor_resi,
@@ -565,6 +565,7 @@ class PengirimanController extends Controller
             ],
             'biaya_pengiriman' => $pesanan->total_biaya ? 'Rp ' . number_format($pesanan->total_biaya, 0, ',', '.') : '-',
             'tanggal_pengiriman' => $pesanan->created_at->format('d F Y'),
+            'layanan' => $pesanan->zonaPengiriman->layananPaket->nama_layanan ?? '-',
             
         ]);
     }
