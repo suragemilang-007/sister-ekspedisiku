@@ -1,8 +1,9 @@
 import { Kafka } from "kafkajs";
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-dotenv.config();
 import { createKafka } from "../config/kafka.js";
+
+dotenv.config();
 // Konfigurasi Kafka
 const kafka = createKafka("kurir-consumer");
 // const kafka = new Kafka({
