@@ -82,9 +82,10 @@ class Pengiriman extends Model
         return $this->belongsTo(Pengguna::class, 'id_pengirim');
     }
 
-    public function penugasanKurir(): hasMany
+
+    public function penugasanKurir(): HasOne
     {
-        return $this->hasMany(PenugasanKurir::class, 'id_pengiriman');
+        return $this->HasOne(PenugasanKurir::class, 'id_pengiriman');
     }
 
     public function feedback(): HasOne

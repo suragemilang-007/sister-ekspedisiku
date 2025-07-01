@@ -35,7 +35,7 @@ class FeedbackController extends Controller
             'kurir'
         )
             ->where('id_pengirim', $userId)
-            ->where('status', 'DITERIMA')
+            ->where('status', 'SELESAI')
             ->whereDoesntHave('feedback')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -45,7 +45,7 @@ class FeedbackController extends Controller
             'kurir'
         )
             ->where('id_pengirim', $userId)
-            ->where('status', 'DITERIMA')
+            ->where('status', 'SELESAI')
             ->whereHas('feedback')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -70,7 +70,7 @@ class FeedbackController extends Controller
         // Cek apakah pengiriman ini milik user dan sudah selesai
         $pengiriman = Pengiriman::where('id_pengirim', $userId)
             ->where('nomor_resi', $nomor_resi)
-            ->where('status', 'DITERIMA')
+            ->where('status', 'SELESAI')
             ->first();
         return view('pengguna.createFeedback', compact('nomor_resi', 'pengiriman'));
     }
@@ -109,7 +109,7 @@ class FeedbackController extends Controller
         // Ambil pengiriman dengan feedback
         $pengiriman = Pengiriman::where('id_pengiriman', $id_pengiriman)
             ->where('id_pengirim', $userId)
-            ->where('status', 'DITERIMA')
+            ->where('status', 'SELESAI')
             ->whereHas('feedback')
             ->with(['alamatTujuan', 'layananPaket', 'kurir', 'feedback'])
             ->first();
@@ -133,14 +133,14 @@ class FeedbackController extends Controller
 
         $stats = [
             'total_pengiriman_selesai' => Pengiriman::where('id_pengirim', $userId)
-                ->where('status', 'DITERIMA')
+                ->where('status', 'SELESAI')
                 ->count(),
             'total_feedback_diberikan' => Pengiriman::where('id_pengirim', $userId)
-                ->where('status', 'DITERIMA')
+                ->where('status', 'SELESAI')
                 ->whereHas('feedback')
                 ->count(),
             'total_belum_feedback' => Pengiriman::where('id_pengirim', $userId)
-                ->where('status', 'DITERIMA')
+                ->where('status', 'SELESAI')
                 ->whereDoesntHave('feedback')
                 ->count(),
             'rata_rata_rating' => Feedback::whereHas('pengiriman', function ($query) use ($userId) {

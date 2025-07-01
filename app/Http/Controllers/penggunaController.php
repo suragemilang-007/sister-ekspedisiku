@@ -170,7 +170,7 @@ class penggunaController extends Controller
 
         $stats = [
             'total_pengirimanDenganFeedback' => Pengiriman::where('id_pengirim', $userId)
-                ->where('status', 'DITERIMA')
+                ->where('status', 'SELESAI')
                 ->whereDoesntHave('feedback')
                 ->count(),
         ];

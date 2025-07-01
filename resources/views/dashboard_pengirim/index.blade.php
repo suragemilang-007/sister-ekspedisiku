@@ -158,17 +158,21 @@
                                     <td>${new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-secondary" 
-        onclick="showDetailModal('${item.nomor_resi}')"
-        data-bs-toggle="tooltip" 
-        title="Detail Pengiriman">
-    <i class="fas fa-eye"></i>
+                                            onclick="showDetailModal('${item.nomor_resi}')"
+                                            data-bs-toggle="tooltip" 
+                                            title="Detail Pengiriman">
+                                        <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-secondary" 
-        onclick="showModalKonfirmasiSampai('${item.nomor_resi}')"
-        data-bs-toggle="tooltip" 
-        title="konfirmasi Pengiriman">
-    <i class="fas fa-eye"></i>
-                                        </button>
+                                        ${
+                                            item.status === 'DITERIMA'
+                                            ? `<button class="btn btn-sm btn-outline-success" 
+                                                    onclick="showModalKonfirmasiSampai('${item.nomor_resi}')"
+                                                    data-bs-toggle="tooltip" 
+                                                    title="Konfirmasi Pengiriman Telah Sampai">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </button>`
+                                            : ''
+                                        }
                                     </td>
                                 </tr>
                             `;

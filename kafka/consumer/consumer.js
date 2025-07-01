@@ -83,7 +83,10 @@ await Promise.all([
     }),
     consumer.subscribe({ topic: TOPICS.ADD_KURIR, fromBeginning: false }),
     consumer.subscribe({ topic: TOPICS.DELETE_KURIR, fromBeginning: false }),
-    consumer.subscribe({ topic: TOPICS.PENUGASAN_KURIR_UPDATE, fromBeginning: false }),
+    consumer.subscribe({
+        topic: TOPICS.PENUGASAN_KURIR_UPDATE,
+        fromBeginning: false,
+    }),
 ]);
 
 const httpServer = http.createServer();
@@ -189,8 +192,12 @@ await consumer.run({
                     await kurirDeleteHandler(data);
                     break;
                 case TOPICS.PENUGASAN_KURIR_UPDATE:
-                    console.log("[KURIR] Update Penugasan Kurir dipanggil:", data);
+                    console.log(
+                        "[KURIR] Update Penugasan Kurir dipanggil:",
+                        data
+                    );
                     await penugasanKurirUpdateHandler(data);
+                    io.emit("update-data-pengiriman", data);
                     break;
                 default:
                     console.warn("📭 Topik tidak dikenal:", topic);
