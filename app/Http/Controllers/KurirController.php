@@ -49,7 +49,7 @@ class KurirController extends Controller
         // Mengambil tugas terbaru
         $tugas_terbaru = PenugasanKurir::with(['pengiriman.alamatTujuan'])
             ->where('id_kurir', $id_kurir)
-            ->whereNotIn('status', ['DITERIMA', 'DIBATALKAN'])
+            ->whereNotIn('status', ['DITERIMA', 'DIBATALKAN', 'SELESAI'])
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();

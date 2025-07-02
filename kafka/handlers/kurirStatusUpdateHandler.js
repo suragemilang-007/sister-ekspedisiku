@@ -13,7 +13,7 @@ export async function processKurirStatusUpdate(data, connection) {
         } else if (status === "DIKIRIM") {
             status_tugas = "DALAM_PENGIRIMAN";
         } else if (status === "DITERIMA") {
-            status_tugas = "DITERIMA";
+            status_tugas = "SELESAI";
         } else if (status === "DIBATALKAN") {
             status_tugas = "DIBATALKAN";
         } else {
@@ -37,7 +37,7 @@ export async function processKurirStatusUpdate(data, connection) {
 
             await connection.execute(
                 "UPDATE pengiriman SET status = ?, tanggal_sampai = ? WHERE id_pengiriman = ?",
-                ["DITERIMA", new Date(), id_pengiriman]
+                [status, new Date(), id_pengiriman]
             );
             console.log(`📦 Pengiriman ${id_pengiriman} ditandai DITERIMA`);
 
@@ -48,7 +48,7 @@ export async function processKurirStatusUpdate(data, connection) {
                 [
                     id_pengiriman,
                     id_kurir,
-                    "DITERIMA",
+                    status,
                     "Paket telah diterima oleh penerima",
                     "Alamat Tujuan",
                     new Date(),

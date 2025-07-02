@@ -46,7 +46,7 @@
                         } elseif ($statusPengiriman === 'DIKIRIM') {
                             $statusTugas = 'DALAM_PENGIRIMAN';
                         } elseif ($statusPengiriman === 'DITERIMA') {
-                            $statusTugas = 'DITERIMA';
+                            $statusTugas = 'SELESAI';
                         } elseif ($statusPengiriman === 'DIBATALKAN') {
                             $statusTugas = 'DIBATALKAN';
                         } else {
@@ -137,8 +137,6 @@
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select" id="status" name="status" required>
                                 <option value="" disabled selected>Pilih Status</option>
-                                <option value="MENUNGGU KONFIRMASI" {{ $penugasan->status == 'MENUNGGU KONFIRMASI' ? 'selected' : '' }}>MENUNGGU KONFIRMASI</option>
-                                <option value="DIPROSES" {{ $penugasan->status == 'DIPROSES' ? 'selected' : '' }}>DIPROSES</option>
                                 <option value="DIBAYAR" {{ $penugasan->status == 'DIBAYAR' ? 'selected' : '' }}>DIBAYAR</option>
                                 <option value="DIKIRIM" {{ $penugasan->status == 'DIKIRIM' ? 'selected' : '' }}>DIKIRIM</option>
                                 <option value="DITERIMA" {{ $penugasan->status == 'DITERIMA' ? 'selected' : '' }}>DITERIMA</option>

@@ -108,7 +108,7 @@
                             <th>Alamat Tujuan</th>
                             <th>Tanggal Tugas</th>
                             <th>Status</th>
-                            <th>Aksi</th>
+                            <th>Aksi</th>W
                         </tr>
                     </thead>
                     <tbody id="tugasTableBody">
