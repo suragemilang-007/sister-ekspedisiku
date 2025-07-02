@@ -144,8 +144,15 @@ class adminController extends Controller
     {
         $data = $request->only(['uid', 'nama', 'email', 'tgl_lahir', 'nohp', 'alamat', 'kelamin']);
 
-        Http::post('http://localhost:3001/pengguna/update-info', $data);
-        return response()->json(['status' => 'ok']);
+        $response = Http::timeout(5)->post('http://localhost:3001/pengguna/update-info', $data);
+
+        if ($response->successful()) {
+            Log::info("Permintaan edit pengguna dikirim ke JS Producer untuk UID: {$data['uid']}");
+            return response()->json(['message' => 'Permintaan edit berhasil dikirim.']);
+        } else {
+            Log::error("Gagal mengirim permintaan edit ke JS Producer: " . $response->body() . " Status: " . $response->status());
+            return response()->json(['message' => 'Gagal memproses permintaan edit. Silakan coba lagi nanti.'], 500);
+        }
     }
 
     public function updateUserPassword(Request $request)
@@ -154,9 +161,15 @@ class adminController extends Controller
             'uid' => $request->uid,
             'password' => $request->password
         ];
+        $response = Http::timeout(5)->post('http://localhost:3001/pengguna/update-password', $data);
 
-        Http::post('http://localhost:3001/pengguna/update-password', $data);
-        return response()->json(['status' => 'ok']);
+        if ($response->successful()) {
+            Log::info("Permintaan edit password pengguna dikirim ke JS Producer untuk UID: {$data['uid']}");
+            return response()->json(['message' => 'Permintaan edit password berhasil dikirim.']);
+        } else {
+            Log::error("Gagal mengirim permintaan edit password ke JS Producer: " . $response->body() . " Status: " . $response->status());
+            return response()->json(['message' => 'Gagal memproses permintaan edit password. Silakan coba lagi nanti.'], 500);
+        }
     }
 
     public function deleteUser($uid)
