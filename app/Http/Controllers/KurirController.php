@@ -131,101 +131,50 @@ class KurirController extends Controller
                 return response()->json(['success' => false, 'message' => 'Penugasan tidak ditemukan'], 404);
             }
 
-            // Update status di database
-            DB::beginTransaction();
             try {
-                // Update status penugasan
-                $penugasan->update([
-                    'status' => $request->status,
-                    'catatan' => $request->catatan,
-                    'updated_at' => now()
-                ]);
-
-                // Update status pengiriman
-                $penugasan->pengiriman->update([
-                    'status' => $request->status,
-                    'updated_at' => now()
-                ]);
-
-                // Tambah record pelacakan
-                Pelacakan::create([
+                $dataPenugasan = [
+                    'id_kurir' => $id_kurir,
                     'id_pengiriman' => $penugasan->pengiriman->id_pengiriman,
+                    'id_penugasan' => $penugasan->id_penugasan,
                     'status' => $request->status,
-                    'lokasi' => 'Dalam pengiriman',
-                    'keterangan' => $request->catatan ?? 'Status diperbarui oleh kurir',
-                    'id_pengguna' => $id_kurir, // gunakan id kurir (integer) yang sedang login
-                    'created_at' => now()
+                    'catatan' => $request->catatan ?? null,
+                    'action_type' => 'update_penugasan_kurir',
+                    'status_tugas' => $request->input('status_tugas')
+                ];
+                // Logging sebelum request
+                \Log::info('[Kafka] Mengirim update penugasan_kurir ke Node.js', $dataPenugasan);
+                // Kirim ke endpoint Node.js (Kafka Producer)
+                $response = \Http::post('http://localhost:3003/kurir/update-status', $dataPenugasan);
+                // Logging response
+                \Log::info('[Kafka] Response update penugasan_kurir', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
                 ]);
 
-                DB::commit();
-
-                // Kirim ke Kafka (status pengiriman)
-                $success = $this->kafkaProducer->sendStatusUpdate(
-                    $penugasan->pengiriman->nomor_resi,
-                    $request->status,
-                    now()->format('Y-m-d'),
-                    $request->catatan
-                );
-
-                // Tambahan: Kirim update penugasan_kurir ke Kafka Node.js
-                try {
-                    $dataPenugasan = [
-                        'id_penugasan' => $penugasan->id_penugasan,
-                        'status' => $request->status,
-                        'catatan' => $request->catatan ?? null,
-                        'action_type' => 'update_penugasan_kurir'
-                    ];
-                    // Logging sebelum request
-                    \Log::info('[Kafka] Mengirim update penugasan_kurir ke Node.js', $dataPenugasan);
-                    // Kirim ke endpoint Node.js (Kafka Producer)
-                    $response = \Http::timeout(5)->post('http://localhost:3001/kurir/update-status', $dataPenugasan);
-                    // Logging response
-                    \Log::info('[Kafka] Response update penugasan_kurir', [
-                        'status' => $response->status(),
-                        'body' => $response->body()
+                if ($response->successful()) {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Pengiriman berhasil dibatalkan'
                     ]);
-                    if (!$response->successful()) {
-                        \Log::warning('Gagal mengirim update penugasan_kurir ke Kafka Node.js', [
-                            'id_penugasan' => $penugasan->id_penugasan,
-                            'status' => $request->status,
-                            'response_status' => $response->status(),
-                            'response_body' => $response->body()
-                        ]);
-                    }
-                } catch (\Exception $e) {
-                    \Log::error('Exception saat mengirim update penugasan_kurir ke Kafka Node.js: ' . $e->getMessage(), [
-                        'id_penugasan' => $penugasan->id_penugasan ?? null,
-                        'status' => $request->status ?? null
-                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal mengirim data ke sistem'
+                    ], 500);
                 }
-                // End tambahan
-
-                if (!$success) {
-                    Log::warning('Failed to send status update to Kafka', [
-                        'id_penugasan' => $request->id_penugasan,
-                        'status' => $request->status
-                    ]);
-                }
+            } catch (\Exception $e) {
+                \Log::error('Exception saat mengirim update penugasan_kurir ke Kafka Node.js: ' . $e->getMessage(), [
+                    'id_penugasan' => $penugasan->id_penugasan ?? null,
+                    'status' => $request->status ?? null
+                ]);
 
                 return response()->json([
-                    'success' => true, 
-                    'message' => 'Status berhasil diperbarui',
-                    'data' => [
-                        'id_penugasan' => $penugasan->id_penugasan,
-                        'nomor_resi' => $penugasan->pengiriman->nomor_resi,
-                        'status' => $request->status,
-                        'tanggal' => now()->format('Y-m-d')
-                    ]
-                ]);
-
-            } catch (\Exception $e) {
-                DB::rollback();
-                throw $e;
+                    'success' => false,
+                    'message' => 'Gagal menghubungi Kafka Node.js: ' . $e->getMessage()
+                ], 500);
             }
-
         } catch (\Exception $e) {
-            Log::error('Error updating kurir status: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -284,7 +233,7 @@ class KurirController extends Controller
 
         // Ambil pengiriman yang sudah DITERIMA atau DIBATALKAN dan penugasannya milik kurir ini
         $riwayat = Pengiriman::with(['alamatTujuan', 'penugasanKurir'])
-            ->whereHas('penugasanKurir', function($q) use ($id_kurir) {
+            ->whereHas('penugasanKurir', function ($q) use ($id_kurir) {
                 $q->where('id_kurir', $id_kurir);
             })
             ->whereIn('status', ['DITERIMA', 'DIBATALKAN'])

@@ -150,7 +150,7 @@
                             <label for="catatan" class="form-label">Catatan</label>
                             <textarea class="form-control" id="catatan" name="catatan" rows="3">{{ $penugasan->catatan }}</textarea>
                         </div>
-
+                        <input type="hidden" name="status_tugas" value="{{ $statusTugas }}">
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="fas fa-save me-2"></i> Update Status
                         </button>
