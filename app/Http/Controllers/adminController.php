@@ -38,8 +38,8 @@ class adminController extends Controller
         ];
 
         // Recent shipments
-        $recent_shipments = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan', 'pengguna', 'alamatPenjemputan'])// Exclude cancelled shipments
-            ->orderBy('created_at', 'desc')
+        $recent_shipments = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan', 'pengguna', 'alamatPenjemputan']) // Exclude cancelled shipments
+            ->orderBy('id_pengiriman', 'desc')
             ->take(5)
             ->get();
         $pengiriman = Pengiriman::with(['alamatTujuan', 'layananPaket', 'pelacakan'])
@@ -190,5 +190,4 @@ class adminController extends Controller
             return response()->json(['message' => 'Terjadi kesalahan tak terduga. Silakan coba lagi.'], 500);
         }
     }
-
 }
