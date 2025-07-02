@@ -34,17 +34,17 @@ Route::prefix('admin')->middleware(['role:admin', 'auth.session'])->group(functi
     Route::get('/create-shipment', [penggunaController::class, 'createShipment'])->name('dashboard.create.shipment');
     Route::post('/create-shipment', [penggunaController::class, 'storeShipment'])->name('dashboard.store.shipment');
     Route::get('/edit', [pengaturanAkunController::class, 'edit'])->name('pengaturan.edit');
-    Route::post('/update-info', [pengaturanAkunController::class, 'updateInfo'])->name('pengaturan.update.info');
-    Route::post('/update-password', [pengaturanAkunController::class, 'updatePassword'])->name('pengaturan.update.password');
+    Route::post('/update-info', [adminController::class, 'updateUserInfo'])->name('pengaturan.update.info');
+    Route::post('/update-password', [adminController::class, 'updateUserPassword'])->name('pengaturan.update.password');
 
     // Route untuk mengelola Pengguna
     Route::get('/pengguna', [adminController::class, 'list'])->name('admin.pengguna.list');
     Route::post('/pengguna/store', [adminController::class, 'storeAdmin'])->name('admin.pengguna.store');
     Route::get('/pengguna/create', [adminController::class, 'create'])->name('admin.pengguna.create');
-    Route::get('/pengguna/edit/{id}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
+    Route::get('/pengguna/edit/{uid}', [adminController::class, 'editAdmin'])->name('admin.pengguna.edit');
     Route::delete('pengguna/{uid}', [adminController::class, 'deleteUser'])->name('admin.pengguna.delete');
-    Route::post('/pengguna/update/{id}', [adminController::class, 'updateUserInfo'])->name('admin.pengguna.update');
-    Route::post('/pengguna/update-password/{id}', [adminController::class, 'updateUserPassword'])->name('admin.pengguna.update.password');
+    Route::post('/pengguna/update/{uid}', [adminController::class, 'updateUserInfo'])->name('admin.pengguna.update');
+    Route::post('/pengguna/update-password', [adminController::class, 'updateUserPassword'])->name('admin.pengguna.update.password');
 
 
     // Route untuk mengelola zona pengiriman

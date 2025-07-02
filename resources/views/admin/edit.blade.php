@@ -220,6 +220,7 @@ document.getElementById('form-update').addEventListener('submit', function (e) {
     e.preventDefault();
     
     if (!this.checkValidity()) {
+        console.log('Form tidak valid');
         return;
     }
 
