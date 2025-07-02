@@ -142,17 +142,10 @@ class adminController extends Controller
 
     public function updateUserInfo(Request $request)
     {
-        $data = $request->only(['uid', 'nama', 'email', 'tgl_lahir', 'nohp', 'alamat', 'kelamin']);
-
-        $response = Http::timeout(5)->post('http://localhost:3001/pengguna/update-info', $data);
-
-        if ($response->successful()) {
-            Log::info("Permintaan edit pengguna dikirim ke JS Producer untuk UID: {$data['uid']}");
-            return response()->json(['message' => 'Permintaan edit berhasil dikirim.']);
-        } else {
-            Log::error("Gagal mengirim permintaan edit ke JS Producer: " . $response->body() . " Status: " . $response->status());
-            return response()->json(['message' => 'Gagal memproses permintaan edit. Silakan coba lagi nanti.'], 500);
-        }
+        $data = $request->only(['nama', 'email', 'tgl_lahir', 'nohp', 'alamat', 'kelamin']);
+        $data['uid'] = $request->uid; // Use uid from request instead of session
+        Http::post('http://localhost:3001/pengguna/update-info', $data);
+        return response()->json(['status' => 'ok']);
     }
 
     public function updateUserPassword(Request $request)

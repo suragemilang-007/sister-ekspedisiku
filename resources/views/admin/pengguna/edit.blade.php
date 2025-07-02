@@ -273,11 +273,13 @@
             e.preventDefault();
 
             if (!this.checkValidity()) {
+                console.log('Form tidak valid');
                 return;
             }
 
-            const btn = document.getElementById('btn-update');
+            const btn = document.getElementById('btn-simpan'); // <- sesuai dengan ID tombol yang benar
             const spinner = btn.querySelector('.spinner-border');
+            const uid = document.getElementById('uid').value;
 
             Swal.fire({
                 title: 'Simpan Perubahan?',
@@ -292,7 +294,7 @@
                     btn.disabled = true;
                     spinner.classList.remove('d-none');
 
-                    axios.post('/admin/pengguna/update/${uid}', new FormData(e.target))
+                    axios.post(`/admin/pengguna/update/${uid}`, new FormData(e.target))
                         .then(res => {
                             Swal.fire({
                                 icon: 'success',
@@ -319,7 +321,6 @@
                             });
                         })
                         .finally(() => {
-                            // Hide loading state
                             btn.disabled = false;
                             spinner.classList.add('d-none');
                         });
