@@ -127,13 +127,13 @@
                                 case 'MENUNGGU KONFIRMASI':
                                     return 'warning';
                                 case 'DIPROSES':
-                                    return 'primary';
+                                    return 'Info';
                                 case 'DIBAYAR':
                                     return 'info';
                                 case 'DIKIRIM':
                                     return 'success';
                                 case 'DITERIMA':
-                                    return 'primary';
+                                    return 'PRIMARY';
                                 case 'DIBATALKAN':
                                     return 'danger';
                                 default:
@@ -149,7 +149,7 @@
                                     <td>${item.alamat_tujuan.alamat_lengkap ?? '-'}, ${item.alamat_tujuan.kecamatan ?? ''}, ${item.alamat_tujuan.kode_pos ?? ''}</td>
                                     <td>${item.alamat_tujuan.nama_penerima ?? '-'}</td>
                                     <td>
-                                        <span class="badge bg-${statusColor} text-dark rounded-pill">
+                                        <span class="badge bg-${statusColor} rounded-pill">
                                             ${item.status}
                                         </span>
                                     </td>

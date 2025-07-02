@@ -13,15 +13,20 @@
       </div>
       
      <div class="modal-body">
+      <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Pastikan paket telah diterima dengan baik oleh penerima!</strong>
+                    <br>Dengan mengkonfirmasi, status pengiriman akan diubah menjadi <strong>"SELESAI"</strong>.
+                  </div>
         <form id="formKonfirmasiSampai" enctype="multipart/form-data">
           <input type="hidden" id="konfirmasi_id_pengiriman" name="id_pengiriman">
           <input type="hidden" id="status" name="status" value="SELESAI">
           <div class="alert alert-warning d-none" id="errorKonfirmasi"></div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Lapor Admin</button>
             <button type="submit" class="btn btn-success">
-              <i class="fas fa-check-circle"></i> Konfirmasi Diterima
+              <i class="fas fa-check-circle"></i> Konfirmasi Selesai
             </button>
           </div>
         </form>

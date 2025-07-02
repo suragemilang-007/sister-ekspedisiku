@@ -138,17 +138,20 @@ class penggunaController extends Controller
 
     public function showDetail($nomor_resi)
     {
+        $id = Session::get('user_id');
         try {
             $pengiriman = Pengiriman::with([
                 'alamatTujuan',
                 'zonaPengiriman.layananPaket',
                 'kurir',
+
             ])->where('nomor_resi', $nomor_resi)->firstOrFail();
 
+            $pengiriman2 = Pengiriman::with('penugasanKurir')->find($id);
             $layanan = optional($pengiriman->zonaPengiriman)->layananPaket;
             return response()->json([
                 'status' => 'success',
-                'data' => compact('pengiriman', 'layanan')
+                'data' => compact('pengiriman', 'layanan', 'pengiriman2')
             ]);
         } catch (\Exception $e) {
             return response()->json([

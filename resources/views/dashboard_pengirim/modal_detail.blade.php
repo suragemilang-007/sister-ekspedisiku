@@ -149,6 +149,7 @@
       success: function(response) {
         if (response.status === "success") {
           const data = response.data.pengiriman;
+          const data2 = response.data.pengiriman2;
           const datalayanan = response.data.layanan;
           $("#resi").text(data.nomor_resi);
           $("#nama_layanan").text(datalayanan.nama_layanan);
@@ -161,6 +162,7 @@
           $("#nohp_penerima").text(data.alamat_tujuan && data.alamat_tujuan.no_hp ? data.alamat_tujuan.no_hp : '-');
 
           $("#kurir").text(data.kurir && data.kurir.nama ? data.kurir.nama : 'Belum ditugaskan');
+        //   $("#kurirStatus").text(data2.penugasanKurir.status && data2.penugasanKurir.status ? data2.penugasanKurir.status : 'Belum ditugaskan');
 
 
           
